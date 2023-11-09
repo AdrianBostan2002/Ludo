@@ -1,6 +1,6 @@
-﻿using Ludo.Domain.Interfaces;
+﻿using Ludo.MediatRPattern.Interfaces;
 
-namespace Ludo.Domain.Entities
+namespace Ludo.MediatRPattern.Entities
 {
     public class MediatoR : IMediator
     {
@@ -13,13 +13,13 @@ namespace Ludo.Domain.Entities
 
         public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request)
         {
-            Type responseType = typeof(IRequest<TResponse>);
+            Type response = typeof(IRequest<TResponse>);
 
-            var attributes = responseType.GetGenericArguments();
+            Type responseType = response.GetGenericArguments()[0];
 
             Type requestType = request.GetType();
 
-            Type type = typeof(IRequestHandler<,>).MakeGenericType(requestType, attributes[0]);
+            Type type = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
 
             var handler = serviceProvider.GetService(type);
             if (handler != null)

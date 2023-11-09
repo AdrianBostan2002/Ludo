@@ -1,4 +1,4 @@
-﻿using Ludo.Domain.Interfaces;
+﻿using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.TestUseCase
 {

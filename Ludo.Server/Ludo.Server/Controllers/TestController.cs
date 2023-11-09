@@ -1,6 +1,6 @@
 ﻿using Ludo.Business.UseCases.PostTestUseCase;
 using Ludo.Business.UseCases.TestUseCase;
-using Ludo.Domain.Interfaces;
+using Ludo.MediatRPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 

@@ -1,15 +1,12 @@
-﻿using Ludo.Domain.Interfaces;
+﻿using Ludo.MediatRPattern.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Ludo.Business
 {
     public static class RegisterHandlers
     {
-        public static Dictionary<Type, Type> RegisterHandlersFromAssembly(IServiceCollection services)
+        public static void FromAssembly(IServiceCollection services)
         {
-            var requestHandlerTypes = new Dictionary<Type, Type>();
-
             var assemblyName = "Ludo.Business";
 
             var businessAssembly = AppDomain.CurrentDomain.GetAssemblies()
@@ -31,26 +28,18 @@ namespace Ludo.Business
                     foreach (var handlerInterface in handlerInterfaces)
                     {
                         Type[] genericArguments = handlerInterface.GetGenericArguments();
-                        //var request = handlerInterface.get
-                        Type requestType = typeof(IRequest<>).MakeGenericType(genericArguments[1]);
-                        Type responseType = genericArguments[1];
 
-                        // Register the handler with the IRequestHandler interface
-                        //Type serviceType = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
+                        Type request = typeof(IRequest<>).MakeGenericType(genericArguments[1]);
 
-                        Type type = typeof(IRequestHandler<,>).MakeGenericType(genericArguments[0], requestType.GenericTypeArguments[0]);
+                        Type requestType = genericArguments[0];
+                        Type responseType = request.GenericTypeArguments[0];
 
-                        Console.WriteLine(type);
-                        Console.WriteLine(handlerType);
+                        Type type = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
 
                         services.AddSingleton(type, handlerType);
-
-                        //requestHandlerTypes[serviceType] = handlerType;
                     }
                 }
-
             }
-            return requestHandlerTypes;
         }
     }
 }

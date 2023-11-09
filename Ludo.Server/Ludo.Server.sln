@@ -5,11 +5,13 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.Server", "Ludo.Server\Ludo.Server.csproj", "{E133D25A-0D49-47DC-9599-3E49D9D055D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ludo.Business", "Ludo.Business\Ludo.Business.csproj", "{7F054DBB-CE34-48FC-98F8-35D5771AEFFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.Business", "Ludo.Business\Ludo.Business.csproj", "{7F054DBB-CE34-48FC-98F8-35D5771AEFFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ludo.Domain", "Ludo.Domain\Ludo.Domain.csproj", "{D82FB7E0-C779-45B8-89F7-0BA1339BAC68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.Domain", "Ludo.Domain\Ludo.Domain.csproj", "{D82FB7E0-C779-45B8-89F7-0BA1339BAC68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ludo.Tests", "Ludo.Tests\Ludo.Tests.csproj", "{81E0E229-CF6B-41A1-8069-592AA8401B45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.Tests", "Ludo.Tests\Ludo.Tests.csproj", "{81E0E229-CF6B-41A1-8069-592AA8401B45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ludo.MediatRPattern", "Ludo.MediatRPattern\Ludo.MediatRPattern.csproj", "{B987DF3C-FBC5-48E5-8C86-BF822A7E4634}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{81E0E229-CF6B-41A1-8069-592AA8401B45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81E0E229-CF6B-41A1-8069-592AA8401B45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81E0E229-CF6B-41A1-8069-592AA8401B45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B987DF3C-FBC5-48E5-8C86-BF822A7E4634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B987DF3C-FBC5-48E5-8C86-BF822A7E4634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B987DF3C-FBC5-48E5-8C86-BF822A7E4634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B987DF3C-FBC5-48E5-8C86-BF822A7E4634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

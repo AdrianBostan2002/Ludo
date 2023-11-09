@@ -1,4 +1,4 @@
-﻿namespace Ludo.Domain.Interfaces
+﻿namespace Ludo.MediatRPattern.Interfaces
 {
     public interface IMediator
     {
