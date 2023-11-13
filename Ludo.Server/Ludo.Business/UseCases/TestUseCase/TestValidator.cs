@@ -1,6 +1,8 @@
-﻿namespace Ludo.Business.UseCases.TestUseCase
+﻿using FluentValidation;
+
+namespace Ludo.Business.UseCases.TestUseCase
 {
-    internal class TestValidator
+    public class TestValidator: AbstractValidator<TestRequest>
     {
     }
 }

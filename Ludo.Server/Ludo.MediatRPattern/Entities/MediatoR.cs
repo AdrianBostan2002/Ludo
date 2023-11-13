@@ -1,27 +1,32 @@
 ﻿using Ludo.MediatRPattern.Interfaces;
+using Ludo.RequestValidator.Interfaces;
 
 namespace Ludo.MediatRPattern.Entities
 {
     public class MediatoR : IMediator
     {
-        private readonly IServiceProvider serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IRequestValidator _requestValidator;
 
-        public MediatoR(IServiceProvider serviceProvider)
+        public MediatoR(IServiceProvider serviceProvider, IRequestValidator requestValidator)
         {
-            this.serviceProvider = serviceProvider;
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _requestValidator = requestValidator ?? throw new ArgumentNullException(nameof(requestValidator));
         }
 
         public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request)
         {
+            _requestValidator.ValidateRequest(request);
+            
+            Type requestType = request.GetType();
+
             Type response = typeof(IRequest<TResponse>);
 
             Type responseType = response.GetGenericArguments()[0];
 
-            Type requestType = request.GetType();
-
             Type type = typeof(IRequestHandler<,>).MakeGenericType(requestType, responseType);
 
-            var handler = serviceProvider.GetService(type);
+            var handler = _serviceProvider.GetService(type);
             if (handler != null)
             {
                 var method = handler.GetType().GetMethod("Handle");

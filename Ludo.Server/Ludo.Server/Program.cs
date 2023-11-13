@@ -1,3 +1,5 @@
+using Ludo.RequestValidator.Entities;
+using Ludo.RequestValidator.Interfaces;
 using Ludo.Server;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddSignalR();
 
 builder.Services.AddMediatR();
+
+builder.Services.AddValidator();
 
 builder.Services.AddSingleton(builder.Services);
 
