@@ -23,6 +23,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSignalR();
 
+builder.Services.AddMediatR();
+
+builder.Services.AddSingleton(builder.Services);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
