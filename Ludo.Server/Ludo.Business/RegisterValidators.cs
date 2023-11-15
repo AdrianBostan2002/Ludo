@@ -35,10 +35,10 @@ namespace Ludo.Business
 
                     services.AddSingleton(validatorType, validatorImplementation);
 
-                    Type valid = typeof(IRequestPreProcessor<>).MakeGenericType(validatorGenericArguments.First());
-                    Type validatorImp = typeof(ValidationPreProcess<>).MakeGenericType(validatorGenericArguments.First());
+                    Type requestPrePreProcessorType = typeof(IRequestPreProcessor<>).MakeGenericType(validatorGenericArguments.First());
+                    Type requestPreProcessorImplementation = typeof(ValidationPreProcess<>).MakeGenericType(validatorGenericArguments.First());
 
-                    services.AddSingleton(valid, validatorImp);
+                    services.AddSingleton(requestPrePreProcessorType, requestPreProcessorImplementation);
                 }
             }
         }
