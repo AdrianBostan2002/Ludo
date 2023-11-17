@@ -1,5 +1,6 @@
 ﻿using Ludo.MediatRPattern.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Ludo.Business
 {
@@ -7,10 +8,7 @@ namespace Ludo.Business
     {
         public static void FromAssembly(IServiceCollection services)
         {
-            var assemblyName = "Ludo.Business";
-
-            var businessAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                .FirstOrDefault(assembly => assembly.FullName.StartsWith(assemblyName));
+            var businessAssembly = Assembly.GetExecutingAssembly();
 
             if (businessAssembly != null)
             {
