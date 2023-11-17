@@ -29,8 +29,6 @@ namespace Ludo.Business
                         throw new NotImplementedException("Class named validator should implement Abstract Validator");
                     }
 
-                    //TODO: Add better naming for variables
-
                     Type validatorType = typeof(IValidator<>).MakeGenericType(validatorGenericArguments.First());
 
                     services.AddSingleton(validatorType, validatorImplementation);
