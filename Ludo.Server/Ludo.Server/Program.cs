@@ -1,6 +1,7 @@
-using Ludo.RequestValidator.Entities;
-using Ludo.RequestValidator.Interfaces;
+using Ludo.Business.Services;
 using Ludo.Server;
+using Ludo.Server.Hubs;
+using Ludo.Shared.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ builder.Services.AddValidator();
 
 builder.Services.AddSingleton(builder.Services);
 
+builder.Services.AddSingleton<ILobbyService, LobbyService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,5 +52,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<TestHub>("/testHub");
+
+app.MapHub<LobbyHub>("/lobbyHub");
 
 app.Run();

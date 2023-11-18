@@ -8,7 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
-    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ludo.Shared\Ludo.Shared.csproj" />
   </ItemGroup>
 
 </Project>
