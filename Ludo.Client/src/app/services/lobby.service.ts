@@ -5,7 +5,8 @@ import * as signalR from '@microsoft/signalr';
   providedIn: 'root'
 })
 export class LobbyService {
-  lobbyParticipants: string[]=[];
+  lobbyParticipants: string[] = [];
+  lobbyId: number = 0;
 
   data: string = '';
 
@@ -42,7 +43,8 @@ export class LobbyService {
   public addLobbyListener = () => {
     this.hubConnection.on('NewUserJoined', (data) => {
       this.data = data;
-      this.lobbyParticipants.push(data);
+      this.lobbyParticipants.push(data.username);
+      this.lobbyId = data.randomLobbyId;
       console.log(data);
     });
 
@@ -51,7 +53,7 @@ export class LobbyService {
         console.log(element);
         this.lobbyParticipants.push(element.name);
       });
-      });
+    });
 
     this.hubConnection.on('UnSuccessfullyContectedToLobby', (data) => {
       console.log(data);

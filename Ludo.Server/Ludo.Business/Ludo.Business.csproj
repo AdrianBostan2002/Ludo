@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ludo.DesignPatterns\Ludo.DesignPatterns.csproj" />
     <ProjectReference Include="..\Ludo.Domain\Ludo.Domain.csproj" />
     <ProjectReference Include="..\Ludo.MediatRPattern\Ludo.MediatRPattern.csproj" />
   </ItemGroup>

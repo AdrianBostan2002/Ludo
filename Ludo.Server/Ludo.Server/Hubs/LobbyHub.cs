@@ -1,6 +1,6 @@
 ﻿using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
-using Ludo.Shared.Interfaces;
+using Ludo.Domain.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Ludo.Server.Hubs
@@ -21,9 +21,11 @@ namespace Ludo.Server.Hubs
         {
             bool newLobbyCreated = false;
 
+            int randomLobbyId = 0;
+
             while (!newLobbyCreated)
             {
-                var randomLobbyId = Random.Shared.Next(100, 999);
+                randomLobbyId = Random.Shared.Next(100, 999);
 
                 ILobbyParticipant lobbyOwner = new LobbyParticipant();
                 lobbyOwner.Name = username;
@@ -33,7 +35,7 @@ namespace Ludo.Server.Hubs
                 newLobbyCreated = _lobbyService.CreateNewLobby(randomLobbyId, lobbyOwner);
             }
 
-            return Clients.Caller.SendAsync("NewUserJoined", username);
+            return Clients.Caller.SendAsync("NewUserJoined", new { username, randomLobbyId });
         }
 
         public Task JoinLobby(int lobbyId, string username)
@@ -45,14 +47,14 @@ namespace Ludo.Server.Hubs
             newLobbyParticipant.ConnectionId = connectionId;
             newLobbyParticipant.Role = RoleType.Regular;
 
-            if(!_lobbyService.JoinLobby(lobbyId, newLobbyParticipant))
+            if (!_lobbyService.JoinLobby(lobbyId, newLobbyParticipant))
             {
                 return NotifyCallerThatJoiningFailed();
             }
 
             var lobbyParticipants = _lobbyService.GetLobbyParticipants(lobbyId);
 
-            if(lobbyParticipants.Count == 0)
+            if (lobbyParticipants.Count == 0)
             {
                 throw new Exception("Lobby shouldn't be empty");
             }
@@ -64,24 +66,22 @@ namespace Ludo.Server.Hubs
         {
             var lastParticipant = lobbyParticipants.LastOrDefault();
 
-            if(lastParticipant == null)
+            if (lastParticipant == null)
             {
                 return NotifyCallerThatJoiningFailed();
             }
 
-            for (int i = 0; i < lobbyParticipants.Count-1; i++)
+            for (int i = 0; i < lobbyParticipants.Count - 1; i++)
             {
-                Clients.Client(lobbyParticipants[i].ConnectionId).SendAsync("NewUserJoined", lastParticipant.Name);
+                Clients.Client(lobbyParticipants[i].ConnectionId).SendAsync("NewUserJoined", new { username = lastParticipant.Name, randomLobbyId = lobbyId });
             }
 
             return Clients.Client(lastParticipant.ConnectionId).SendAsync("SuccessfullyContectedToLobby", lobbyParticipants);
         }
 
-        private Task NotifyCallerThatJoiningSucceded(int lobbyId)
+        private Task NotifyCallerThatJoiningSucceded(ILobby lobby)
         {
-            var allLobbyParticipants = _lobbyService.GetLobbyParticipants(lobbyId);
-
-            return Clients.Caller.SendAsync("SuccessfullyContectedToLobby", allLobbyParticipants);
+            return Clients.Caller.SendAsync("SuccessfullyContectedToLobby", lobby.Participants);
         }
 
         private Task NotifyCallerThatJoiningFailed()

@@ -1,6 +1,6 @@
 ﻿using Ludo.Domain.Entities;
-using Ludo.Shared.Entities;
-using Ludo.Shared.Interfaces;
+using Ludo.Domain.Interfaces;
+using Ludo.Domain.Interfaces.ObservableInterfaces;
 using System.Collections.Immutable;
 
 namespace Ludo.Business.Services
@@ -20,6 +20,7 @@ namespace Ludo.Business.Services
             if (!_lobbies.ContainsKey(lobbyId))
             {
                 _lobbies = _lobbies.SetItem(lobbyId, newLobby);
+
                 return true;
             }
 
@@ -28,15 +29,16 @@ namespace Ludo.Business.Services
 
         public bool JoinLobby(int lobbyId, ILobbyParticipant lobbyParticipant)
         {
-            ILobby lobby;
+            ILobby lobby = GetLobbyById(lobbyId);
 
-            if (_lobbies.TryGetValue(lobbyId, out lobby))
+            if (lobby == null)
             {
-                lobby.Participants.Add(lobbyParticipant);
-                return true;
+                return false;
             }
 
-            return false;
+            lobby.Participants.Add(lobbyParticipant);
+            return true;
+
         }
 
         public List<ILobbyParticipant> GetLobbyParticipants(int lobbyId)
@@ -54,6 +56,18 @@ namespace Ludo.Business.Services
         public int LobbiesCount()
         {
             return _lobbies.Count();
+        }
+
+        public ILobby GetLobbyById(int id)
+        {
+            ILobby lobby;
+
+            if (_lobbies.TryGetValue(id, out lobby))
+            {
+                return lobby;
+            }
+
+            return null;
         }
     }
 }

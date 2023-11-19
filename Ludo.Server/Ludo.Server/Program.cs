@@ -1,7 +1,7 @@
 using Ludo.Business.Services;
+using Ludo.Domain.Interfaces;
 using Ludo.Server;
 using Ludo.Server.Hubs;
-using Ludo.Shared.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

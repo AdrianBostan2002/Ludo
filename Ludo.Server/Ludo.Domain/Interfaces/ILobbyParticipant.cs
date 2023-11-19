@@ -1,6 +1,6 @@
 ﻿using Ludo.Domain.Enums;
 
-namespace Ludo.Shared.Interfaces
+namespace Ludo.Domain.Interfaces
 {
     public interface ILobbyParticipant
     {

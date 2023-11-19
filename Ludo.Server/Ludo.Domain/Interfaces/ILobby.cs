@@ -1,6 +1,4 @@
-﻿using Ludo.Shared.Interfaces;
-
-namespace Ludo.Shared.Entities
+﻿namespace Ludo.Domain.Interfaces
 {
     public interface ILobby
     {

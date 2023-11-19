@@ -14,26 +14,28 @@ export class AppComponent {
 
   name = new FormControl('');
   lobbyId = new FormControl(0);
-  lobbyParticipants: string[]=[];
+  lobbyParticipants: string[] = [];
+  currentLobbyId: number = 0;
 
   ngOnInit() {
     // this.signalRService.startConnection();
     // this.signalRService.addListener();   
     // this.startHttpRequest();
     this.lobbyParticipants = this.lobbyService.lobbyParticipants;
+    this.currentLobbyId = this.lobbyService.lobbyId;
   }
 
-  
-  createNewLobby(){
-    if(this.name.value){
+
+  createNewLobby() {
+    if (this.name.value) {
       this.lobbyService.createLobbyConnection(this.name.value);
       this.lobbyService.addLobbyListener();
       this.startHttpRequest();
     }
   }
 
-  joinLobby(){
-    if(this.name.value!='' && this.lobbyId.value!=0){
+  joinLobby() {
+    if (this.name.value != '' && this.lobbyId.value != 0) {
       this.lobbyService.joinLobbyConnection(this.lobbyId.value as number, this.name.value as string);
       this.lobbyService.addLobbyListener();
       //this.startHttpRequest();

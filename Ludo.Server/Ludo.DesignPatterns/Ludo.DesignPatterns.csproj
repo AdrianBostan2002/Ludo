@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Ludo.Shared\Ludo.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ObserverPattern\" />
+  </ItemGroup>
+
 </Project>

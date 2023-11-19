@@ -1,5 +1,5 @@
 ﻿using Ludo.Domain.Enums;
-using Ludo.Shared.Interfaces;
+using Ludo.Domain.Interfaces;
 
 namespace Ludo.Domain.Entities
 {
