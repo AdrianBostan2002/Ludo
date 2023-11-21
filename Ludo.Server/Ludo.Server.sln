@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.Tests", "Ludo.Tests\Lu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.MediatRPattern", "Ludo.MediatRPattern\Ludo.MediatRPattern.csproj", "{B987DF3C-FBC5-48E5-8C86-BF822A7E4634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ludo.RequestValidator", "RequestValidator\Ludo.RequestValidator.csproj", "{34507FCE-FA43-41FC-94E1-4053B9A523A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.RequestValidator", "RequestValidator\Ludo.RequestValidator.csproj", "{34507FCE-FA43-41FC-94E1-4053B9A523A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
