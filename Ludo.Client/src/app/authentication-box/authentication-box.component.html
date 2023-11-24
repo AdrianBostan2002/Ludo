@@ -1,0 +1,25 @@
+<div class="authentication-box">
+    <div class="ludo-logo">
+
+    </div>
+
+    <div class="name-section">
+        <label class="field-info">Insert name</label>
+        <input type="text" [formControl]="name">
+    </div>
+
+    <div class="lobby-section">
+        <label class="field-info">Insert lobby ID</label>
+        <input type="number" [formControl]="lobbyId">
+        <!-- <label>Current lobby id: {{currentLobbyId}}</label> -->
+    </div>
+
+    <div class="buttons">
+        <button id="join-lobby-button" (click)="joinLobby()">Join Lobby</button>
+        <button id="create-lobby-button" (click)="createNewLobby()">Create New Lobby</button>
+    </div>
+
+    <!-- <li *ngFor="let item of lobbyParticipants;">
+        <span>{{item}}</span>
+    </li> -->
+</div>
