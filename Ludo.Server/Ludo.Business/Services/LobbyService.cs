@@ -30,7 +30,7 @@ namespace Ludo.Business.Services
         {
             ILobby lobby = GetLobbyById(lobbyId);
 
-            if (lobby == null)
+            if (lobby == null || lobby.Participants.Count>=4)
             {
                 return false;
             }
@@ -67,6 +67,23 @@ namespace Ludo.Business.Services
             }
 
             return null;
+        }
+
+        public bool CheckIfGameCanStart(int lobbyId)
+        {
+            var lobby = GetLobbyById(lobbyId);
+
+            if (lobby == null)
+            {
+                return false;
+            }
+            
+            if(!(lobby.Participants.Count >=1 && lobby.Participants.Count <= 4))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

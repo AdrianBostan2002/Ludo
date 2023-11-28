@@ -1,4 +1,5 @@
 using Ludo.Business.Services;
+using Ludo.Domain.Entities;
 using Ludo.Domain.Interfaces;
 using Ludo.Server;
 using Ludo.Server.Hubs;
@@ -33,6 +34,10 @@ builder.Services.AddValidator();
 builder.Services.AddSingleton(builder.Services);
 
 builder.Services.AddSingleton<ILobbyService, LobbyService>();
+
+builder.Services.AddScoped<ICellFactory, CellFactory>();
+
+builder.Services.AddScoped<IBoardService, BoardService>();  
 
 var app = builder.Build();
 

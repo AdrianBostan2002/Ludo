@@ -27,10 +27,7 @@ namespace Ludo.Server.Hubs
             {
                 randomLobbyId = Random.Shared.Next(100, 999);
 
-                ILobbyParticipant lobbyOwner = new LobbyParticipant();
-                lobbyOwner.Name = username;
-                lobbyOwner.ConnectionId = Context.ConnectionId;
-                lobbyOwner.Role = RoleType.Owner;
+                ILobbyParticipant lobbyOwner = CreateNewLobbyParticipant(username, RoleType.Owner);
 
                 newLobbyCreated = _lobbyService.CreateNewLobby(randomLobbyId, lobbyOwner);
             }
@@ -40,13 +37,8 @@ namespace Ludo.Server.Hubs
 
         public Task JoinLobby(int lobbyId, string username)
         {
-            string connectionId = Context.ConnectionId;
-
-            ILobbyParticipant newLobbyParticipant = new LobbyParticipant();
-            newLobbyParticipant.Name = username;
-            newLobbyParticipant.ConnectionId = connectionId;
-            newLobbyParticipant.Role = RoleType.Regular;
-
+            ILobbyParticipant newLobbyParticipant = CreateNewLobbyParticipant(username, RoleType.Regular);
+            
             if (!_lobbyService.JoinLobby(lobbyId, newLobbyParticipant))
             {
                 return NotifyCallerThatJoiningFailed();
@@ -87,6 +79,15 @@ namespace Ludo.Server.Hubs
         private Task NotifyCallerThatJoiningFailed()
         {
             return Clients.Caller.SendAsync("UnSuccessfullyContectedToLobby");
+        }
+
+        private ILobbyParticipant CreateNewLobbyParticipant(string username, RoleType role)
+        {
+            ILobbyParticipant lobbyOwner = new LobbyParticipant();
+            lobbyOwner.Name = username;
+            lobbyOwner.ConnectionId = Context.ConnectionId;
+            lobbyOwner.Role = role;
+            return lobbyOwner;
         }
     }
 }
