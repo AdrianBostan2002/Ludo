@@ -1,14 +1,1 @@
-<label>Insert name: </label>
-<input type="text" [formControl]="name">InsertName
-<button (click)="createNewLobby()">Connect to Lobby</button><br>
-<label>Insert lobby id:</label>
-<input type="number" [formControl]="lobbyId">lobbyId
-<button (click)="joinLobby()">Join Lobby</button>
-<br><br><br>
-
-<label>Current lobby id: {{currentLobbyId}}</label>
-<br><br><br>
-
-<li *ngFor="let item of lobbyParticipants;">
-    <span>{{item}}</span>
-</li>
+<router-outlet></router-outlet>
