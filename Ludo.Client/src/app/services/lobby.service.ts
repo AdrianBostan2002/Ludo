@@ -59,4 +59,8 @@ export class LobbyService {
       console.log(data);
     });
   }
+
+  public DisconnectFromHub(){
+    this.hubConnection.stop();
+  }
 }

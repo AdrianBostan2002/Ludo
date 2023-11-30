@@ -12,17 +12,23 @@ namespace Ludo.Domain.Entities
             switch (cellType)
             {
                 case CellType.Home:
-                    return new HomeCell();
+                    cell = new HomeCell() { };
+                    break;
 
                 case CellType.Basic:
-                    return new BasicCell();
+                    cell = new BasicCell();
+                    break;
 
                 case CellType.Special:
-                    return new SpecialCell();
+                    cell = new SpecialCell();
+                    break;
 
                 case CellType.Final:
-                    return new FinalCell();
+                    cell = new FinalCell();
+                    break;
             }
+
+            cell.Pieces = cell != null ? new List<Piece>() : null;
 
             return cell;
         }

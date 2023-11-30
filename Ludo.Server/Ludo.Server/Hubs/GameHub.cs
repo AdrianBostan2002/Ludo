@@ -1,4 +1,5 @@
-﻿using Ludo.Domain.Interfaces;
+﻿using Ludo.Domain.Entities;
+using Ludo.Domain.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Ludo.Server.Hubs
@@ -25,7 +26,11 @@ namespace Ludo.Server.Hubs
 
             _gameService.CreateNewGame(lobby);
 
-            return Clients.Caller.SendAsync("StartGameSucceded", new { lobbyId });
+            //Board board = _gameService.GetGameBoard(lobbyId);
+
+            IGame game = _gameService.GetGameById(lobbyId);
+
+            return Clients.Caller.SendAsync("StartGameSucceded", new { game = game });
         }
     }
 }

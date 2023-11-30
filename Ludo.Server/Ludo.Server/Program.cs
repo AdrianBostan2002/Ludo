@@ -37,6 +37,10 @@ builder.Services.AddSingleton<ILobbyService, LobbyService>();
 
 builder.Services.AddScoped<ICellFactory, CellFactory>();
 
+builder.Services.AddScoped<IGameService, GameService>();
+
+builder.Services.AddScoped<IPieceService, PieceService>();  
+
 builder.Services.AddScoped<IBoardService, BoardService>();  
 
 var app = builder.Build();
@@ -59,5 +63,7 @@ app.MapControllers();
 app.MapHub<TestHub>("/testHub");
 
 app.MapHub<LobbyHub>("/lobbyHub");
+
+app.MapHub<GameHub>("/gameHub");
 
 app.Run();

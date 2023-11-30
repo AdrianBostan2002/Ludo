@@ -29,11 +29,12 @@ namespace Ludo.Business.Services
 
             IGame newGame = new Game()
             {
+                Id = lobby.LobbyId,
                 Players = players,
                 Board = board,
             };
 
-            _games.SetItem(lobby.LobbyId, newGame);
+            _games = _games.Add(lobby.LobbyId, newGame);
         }
 
         private List<IPlayer> TransformLobbyParticipantsIntoPlayers(List<ILobbyParticipant> lobbyParticipants)
@@ -59,7 +60,7 @@ namespace Ludo.Business.Services
 
                 for (int i = 0; i < 4; i++)
                 {
-                    var piece = _pieceService.CreatePiece(shuffledColors.Last());
+                    Piece piece = _pieceService.CreatePiece(shuffledColors.Last());
 
                     pieces.Add(piece);
                 }
@@ -78,6 +79,25 @@ namespace Ludo.Business.Services
 
             var shuffledColors = colors.OrderBy(c => random.Next()).ToList();
             return shuffledColors;
+        }
+
+        public IGame GetGameById(int id)
+        {
+            IGame game;
+
+            if (_games.TryGetValue(id, out game))
+            {
+                return game;
+            }
+
+            return null;
+        }
+
+        public Board GetGameBoard(int gameId)
+        {
+            IGame game = GetGameById(gameId);
+
+            return game?.Board;
         }
     }
 }

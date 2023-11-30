@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { TestService } from './services/test.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LobbyService } from './services/lobby.service';
+import { GameService } from './services/game.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import { LobbyService } from './services/lobby.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(public lobbyService: LobbyService, private http: HttpClient) { }
+  constructor(public lobbyService: LobbyService, private http: HttpClient, private gameService: GameService) { }
 
   name = new FormControl('');
   lobbyId = new FormControl(0);
@@ -42,10 +43,16 @@ export class AppComponent {
     }
   }
 
+  startGame(){
+    this.lobbyService.DisconnectFromHub();
+    this.gameService.startGame(this.lobbyId.value as number);
+    this.gameService.addGameListener();
+  }
+
   private startHttpRequest = () => {
-    this.http.get('https://localhost:7192/api/Lobby')
-      .subscribe(res => {
-        console.log(res);
-      })
+    // this.http.get('https://localhost:7192/api/Lobby')
+    //   .subscribe(res => {
+    //     console.log(res);
+    //   })
   }
 }

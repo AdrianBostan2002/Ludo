@@ -78,7 +78,7 @@ namespace Ludo.Business.Services
                 return false;
             }
             
-            if(!(lobby.Participants.Count >=1 && lobby.Participants.Count <= 4))
+            if(!(lobby.Participants.Count >1 && lobby.Participants.Count <= 4))
             {
                 return false;
             }
