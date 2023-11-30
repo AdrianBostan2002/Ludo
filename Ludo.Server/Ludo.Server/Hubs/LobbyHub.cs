@@ -35,7 +35,7 @@ namespace Ludo.Server.Hubs
                 newLobbyCreated = _lobbyService.CreateNewLobby(randomLobbyId, lobbyOwner);
             }
 
-            return Clients.Caller.SendAsync("NewUserJoined", new { username, randomLobbyId });
+            return Clients.Caller.SendAsync("JoinedLobby", new { username, lobbyId = randomLobbyId });
         }
 
         public Task JoinLobby(int lobbyId, string username)
@@ -76,7 +76,7 @@ namespace Ludo.Server.Hubs
                 Clients.Client(lobbyParticipants[i].ConnectionId).SendAsync("NewUserJoined", new { username = lastParticipant.Name, randomLobbyId = lobbyId });
             }
 
-            return Clients.Client(lastParticipant.ConnectionId).SendAsync("SuccessfullyContectedToLobby", lobbyParticipants);
+            return Clients.Client(lastParticipant.ConnectionId).SendAsync("SuccessfullyContectedToLobby", new { lobbyParticipants, lobbyId });
         }
 
         private Task NotifyCallerThatJoiningSucceded(ILobby lobby)
