@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LobbyService } from 'src/app/services/lobby.service';
+import { User } from 'src/app/shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-lobby-page',
@@ -10,6 +11,7 @@ import { LobbyService } from 'src/app/services/lobby.service';
 export class LobbyPageComponent {
   lobbyParticipants: string[] = [];
   currentLobbyId: number = 0;
+  currentLobbyParticipant!: User;
 
   constructor(public lobbyService: LobbyService, private router: Router, private route: ActivatedRoute) { }
 
@@ -17,10 +19,15 @@ export class LobbyPageComponent {
     // this.signalRService.startConnection();
     // this.signalRService.addListener();   
     // this.startHttpRequest();
-    // this.route.params.subscribe(params => {
-    //   this.currentLobbyId = params['lobbyId'];
-    // });
+    this.route.params.subscribe(params => {
+      this.currentLobbyId = params['lobbyId'];
+    });
     this.lobbyParticipants = this.lobbyService.lobbyParticipants;
-    this.currentLobbyId = this.lobbyService.lobbyId;
+    this.currentLobbyParticipant = this.lobbyService.currentLobbyParticipant;
+    //this.currentLobbyId = this.lobbyService.lobbyId;
+  }
+
+  startGame() {
+    this.router.navigate(['/game', this.currentLobbyId]);
   }
 }

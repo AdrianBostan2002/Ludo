@@ -3,6 +3,7 @@ import { LobbyService } from 'src/app/services/lobby.service';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RoleType } from '../shared/enums/roletype.enum';
 
 
 @Component({
@@ -23,7 +24,10 @@ export class AuthenticationBoxComponent {
     // this.signalRService.addListener();   
     // this.startHttpRequest();
     this.lobbyParticipants = this.lobbyService.lobbyParticipants;
-    this.currentLobbyId = this.lobbyService.lobbyId;
+    //this.currentLobbyId = this.lobbyService.lobbyId;
+    this.lobbyService.lobbyId$.subscribe({
+      next: (data: number) => this.currentLobbyId = data
+    });
   }
 
 
@@ -31,20 +35,21 @@ export class AuthenticationBoxComponent {
     if (this.name.value) {
       this.lobbyService.createLobbyConnection(this.name.value);
       this.lobbyService.addLobbyListener();
+      this.lobbyService.createLobbyParticipant(this.name.value, RoleType.Owner);
       this.startHttpRequest();
-      this.router.navigate(['/lobby', this.lobbyService.lobbyId]);
+
+      console.log(this.lobbyService.currentLobbyParticipant);
     }
-    console.log("lobbyId" + this.lobbyService.lobbyId);
   }
 
   joinLobby() {
-    if (this.name.value != '' && this.lobbyId.value != 0) {
+    if (this.name.value && this.lobbyId.value != 0) {
       this.lobbyService.joinLobbyConnection(this.lobbyId.value as number, this.name.value as string);
       this.lobbyService.addLobbyListener();
-      //this.startHttpRequest();
-      this.router.navigate(['/lobby', this.lobbyService.lobbyId]);
+      this.lobbyService.createLobbyParticipant(this.name.value, RoleType.Regular);
+
+      console.log(this.lobbyService.currentLobbyParticipant);
     }
-    console.log("lobbyIdJoin" + this.lobbyService.lobbyId);
   }
 
   private startHttpRequest = () => {

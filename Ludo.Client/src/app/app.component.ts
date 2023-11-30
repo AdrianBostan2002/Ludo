@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TestService } from './services/test.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { LobbyService } from './services/lobby.service';
 
@@ -10,5 +9,5 @@ import { LobbyService } from './services/lobby.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  
+
 }
