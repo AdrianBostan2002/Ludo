@@ -5,12 +5,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import { BoardComponent } from './board/board.component'; 
+import { HomePageComponent } from './webpages/home-page/home-page.component';
+import { LobbyPageComponent } from './webpages/lobby-page/lobby-page.component';
+import { AuthenticationBoxComponent } from './authentication-box/authentication-box.component';
+import { GamePageComponent } from './webpages/game-page/game-page.component';
+import { CellComponent } from './game-components/cell/cell.component';
+import { PieceComponent } from './game-components/piece/piece.component';
+import { HomeComponent } from './game-components/home/home.component'; 
 
 @NgModule({
   declarations: [
     AppComponent,
-    BoardComponent
+    HomePageComponent,
+    LobbyPageComponent,
+    AuthenticationBoxComponent,
+    GamePageComponent,
+    CellComponent,
+    PieceComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

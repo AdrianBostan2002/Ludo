@@ -1,0 +1,10 @@
+<label>Current lobby id: {{currentLobbyId}}</label>
+<p>Current name: {{currentLobbyParticipant.username}}</p>
+<p>Current role: {{currentLobbyParticipant.role}}</p>
+
+<p>Lobby Participants:</p><br>
+<li *ngFor="let item of lobbyParticipants;">
+    <span>{{item}}</span>
+</li>
+
+<button class="start-button" (click)="startGame()" *ngIf="currentLobbyParticipant.role == 'owner'">Start Game</button>

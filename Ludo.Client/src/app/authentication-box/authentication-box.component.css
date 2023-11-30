@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@300&display=swap');
+
+.authentication-box {
+    height: 700px;
+    width: 600px;
+    background-color: lightblue;
+    border-radius: 3%;
+    text-align: center;
+}
+
+.ludo-logo {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    background-image: url('../../assets/images/ludo-logo.png');
+    background-size: cover;
+}
+
+.name-section {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.lobby-section {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.field-info {
+    font-size: 30px;
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom: 15px;
+}
+
+input {
+    display: inline-block;
+    width: 300px;
+    height: 30px;
+    border: 0px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+button {
+    width: 200px;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+#join-lobby-button {
+    background-color: #ffdb4d;
+    border: 0px;
+    padding: 10px;
+}
+
+#join-lobby-button:hover {
+    background-color: yellow;
+    border: 0px;
+    padding: 10px;
+}
+
+#create-lobby-button {
+    background-color: blue;
+    border: 0px;
+    padding: 10px;
+}
+
+#create-lobby-button:hover {
+    background-color: #24e5ff;
+    border: 0px;
+    padding: 10px;
+}
