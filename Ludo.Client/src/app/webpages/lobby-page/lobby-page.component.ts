@@ -27,7 +27,19 @@ export class LobbyPageComponent {
     //this.currentLobbyId = this.lobbyService.lobbyId;
   }
 
-  startGame() {
+  getProfileInfo(userIndex: number) {
+    return this.lobbyParticipants[userIndex] == this.lobbyService.currentLobbyParticipant.username ? 'your-user-profile' : 'user-profile';
+  }
+
+  startGame(): void {
     this.router.navigate(['/game', this.currentLobbyId]);
+  }
+
+  leaveGame(): void {
+    this.router.navigate(['']);
+  }
+
+  readyPlayer(): void {
+    console.log("Player " + this.currentLobbyParticipant.username + " is ready");
   }
 }

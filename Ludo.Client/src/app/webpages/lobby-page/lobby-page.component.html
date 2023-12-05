@@ -1,10 +1,34 @@
-<label>Current lobby id: {{currentLobbyId}}</label>
-<p>Current name: {{currentLobbyParticipant.username}}</p>
-<p>Current role: {{currentLobbyParticipant.role}}</p>
+<div class="lobby-page">
+    <div class="info-container">
+        <div class="join-info">
+            <label id="lobby-id">{{currentLobbyId}}</label>
+            <h2>Share this number to play with your friends!</h2>
+        </div>
+        <div class="users-info">
+            <div class="user-profile" [ngClass]="getProfileInfo(0)">
+                <h2 *ngIf="lobbyParticipants.length == 0">Waiting on other players...</h2>
+                <h2 *ngIf="lobbyParticipants.length > 0">{{lobbyParticipants[0]}} (Owner)</h2>
+            </div>
+            <div class="user-profile" [ngClass]="getProfileInfo(1)">
+                <h2 *ngIf="lobbyParticipants.length < 2">Waiting on other players...</h2>
+                <h2 *ngIf="lobbyParticipants.length >= 2">{{lobbyParticipants[1]}}</h2>
+            </div>
+            <div class="user-profile" [ngClass]="getProfileInfo(2)">
+                <h2 *ngIf="lobbyParticipants.length < 3">Waiting on other players...</h2>
+                <h2 *ngIf="lobbyParticipants.length >= 3">{{lobbyParticipants[2]}}</h2>
+            </div>
+            <div class="user-profile" [ngClass]="getProfileInfo(3)">
+                <h2 *ngIf="lobbyParticipants.length < 4">Waiting on other players...</h2>
+                <h2 *ngIf="lobbyParticipants.length >= 4">{{lobbyParticipants[3]}}</h2>
+            </div>
+        </div>
 
-<p>Lobby Participants:</p><br>
-<li *ngFor="let item of lobbyParticipants;">
-    <span>{{item}}</span>
-</li>
-
-<button class="start-button" (click)="startGame()" *ngIf="currentLobbyParticipant.role == 'owner'">Start Game</button>
+        <div class="buttons">
+            <button id="start-button" (click)="startGame()" *ngIf="currentLobbyParticipant.role == 'owner'">Start
+                Game</button>
+            <button id="ready-button" (click)="readyPlayer()"
+                *ngIf="currentLobbyParticipant.role == 'regular'">Ready</button>
+            <button id="leave-button" (click)="leaveGame()">Leave Lobby</button>
+        </div>
+    </div>
+</div>
