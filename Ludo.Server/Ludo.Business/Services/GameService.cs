@@ -21,20 +21,28 @@ namespace Ludo.Business.Services
 
         public void CreateNewGame(ILobby lobby)
         {
-            List<IPlayer> players = TransformLobbyParticipantsIntoPlayers(lobby.Participants);
-
-            AssignPlayersPiecesRandomColors(players);
-
             Board board = _boardService.CreateBoard();
 
             IGame newGame = new Game()
             {
                 Id = lobby.LobbyId,
-                Players = players,
                 Board = board,
+                Players = new List<IPlayer>()
             };
 
             _games = _games.Add(lobby.LobbyId, newGame);
+        }
+
+        public void AddNewPlayerIntoGame(IGame game, string username, string connectionId)
+        {
+            Player player = new Player
+            {
+                Name = username,
+                IsReady = false,
+                ConnectionId = connectionId
+            };
+
+            game.Players.Add(player);
         }
 
         private List<IPlayer> TransformLobbyParticipantsIntoPlayers(List<ILobbyParticipant> lobbyParticipants)
@@ -98,6 +106,56 @@ namespace Ludo.Business.Services
             IGame game = GetGameById(gameId);
 
             return game?.Board;
+        }
+
+        public List<IPlayer> GetReadyPlayers(int gameId)
+        {
+            List<IPlayer> readyPlayers = new List<IPlayer>();
+
+            IGame game = GetGameById(gameId);
+
+            if (game != null)
+            {
+                readyPlayers = game.Players.Where(p => p.IsReady == true).ToList();
+            }
+
+            return readyPlayers;
+        }
+
+        public IPlayer GetPlayer(int gameId, string username)
+        {
+            IGame game = GetGameById(gameId);
+
+            if (game == null)
+            {
+                return null;
+            }
+
+            return game.Players.FirstOrDefault(p => p.Name.Equals(username));
+        }
+
+        public bool CheckIfGameCanStart(int gameId)
+        {
+            IGame game = GetGameById(gameId);
+
+            if (game == null)
+            {
+                return false;
+            }
+
+            if (!(game.Players.Count > 1 && game.Players.Count <= 4))
+            {
+                return false;
+            }
+
+            int playersReadyCount = game.Players.Count(p => p.IsReady == true);
+
+            if (!(playersReadyCount == game.Players.Count - 1))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

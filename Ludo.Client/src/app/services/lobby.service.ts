@@ -4,6 +4,7 @@ import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { User } from '../shared/interfaces/user.interface';
 import { RoleType } from '../shared/enums/roletype.enum';
+import { StartGameSuccesfullyResponse } from '../shared/entities/start-game-sucessfully-response';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,7 @@ export class LobbyService {
   public createLobbyConnection = (username: string) => {
     this.hubConnection
       .start()
-      .then(() => {
+      .then(() => { 
         console.log('Connection started');
         this.hubConnection.send("CreatedLobby", username);
       })
@@ -42,11 +43,12 @@ export class LobbyService {
         .start()
         .then(() => {
           console.log('Connection started');
+          this.hubConnection.send("JoinLobby", lobbyId, username);
         })
-        .catch(err => console.log('Error while starting connection: ' + err))
+        .catch(err => console.log('Error while starting connection: ' + err));
+    } else {
+      this.hubConnection.send("JoinLobby", lobbyId, username);
     }
-
-    this.hubConnection.send("JoinLobby", lobbyId, username);
   }
 
   public addLobbyListener = () => {
@@ -54,7 +56,6 @@ export class LobbyService {
       this.data = data;
       this.lobbyParticipants.push(data.username);
       console.log(this.lobbyParticipants);
-      //this.lobbyId = data.randomLobbyId;
       console.log(data);
     });
 
@@ -78,6 +79,10 @@ export class LobbyService {
     });
 
     this.hubConnection.on('UnSuccessfullyContectedToLobby', (data) => {
+      console.log(data);
+    });
+
+    this.hubConnection.on('GameStarted', (data) => {
       console.log(data);
     });
   }

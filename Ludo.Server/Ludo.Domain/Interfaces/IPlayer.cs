@@ -7,5 +7,6 @@ namespace Ludo.Domain.Interfaces
         string? Name { get; set; }
         string? ConnectionId { get; set; }
         List<Piece>? Pieces { get; set; }
+        bool IsReady { get; set; }
     }
 }

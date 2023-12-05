@@ -8,3 +8,9 @@
 </li>
 
 <button class="start-button" (click)="startGame()" *ngIf="currentLobbyParticipant.role == 'owner'">Start Game</button>
+<button class="start-button" (click)="readyPlayer()" *ngIf="currentLobbyParticipant.role == 'regular' && isReadyButtonEnabled == true">Ready</button>
+
+<p>Ready Participants:</p><br>
+<li *ngFor="let item of readyParticipants;">
+    <span>{{item}}</span>
+</li>

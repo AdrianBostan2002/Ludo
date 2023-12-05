@@ -7,6 +7,5 @@
         List<ILobbyParticipant> GetLobbyParticipants(int lobbyId);
         int LobbiesCount();
         ILobby GetLobbyById(int id);
-        bool CheckIfGameCanStart(int lobbyId);
     }
 }

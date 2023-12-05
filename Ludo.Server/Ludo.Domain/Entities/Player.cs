@@ -7,5 +7,6 @@ namespace Ludo.Domain.Entities
         public string? Name { get; set; }
         public string? ConnectionId { get; set; }
         public List<Piece>? Pieces { get; set; }
+        public bool IsReady { get; set; }
     }
 }

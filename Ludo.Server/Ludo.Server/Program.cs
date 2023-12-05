@@ -35,13 +35,13 @@ builder.Services.AddSingleton(builder.Services);
 
 builder.Services.AddSingleton<ILobbyService, LobbyService>();
 
-builder.Services.AddScoped<ICellFactory, CellFactory>();
+builder.Services.AddSingleton<ICellFactory, CellFactory>();
 
-builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddSingleton<IPieceService, PieceService>();  
 
-builder.Services.AddScoped<IPieceService, PieceService>();  
+builder.Services.AddSingleton<IBoardService, BoardService>(); 
 
-builder.Services.AddScoped<IBoardService, BoardService>();  
+builder.Services.AddSingleton<IGameService, GameService>();
 
 var app = builder.Build();
 
