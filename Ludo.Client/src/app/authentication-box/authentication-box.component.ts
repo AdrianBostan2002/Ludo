@@ -16,14 +16,12 @@ export class AuthenticationBoxComponent {
 
   name = new FormControl('');
   lobbyId = new FormControl();
-  lobbyParticipants: string[] = [];
   currentLobbyId: number = 0;
 
   ngOnInit() {
     // this.signalRService.startConnection();
     // this.signalRService.addListener();   
     // this.startHttpRequest();
-    this.lobbyParticipants = this.lobbyService.lobbyParticipants;
     //this.currentLobbyId = this.lobbyService.lobbyId;
     this.lobbyService.lobbyId$.subscribe({
       next: (data: number) => this.currentLobbyId = data
@@ -35,10 +33,8 @@ export class AuthenticationBoxComponent {
     if (this.name.value) {
       this.lobbyService.createLobbyConnection(this.name.value);
       this.lobbyService.addLobbyListener();
-      this.lobbyService.createLobbyParticipant(this.name.value, RoleType.Owner);
       this.startHttpRequest();
-
-      console.log(this.lobbyService.currentLobbyParticipant);
+      this.lobbyService.createLobbyParticipant(this.name.value, RoleType.Owner);
     }
   }
 
@@ -47,8 +43,6 @@ export class AuthenticationBoxComponent {
       this.lobbyService.joinLobbyConnection(this.lobbyId.value as number, this.name.value as string);
       this.lobbyService.addLobbyListener();
       this.lobbyService.createLobbyParticipant(this.name.value, RoleType.Regular);
-
-      console.log(this.lobbyService.currentLobbyParticipant);
     }
   }
 

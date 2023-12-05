@@ -38,11 +38,19 @@ export class LobbyPageComponent {
     this.gameService.addGameListener();
   }
 
-  startGame() {
-    this.gameService.startGame(this.currentLobbyId);
+  getProfileInfo(userIndex: number) {
+    return this.lobbyParticipants[userIndex] == this.lobbyService.currentLobbyParticipant.username ? 'your-user-profile' : 'user-profile';
   }
 
-  readyPlayer() {
-    this.gameService.playerReady(this.currentLobbyId, this.currentLobbyParticipant);
+  startGame(): void {
+     this.gameService.startGame(this.currentLobbyId);
+    }
+
+  leaveGame(): void {
+    this.router.navigate(['']);
+  }
+
+  readyPlayer(): void {
+     this.gameService.playerReady(this.currentLobbyId, this.currentLobbyParticipant);
   }
 }

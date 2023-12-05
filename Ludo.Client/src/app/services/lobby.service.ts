@@ -54,15 +54,18 @@ export class LobbyService {
   public addLobbyListener = () => {
     this.hubConnection.on('NewUserJoined', (data) => {
       this.data = data;
+      //this.lobbyParticipants.push(this.currentLobbyParticipant);
       this.lobbyParticipants.push(data.username);
       console.log(this.lobbyParticipants);
+      console.log(data);
       console.log(data);
     });
 
     this.hubConnection.on('JoinedLobby', (data) => {
       this.data = data;
       this.lobbyId$.next(data.lobbyId);
-      this.lobbyParticipants.push(data.username);
+      //this.lobbyParticipants.push(this.currentLobbyParticipant);
+      //this.lobbyParticipants.push(this.currentLobbyParticipant);
       console.log(data);
       this.router.navigate(['/lobby', data.lobbyId]);
     });
@@ -71,7 +74,7 @@ export class LobbyService {
       data.lobbyParticipants.forEach((element: any) => {
         console.log(element);
         this.lobbyParticipants.push(element.name);
-
+        //this.lobbyParticipants.push(this.currentLobbyParticipant);
         console.log(this.lobbyParticipants);
       });
 

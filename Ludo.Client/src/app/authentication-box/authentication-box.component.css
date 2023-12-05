@@ -62,6 +62,8 @@ input {
 button {
     width: 200px;
     border-radius: 5px;
+    border: 0px;
+    padding: 10px;
     font-size: 20px;
     font-weight: bold;
     font-family: 'Montserrat', sans-serif;
@@ -73,24 +75,16 @@ button:hover {
 
 #join-lobby-button {
     background-color: #ffdb4d;
-    border: 0px;
-    padding: 10px;
 }
 
 #join-lobby-button:hover {
     background-color: yellow;
-    border: 0px;
-    padding: 10px;
 }
 
 #create-lobby-button {
     background-color: blue;
-    border: 0px;
-    padding: 10px;
 }
 
 #create-lobby-button:hover {
     background-color: #24e5ff;
-    border: 0px;
-    padding: 10px;
 }

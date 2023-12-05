@@ -1,0 +1,102 @@
+.lobby-page {
+    background-image: url('../../../assets/images/background-image.jpg');
+    background-size: cover;
+    display: block;
+    height: 100vh;
+    width: 100vw;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@300&display=swap');
+
+.info-container {
+    padding-top: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 700px;
+    width: 600px;
+    background-color: lightblue;
+    border-radius: 3%;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.join-info {
+    border-bottom: solid 1px black;
+    padding-bottom: 20px;
+}
+
+#lobby-id {
+    font-size: 100px;
+    font-weight: bold;
+    font-family: 'Saira Extra Condensed', sans-serif;
+}
+
+.users-info {
+    text-align: left;
+}
+
+.user-profile {
+    padding-left: 30px;
+    border-bottom: solid 1px gray;
+}
+
+.user-profile {
+    font-weight: bold;
+}
+
+.your-user-profile {
+    color: yellow;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+button {
+    margin-top: 60px;
+    height: 50px;
+    width: 200px;
+    border: 0px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+#start-button {
+    background-color: #36bd2a;
+}
+
+#start-button:hover {
+    background-color: #1cfc32;
+}
+
+
+#ready-button {
+    background-color: #36bd2a;
+}
+
+#ready-button:hover {
+    background-color: #1cfc32;
+}
+
+
+#leave-button {
+    background-color: red;
+}
+
+#leave-button:hover {
+    background-color: #fa736e;
+}
