@@ -19,6 +19,7 @@ namespace Ludo.Server.Hubs
 
         public Task CreatedLobby(string username)
         {
+            //TransformIntoCreateLobbyUseCase
             bool newLobbyCreated = false;
 
             int randomLobbyId = 0;
@@ -32,11 +33,14 @@ namespace Ludo.Server.Hubs
                 newLobbyCreated = _lobbyService.CreateNewLobby(randomLobbyId, lobbyOwner);
             }
 
+            //Return username, randomLobbyId
+
             return Clients.Caller.SendAsync("JoinedLobby", new { username, lobbyId = randomLobbyId });
         }
 
         public Task JoinLobby(int lobbyId, string username)
         {
+            //Transform into JoinLobbyUseCase
             ILobbyParticipant newLobbyParticipant = CreateNewLobbyParticipant(username, RoleType.Regular);
             
             if (!_lobbyService.JoinLobby(lobbyId, newLobbyParticipant))
@@ -50,8 +54,24 @@ namespace Ludo.Server.Hubs
             {
                 throw new Exception("Lobby shouldn't be empty");
             }
+            //return lobbyId, lobbyParticipants
 
             return NotifyAllParticipantsThatANewUserJoinedLobby(lobbyId, lobbyParticipants);
+        }
+
+        public Task ParticipantLeave(int lobbyId, string username)
+        {
+            bool isRemoved = _lobbyService.RemoveLobbyParticipant(lobbyId, username);
+
+            if (!isRemoved)
+            {
+                return Clients.Caller.SendAsync("LeaveLobbyFailed");
+            }
+
+            var lobbyParticipants = _lobbyService.GetLobbyParticipants(lobbyId);
+
+            NotifyParticipantsThatSomeoneLeft(lobbyParticipants, username);
+            return Clients.Caller.SendAsync("LeaveLobbySucceeded");
         }
 
         private Task NotifyAllParticipantsThatANewUserJoinedLobby(int lobbyId, List<ILobbyParticipant> lobbyParticipants)
@@ -81,6 +101,15 @@ namespace Ludo.Server.Hubs
             return Clients.Caller.SendAsync("UnSuccessfullyContectedToLobby");
         }
 
+        private void NotifyParticipantsThatSomeoneLeft(List<ILobbyParticipant> lobbyParticipants, string username)
+        {
+            foreach (var participant in lobbyParticipants)
+            {
+                Clients.Client(participant.ConnectionId).SendAsync("PlayerLeftLobby", username);
+            }
+        }
+
+        //This method will be moved into lobbyService
         private ILobbyParticipant CreateNewLobbyParticipant(string username, RoleType role)
         {
             ILobbyParticipant lobbyOwner = new LobbyParticipant();

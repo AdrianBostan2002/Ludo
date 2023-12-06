@@ -40,6 +40,26 @@ namespace Ludo.Business.Services
 
         }
 
+        public bool RemoveLobbyParticipant(int lobbyId, string username)
+        {
+            ILobby lobby = GetLobbyById(lobbyId);
+
+            if (lobby == null)
+            {
+                return false;
+            }
+
+            ILobbyParticipant lobbyParticipant = lobby.Participants.Where(p => p.Name.Equals(username)).FirstOrDefault();
+
+            if(lobbyParticipant == null)
+            {
+                return false;
+            }
+
+            lobby.Participants.Remove(lobbyParticipant);
+            return true;
+        }
+
         public List<ILobbyParticipant> GetLobbyParticipants(int lobbyId)
         {
             ILobby lobby;

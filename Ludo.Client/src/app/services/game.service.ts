@@ -71,6 +71,12 @@ export class GameService {
     this.hubConnection.send("StartGame", Number(lobbyId));
   }
 
+  public async playerLeave(lobbyId: number, player: User){
+    await this.checkConnection();
+
+    this.hubConnection.send("PlayerLeave", Number(lobbyId), player.username);
+  }
+
   public async checkConnection(): Promise<void> {
     try {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
@@ -112,6 +118,21 @@ export class GameService {
 
       console.log("Ready Successfully");
     });
+
+    this.hubConnection.on('LeavingSucceeded', () => {
+      
+      this.disconnectFromHub();
+      //this.router.navigate(['']);
+      console.log("Leaving Succeeded");
+    });
+
+    this.hubConnection.on('PlayerLeftGame', (data) => {
+      console.log(`${data} left game`);
+    });
+  }
+
+  public disconnectFromHub() {
+    this.hubConnection.stop();
   }
 }
 
