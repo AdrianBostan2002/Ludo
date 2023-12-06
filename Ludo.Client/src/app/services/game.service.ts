@@ -104,7 +104,7 @@ export class GameService {
 
     this.hubConnection.on('NewPlayerReady', (data) => {
       this.newReadyPlayer$.next(data);
-      console.log(`New player joined: ${data}`);
+      console.log(`New player ready: ${data}`);
     });
 
     this.hubConnection.on('ReadySuccessfully', () => {

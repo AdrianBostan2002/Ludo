@@ -43,14 +43,14 @@ export class LobbyPageComponent {
   }
 
   startGame(): void {
-     this.gameService.startGame(this.currentLobbyId);
-    }
+    this.gameService.startGame(this.currentLobbyId);
+  }
 
   leaveGame(): void {
     this.router.navigate(['']);
   }
 
   readyPlayer(): void {
-     this.gameService.playerReady(this.currentLobbyId, this.currentLobbyParticipant);
+    this.gameService.playerReady(this.currentLobbyId, this.currentLobbyParticipant);
   }
 }
