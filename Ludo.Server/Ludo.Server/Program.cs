@@ -1,4 +1,5 @@
 using Ludo.Business.Services;
+using Ludo.Domain.Entities;
 using Ludo.Domain.Interfaces;
 using Ludo.Server;
 using Ludo.Server.Hubs;
@@ -34,6 +35,14 @@ builder.Services.AddSingleton(builder.Services);
 
 builder.Services.AddSingleton<ILobbyService, LobbyService>();
 
+builder.Services.AddSingleton<ICellFactory, CellFactory>();
+
+builder.Services.AddSingleton<IPieceService, PieceService>();  
+
+builder.Services.AddSingleton<IBoardService, BoardService>(); 
+
+builder.Services.AddSingleton<IGameService, GameService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -54,5 +63,7 @@ app.MapControllers();
 app.MapHub<TestHub>("/testHub");
 
 app.MapHub<LobbyHub>("/lobbyHub");
+
+app.MapHub<GameHub>("/gameHub");
 
 app.Run();

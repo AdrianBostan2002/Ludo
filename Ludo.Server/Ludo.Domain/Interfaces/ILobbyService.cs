@@ -3,9 +3,9 @@
     public interface ILobbyService
     {
         bool CreateNewLobby(int lobbyId, ILobbyParticipant lobbyOwner);
-        public bool JoinLobby(int lobbyId, ILobbyParticipant lobbyParticipant);
-        public List<ILobbyParticipant> GetLobbyParticipants(int lobbyId);
-        public int LobbiesCount();
+        bool JoinLobby(int lobbyId, ILobbyParticipant lobbyParticipant);
+        List<ILobbyParticipant> GetLobbyParticipants(int lobbyId);
+        int LobbiesCount();
         ILobby GetLobbyById(int id);
     }
 }

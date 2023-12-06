@@ -30,7 +30,7 @@ namespace Ludo.Business.Services
         {
             ILobby lobby = GetLobbyById(lobbyId);
 
-            if (lobby == null)
+            if (lobby == null || lobby.Participants.Count>=4)
             {
                 return false;
             }

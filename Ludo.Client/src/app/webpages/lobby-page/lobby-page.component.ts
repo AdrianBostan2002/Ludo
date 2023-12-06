@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GameService } from 'src/app/services/game.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { User } from 'src/app/shared/interfaces/user.interface';
 
@@ -10,21 +11,31 @@ import { User } from 'src/app/shared/interfaces/user.interface';
 })
 export class LobbyPageComponent {
   lobbyParticipants: string[] = [];
+  readyParticipants: string[] = [];
   currentLobbyId: number = 0;
   currentLobbyParticipant!: User;
 
-  constructor(public lobbyService: LobbyService, private router: Router, private route: ActivatedRoute) { }
+  isReadyButtonEnabled: boolean = true;
+
+  constructor(public lobbyService: LobbyService, private gameService: GameService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    // this.signalRService.startConnection();
-    // this.signalRService.addListener();   
-    // this.startHttpRequest();
     this.route.params.subscribe(params => {
       this.currentLobbyId = params['lobbyId'];
     });
     this.lobbyParticipants = this.lobbyService.lobbyParticipants;
     this.currentLobbyParticipant = this.lobbyService.currentLobbyParticipant;
-    //this.currentLobbyId = this.lobbyService.lobbyId;
+
+    this.gameService.newReadyPlayer$.subscribe(player => this.readyParticipants.push(player));
+    this.gameService.isReady$.subscribe((status) => {
+      if (status) {
+        this.readyParticipants.push(this.currentLobbyParticipant.username)
+      }
+      this.isReadyButtonEnabled = !status;
+    });
+
+    this.gameService.startGamePreprocessing(this.currentLobbyId, this.currentLobbyParticipant);
+    this.gameService.addGameListener();
   }
 
   getProfileInfo(userIndex: number) {
@@ -32,7 +43,7 @@ export class LobbyPageComponent {
   }
 
   startGame(): void {
-    this.router.navigate(['/game', this.currentLobbyId]);
+    this.gameService.startGame(this.currentLobbyId);
   }
 
   leaveGame(): void {
@@ -40,6 +51,6 @@ export class LobbyPageComponent {
   }
 
   readyPlayer(): void {
-    console.log("Player " + this.currentLobbyParticipant.username + " is ready");
+    this.gameService.playerReady(this.currentLobbyId, this.currentLobbyParticipant);
   }
 }
