@@ -123,7 +123,8 @@ export class GameService {
       
       this.disconnectFromHub();
       //this.router.navigate(['']);
-      console.log("Leaving Succeeded");
+      console.log("Leaving Game Succeeded");
+      
     });
 
     this.hubConnection.on('PlayerLeftGame', (data) => {

@@ -6,6 +6,8 @@ namespace Ludo.Business.Services
 {
     public class LobbyService : ILobbyService
     {
+        //Idea: Add new layer, named data layer containing an in memory repository where you hold this iimutable dictionary
+        //then get rid of lobby service and game service, and implement the logic in use case
         private IImmutableDictionary<int, ILobby> _lobbies = ImmutableDictionary<int, ILobby>.Empty;
 
         public bool CreateNewLobby(int lobbyId, ILobbyParticipant lobbyOwner)
@@ -37,7 +39,6 @@ namespace Ludo.Business.Services
 
             lobby.Participants.Add(lobbyParticipant);
             return true;
-
         }
 
         public bool RemoveLobbyParticipant(int lobbyId, string username)

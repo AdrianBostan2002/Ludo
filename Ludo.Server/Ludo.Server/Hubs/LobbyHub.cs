@@ -42,7 +42,7 @@ namespace Ludo.Server.Hubs
         {
             //Transform into JoinLobbyUseCase
             ILobbyParticipant newLobbyParticipant = CreateNewLobbyParticipant(username, RoleType.Regular);
-            
+
             if (!_lobbyService.JoinLobby(lobbyId, newLobbyParticipant))
             {
                 return NotifyCallerThatJoiningFailed();

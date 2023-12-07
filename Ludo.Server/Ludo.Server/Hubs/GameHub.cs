@@ -40,7 +40,7 @@ namespace Ludo.Server.Hubs
 
             List<IPlayer> readyPlayers = _gameService.GetReadyPlayers(lobbyId);
 
-            var readyPlayersName = readyPlayers.Select(p => p.Name).ToList();   
+            var readyPlayersName = readyPlayers.Select(p => p.Name).ToList();
             //return readyPlayersName
 
             return Clients.Caller.SendAsync("PreprocessingSuccessfully", readyPlayersName);
@@ -76,7 +76,7 @@ namespace Ludo.Server.Hubs
             //Transform into PlayerIsReadyToStartGameUseCase
             IGame game = _gameService.GetGameById(lobbyId);
 
-            if(game == null)
+            if (game == null)
             {
                 game = CreateNewGame(lobbyId);
             }
@@ -103,7 +103,7 @@ namespace Ludo.Server.Hubs
         {
             bool isRemoved = _gameService.RemovePlayerFromGame(lobbyId, username);
 
-            if(!isRemoved)
+            if (!isRemoved)
             {
                 return Clients.Caller.SendAsync("LeavingFailed");
             }

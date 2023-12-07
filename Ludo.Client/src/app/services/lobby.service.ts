@@ -104,6 +104,10 @@ export class LobbyService {
         this.lobbyParticipants.splice(indexToRemove, 1);
       }
 
+      if (this.lobbyParticipants[0] === this.currentLobbyParticipant.username) {
+        this.currentLobbyParticipant.role = RoleType.Owner;
+      }
+
       console.log(`${data} left lobby`);
     });
   }
