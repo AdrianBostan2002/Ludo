@@ -45,6 +45,26 @@ namespace Ludo.Business.Services
             game.Players.Add(player);
         }
 
+        public bool RemovePlayerFromGame(int gameId, string username)
+        {
+            IGame game = GetGameById(gameId);
+
+            if (game == null)
+            {
+                return false;
+            }
+
+            IPlayer player = game.Players.Where(p => p.Name == username).FirstOrDefault();
+
+            if (player == null)
+            {
+                return false;
+            }
+
+            game.Players.Remove(player);
+            return true;
+        }
+
         private List<IPlayer> TransformLobbyParticipantsIntoPlayers(List<ILobbyParticipant> lobbyParticipants)
         {
             List<IPlayer> players = new List<IPlayer>();

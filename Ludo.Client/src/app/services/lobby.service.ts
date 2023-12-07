@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { User } from '../shared/interfaces/user.interface';
 import { RoleType } from '../shared/enums/roletype.enum';
-import { StartGameSuccesfullyResponse } from '../shared/entities/start-game-sucessfully-response';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +29,7 @@ export class LobbyService {
   public createLobbyConnection = (username: string) => {
     this.hubConnection
       .start()
-      .then(() => { 
+      .then(() => {
         console.log('Connection started');
         this.hubConnection.send("CreatedLobby", username);
       })
@@ -48,6 +47,12 @@ export class LobbyService {
         .catch(err => console.log('Error while starting connection: ' + err));
     } else {
       this.hubConnection.send("JoinLobby", lobbyId, username);
+    }
+  }
+
+  public participantLeave(lobbyId: Number, lobbyParticipant: User) {
+    if (this.hubConnection.state == signalR.HubConnectionState.Connected) {
+      this.hubConnection.send('ParticipantLeave', Number(lobbyId), lobbyParticipant.username);
     }
   }
 
@@ -77,11 +82,37 @@ export class LobbyService {
     });
 
     this.hubConnection.on('UnSuccessfullyContectedToLobby', (data) => {
-      console.log(data);
+      console.log('Unsuccessfully Contected to Lobyy', data);
+    });
+
+    this.hubConnection.on('LeaveLobbySucceeded', () => {
+
+      this.disconnectFromHub();
+      this.router.navigate(['']);
+      console.log("Leave Lobby Succeeded");
+    });
+
+    this.hubConnection.on('LeaveLobbyFailed', () => {
+      this.router.navigate(['']);
+      console.log("Left Lobby Successfully");
+    });
+
+    this.hubConnection.on('PlayerLeftLobby', (data) => {
+      const indexToRemove = this.lobbyParticipants.findIndex(participant => participant === data);
+
+      if (indexToRemove !== -1) {
+        this.lobbyParticipants.splice(indexToRemove, 1);
+      }
+
+      if (this.lobbyParticipants[0] === this.currentLobbyParticipant.username) {
+        this.currentLobbyParticipant.role = RoleType.Owner;
+      }
+
+      console.log(`${data} left lobby`);
     });
   }
 
-  public DisconnectFromHub(){
+  public disconnectFromHub() {
     this.hubConnection.stop();
   }
 }

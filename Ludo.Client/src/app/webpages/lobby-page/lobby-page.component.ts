@@ -46,8 +46,10 @@ export class LobbyPageComponent {
     this.gameService.startGame(this.currentLobbyId);
   }
 
-  leaveGame(): void {
-    this.router.navigate(['']);
+  leaveLobby(): void {
+    this.gameService.playerLeave(this.currentLobbyId, this.currentLobbyParticipant);
+    this.lobbyService.participantLeave(this.currentLobbyId, this.currentLobbyParticipant);
+    //this.router.navigate(['']);
   }
 
   readyPlayer(): void {
