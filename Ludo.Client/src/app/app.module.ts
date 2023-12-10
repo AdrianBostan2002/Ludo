@@ -11,7 +11,8 @@ import { AuthenticationBoxComponent } from './authentication-box/authentication-
 import { GamePageComponent } from './webpages/game-page/game-page.component';
 import { CellComponent } from './game-components/cell/cell.component';
 import { PieceComponent } from './game-components/piece/piece.component';
-import { HomeComponent } from './game-components/home/home.component'; 
+import { HomeComponent } from './game-components/home/home.component';
+import { DiceRollComponent } from './game-components/dice-roll/dice-roll.component'; 
 import { BoardComponent } from './board/board.component';
 
 @NgModule({
@@ -24,6 +25,7 @@ import { BoardComponent } from './board/board.component';
     CellComponent,
     PieceComponent,
     HomeComponent,
+    DiceRollComponent,
     BoardComponent
   ],
   imports: [
