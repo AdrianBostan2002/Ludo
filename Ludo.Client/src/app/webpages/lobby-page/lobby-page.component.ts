@@ -42,6 +42,10 @@ export class LobbyPageComponent {
     return this.lobbyParticipants[userIndex] == this.lobbyService.currentLobbyParticipant.username ? 'your-user-profile' : 'user-profile';
   }
 
+  getReadyStatus(userIndex: number) {
+    return this.readyParticipants.includes(this.lobbyParticipants[userIndex]);
+  }
+
   startGame(): void {
     this.gameService.startGame(this.currentLobbyId);
   }

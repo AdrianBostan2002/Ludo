@@ -11,7 +11,8 @@ import { AuthenticationBoxComponent } from './authentication-box/authentication-
 import { GamePageComponent } from './webpages/game-page/game-page.component';
 import { CellComponent } from './game-components/cell/cell.component';
 import { PieceComponent } from './game-components/piece/piece.component';
-import { HomeComponent } from './game-components/home/home.component'; 
+import { HomeComponent } from './game-components/home/home.component';
+import { DiceRollComponent } from './game-components/dice-roll/dice-roll.component'; 
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HomeComponent } from './game-components/home/home.component';
     GamePageComponent,
     CellComponent,
     PieceComponent,
-    HomeComponent
+    HomeComponent,
+    DiceRollComponent
   ],
   imports: [
     BrowserModule,
