@@ -12,6 +12,7 @@ import { GamePageComponent } from './webpages/game-page/game-page.component';
 import { CellComponent } from './game-components/cell/cell.component';
 import { PieceComponent } from './game-components/piece/piece.component';
 import { HomeComponent } from './game-components/home/home.component'; 
+import { BoardComponent } from './board/board.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HomeComponent } from './game-components/home/home.component';
     GamePageComponent,
     CellComponent,
     PieceComponent,
-    HomeComponent
+    HomeComponent,
+    BoardComponent
   ],
   imports: [
     BrowserModule,

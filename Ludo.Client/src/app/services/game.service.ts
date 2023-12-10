@@ -19,7 +19,8 @@ export class GameService {
     .withUrl(this.connectionUrl)
     .build();
 
-  game$: Subject<Game> = new Subject<Game>();
+  game$: BehaviorSubject<Game | undefined> = new BehaviorSubject<Game | undefined>(undefined);
+  currentGame!: Game;
 
   newReadyPlayer$: Subject<string> = new Subject<string>();
 
@@ -97,14 +98,17 @@ export class GameService {
       });
     });
 
-    this.hubConnection.on('StartGameSucceded', (data: StartGameSuccesfullyResponse) => {
-      console.log(data);
+    this.hubConnection.on('StartGameSucceded', (data: Game) => {
+      console.log('data.game:', data);
+      this.game$.next(data);
+      this.currentGame = data;
       this.router.navigate([`game/${this.lobbyId}`]);
-      this.game$.next(data.game);
     });
 
-    this.hubConnection.on('GameStarted', (data: StartGameSuccesfullyResponse) => {
-      console.log(data);
+    this.hubConnection.on('GameStarted', (data: Game) => {
+      console.log('data.game:', data);
+      this.game$.next(data);
+      this.currentGame = data;
       this.router.navigate([`game/${this.lobbyId}`]);
     });
 

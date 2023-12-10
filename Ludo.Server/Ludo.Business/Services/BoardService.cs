@@ -22,10 +22,16 @@ namespace Ludo.Business.Services
             CreateSideOfBoard(cells, ColorType.Yellow, ColorType.Blue);
             CreateSideOfBoard(cells, ColorType.Blue, ColorType.Red);
 
-            return new Board()
+            Board board = new Board()
             {
-                Cells = cells
+                Cells = cells,
             };
+
+            List<ICell> finalCells = GetFinalCells(board);
+
+            board.FinalCells = finalCells;
+
+            return board;
         }
 
         private void CreateSideOfBoard(List<ICell> cells, ColorType homeColor, ColorType finalColor)
@@ -33,6 +39,7 @@ namespace Ludo.Business.Services
             List<ICell> homeCell = CreateSetOfCells(CellType.Home, homeColor, 1);
             List<ICell> basicCells = CreateSetOfCells(CellType.Basic, ColorType.White, 11);
             List<ICell> specialCell = CreateSetOfCells(CellType.Special, finalColor, 1);
+            List<ICell> basicCell = CreateSetOfCells(CellType.Basic, ColorType.White, 1);
 
             List<ICell> finalCells = CreateSetOfCells(CellType.Final, ColorType.White, 5);
 
@@ -40,9 +47,11 @@ namespace Ludo.Business.Services
             specialCellEntity.FinalCells = new List<ICell>();
             specialCellEntity.FinalCells.AddRange(finalCells);
 
+
             cells.AddRange(homeCell);
             cells.AddRange(basicCells);
             cells.AddRange(specialCell);
+            cells.AddRange(basicCell);
         }
 
         private List<ICell> CreateSetOfCells(CellType cellType, ColorType color, int numberOfCells)
@@ -57,6 +66,11 @@ namespace Ludo.Business.Services
             }
 
             return createdCells;
+        }
+
+        private List<ICell> GetFinalCells(Board board)
+        {
+            return  board.Cells.OfType<SpecialCell>().SelectMany(c => c.FinalCells).ToList();
         }
     }
 }
