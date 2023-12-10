@@ -12,14 +12,17 @@
             <div class="user-profile" [ngClass]="getProfileInfo(1)">
                 <h2 *ngIf="lobbyParticipants.length < 2">Waiting on other players...</h2>
                 <h2 *ngIf="lobbyParticipants.length >= 2">{{lobbyParticipants[1]}}</h2>
+                <div class="ready-check" *ngIf="getReadyStatus(1)"></div>
             </div>
             <div class="user-profile" [ngClass]="getProfileInfo(2)">
                 <h2 *ngIf="lobbyParticipants.length < 3">Waiting on other players...</h2>
                 <h2 *ngIf="lobbyParticipants.length >= 3">{{lobbyParticipants[2]}}</h2>
+                <div class="ready-check" *ngIf="getReadyStatus(2)"></div>
             </div>
             <div class="user-profile" [ngClass]="getProfileInfo(3)">
                 <h2 *ngIf="lobbyParticipants.length < 4">Waiting on other players...</h2>
                 <h2 *ngIf="lobbyParticipants.length >= 4">{{lobbyParticipants[3]}}</h2>
+                <div class="ready-check" *ngIf="getReadyStatus(3)"></div>
             </div>
         </div>
 
