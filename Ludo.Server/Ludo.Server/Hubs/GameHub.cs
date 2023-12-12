@@ -63,6 +63,8 @@ namespace Ludo.Server.Hubs
                 game = CreateNewGame(lobbyId);
             }
 
+
+            _gameService.AssignPlayersPiecesRandomColors(game.Players);
             //StartGameUseCase will return IGame
             List<IPlayer> playersWithoutCaller = GetPlayersWithoutCaller(game);
 

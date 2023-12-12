@@ -39,7 +39,7 @@ namespace Ludo.Business.Services
             {
                 Name = username,
                 IsReady = false,
-                ConnectionId = connectionId
+                ConnectionId = connectionId,
             };
 
             game.Players.Add(player);
@@ -78,7 +78,7 @@ namespace Ludo.Business.Services
             return players;
         }
 
-        private void AssignPlayersPiecesRandomColors(List<IPlayer> players)
+        public void AssignPlayersPiecesRandomColors(List<IPlayer> players)
         {
             List<ColorType> shuffledColors = ShuflleColorsForPieces();
 

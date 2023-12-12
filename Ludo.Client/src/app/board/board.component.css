@@ -61,3 +61,10 @@
   }
   
   h1{ text-align: center; }
+
+  fa-icon {
+    color: red;
+    display: flex;
+    flex-direction: column;
+    height: 21px;
+  }

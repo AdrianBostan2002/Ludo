@@ -14,6 +14,7 @@ import { PieceComponent } from './game-components/piece/piece.component';
 import { HomeComponent } from './game-components/home/home.component';
 import { DiceRollComponent } from './game-components/dice-roll/dice-roll.component'; 
 import { BoardComponent } from './board/board.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { BoardComponent } from './board/board.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

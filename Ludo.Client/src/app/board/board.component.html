@@ -1,85 +1,162 @@
 <div class="board">
-  <div class="row">
-    <div class="red-section black-border">
-      <div class="white">
-        <div class="red"></div>
-        <div class="red"></div>
-        <div class="red"></div>
-        <div class="red"></div>
-      </div>
+    <div class="row">
+        <div class="red-section black-border">
+            <div class="white">
+                <div class="red"></div>
+                <div class="red"></div>
+                <div class="red"></div>
+                <div class="red"></div>
+            </div>
+        </div>
+        <div class="lane-section">
+            <div class="row">
+                <button class="box" *ngFor="let button of firstSetOfBoxes; index as i">
+                    <fa-icon [icon]="filmIcon"></fa-icon>
+                </button>
+                <!-- <button class="box">
+                    <fa-icon [icon]="filmIcon"></fa-icon>
+                </button>
+                <button class="box"></button>
+                <button class="box"></button> -->
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box green"></button>
+                <button class="box green"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box green"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box green"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box green"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box green"></button>
+                <button class="box"></button>
+            </div>
+        </div>
+        <div class="green-section black-border">
+            <div class="white">
+                <div class="green"></div>
+                <div class="green"></div>
+                <div class="green"></div>
+                <div class="green"></div>
+            </div>
+        </div>
     </div>
-    <div class="lane-section">
-      <div class="row"><div class="box"></div><div class="box"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box green"></div><div class="box green"></div></div>
-      <div class="row"><div class="box"></div><div class="box green"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box green"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box green"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box green"></div><div class="box"></div></div>
+    <div class="row">
+        <div class="lane-section">
+            <div class="row">
+                <button class="box"></button>
+                <button class="box red"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box red"></button>
+                <button class="box red"></button>
+                <button class="box red"></button>
+                <button class="box red"></button>
+                <button class="box red"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+            </div>
+        </div>
+        <div class="winning-section"></div>
+        <div class="lane-section">
+            <div class="row">
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box yellow"></button>
+                <button class="box yellow"></button>
+                <button class="box yellow"></button>
+                <button class="box yellow"></button>
+                <button class="box yellow"></button>
+                <button class="box"></button>      
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box yellow"></button>
+                <button class="box"></button>
+            </div>
+        </div>
     </div>
-    <div class="green-section black-border">
-      <div class="white">
-        <div class="green"></div>
-        <div class="green"></div>
-        <div class="green"></div>
-        <div class="green"></div>
-      </div>
+    <div class="row">
+        <div class="blue-section black-border">
+            <div class="white">
+                <div class="blue"></div>
+                <div class="blue"></div>
+                <div class="blue"></div>
+                <div class="blue"></div>
+            </div>
+        </div>
+        <div class="lane-section">
+            <div class="row">
+                <button class="box"></button>
+                <button class="box blue"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box blue"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box blue"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box blue"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box blue"></button>
+                <button class="box blue"></button>
+                <button class="box"></button>
+            </div>
+            <div class="row">
+                <button class="box"></button>
+                <button class="box"></button>
+                <button class="box"></button>
+            </div>
+        </div>
+        <div class="yellow-section black-border">
+            <div class="white">
+                <div class="yellow"></div>
+                <div class="yellow"></div>
+                <div class="yellow"></div>
+                <div class="yellow"></div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="lane-section">
-      <div class="row">
-          <div class="box"></div><div class="box red"></div><div class="box"></div>
-          <div class="box"></div><div class="box"></div><div class="box"></div>
-      </div>
-      <div class="row">
-          <div class="box"></div><div class="box red"></div><div class="box red"></div>
-          <div class="box red"></div><div class="box red"></div><div class="box red"></div>
-      </div>
-      <div class="row">
-          <div class="box"></div><div class="box"></div><div class="box"></div>
-          <div class="box"></div><div class="box"></div><div class="box"></div>
-      </div>
-    </div>
-    <div class="winning-section"></div>
-    <div class="lane-section">
-      <div class="row">
-          <div class="box"></div><div class="box"></div><div class="box"></div>
-          <div class="box"></div><div class="box"></div><div class="box"></div>
-      </div>
-      <div class="row">
-          <div class="box yellow"></div><div class="box yellow"></div><div class="box yellow"></div>
-          <div class="box yellow"></div><div class="box yellow"></div><div class="box"></div>
-      </div>
-      <div class="row">
-          <div class="box"></div><div class="box"></div><div class="box"></div>
-          <div class="box"></div><div class="box yellow"></div><div class="box"></div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="blue-section black-border">
-      <div class="white">
-        <div class="blue"></div>
-        <div class="blue"></div>
-        <div class="blue"></div>
-        <div class="blue"></div>
-      </div>
-    </div>
-    <div class="lane-section">
-      <div class="row"><div class="box"></div><div class="box blue"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box blue"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box blue"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box blue"></div><div class="box"></div></div>
-      <div class="row"><div class="box blue"></div><div class="box blue"></div><div class="box"></div></div>
-      <div class="row"><div class="box"></div><div class="box"></div><div class="box"></div></div>
-    </div>
-    <div class="yellow-section black-border">
-      <div class="white">
-        <div class="yellow"></div>
-        <div class="yellow"></div>
-        <div class="yellow"></div>
-        <div class="yellow"></div>
-      </div>
-    </div>
-  </div>
 </div>
