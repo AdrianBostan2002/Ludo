@@ -68,3 +68,13 @@
     flex-direction: column;
     height: 21px;
   }
+
+  .piece-position {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

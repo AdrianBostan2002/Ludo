@@ -8,6 +8,7 @@ import { getColorString } from '../shared/utils/color-type-converter';
 import { faChessPawn, faFilm } from '@fortawesome/free-solid-svg-icons';
 import { Cell } from '../shared/entities/cell';
 import { CellType } from '../shared/enums/cell-type';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 @Component({
   selector: 'app-board',
@@ -16,7 +17,8 @@ import { CellType } from '../shared/enums/cell-type';
 })
 export class BoardComponent implements OnInit {
   filmIcon = faChessPawn;
-
+  defaultEmptyIcon: IconProp = ["far", "circle"];
+  
   game: Game = this.initializeEmptyGame();
   currentGameId: Number = 0;
   currentDirection: string = "down";
@@ -26,6 +28,17 @@ export class BoardComponent implements OnInit {
     {color: ColorType.Red, pieces: [], type : CellType.Basic},
     {color: ColorType.Red, pieces: [], type : CellType.Basic}
   ];
+
+  buttons = [
+    { id: '1', pieces: [{ id: "1", icon: this.filmIcon }] },
+    { id: '2', pieces: [{ id: "2", icon: this.filmIcon }] },
+    { id: '3', pieces: [] },
+    // Add more buttons as needed
+  ];
+  
+  handleButtonClick(button: any) {
+    // Handle button click logic here
+  }
 
   
 
@@ -63,17 +76,6 @@ export class BoardComponent implements OnInit {
   //   // Implement your logic to determine cell direction
   //   const direction = cell.type === CellType.Special ? 'vertical' : 'horizontal'; // Replace with your logic
 
-
-  handleButtonClick(event: MouseEvent) {
-    const targetButton = event.target as HTMLButtonElement;
-
-    // Check if the clicked button has an icon
-    if (targetButton.querySelector('.icon')) {
-      // Move the icon to another button
-      this.moveIcon(targetButton);
-    }
-  }
-
   moveIcon(sourceButton: HTMLButtonElement) {
     // Find the target button (for example, next adjacent button)
     const targetButtonId = 'some-logic-to-find-target'; // Implement your logic here
@@ -92,8 +94,4 @@ export class BoardComponent implements OnInit {
     }
   }
 
-//   const buttons = document.querySelectorAll('.piece-position');
-// buttons.forEach((button) => {
-//   button.addEventListener('click', handleButtonClick);
-// });
 }

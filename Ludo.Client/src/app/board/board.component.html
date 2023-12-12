@@ -10,14 +10,17 @@
         </div>
         <div class="lane-section">
             <div class="row">
-                <button class="box" *ngFor="let button of firstSetOfBoxes; index as i">
+                <!-- <button class="box" *ngFor="let button of firstSetOfBoxes; index as i">
+                    <fa-icon [icon]="filmIcon"></fa-icon>
+                </button> -->
+                <button *ngFor="let button of buttons" [attr.id]="button.id" class="box" (click)="handleButtonClick(button)">
+                    <fa-icon *ngFor="let piece of button.pieces" [icon]="piece.id === button.id ? piece.icon : defaultEmptyIcon"></fa-icon>
+                  </button>
+                <!-- <button id="1" class="box">
                     <fa-icon [icon]="filmIcon"></fa-icon>
                 </button>
-                <!-- <button class="box">
-                    <fa-icon [icon]="filmIcon"></fa-icon>
-                </button>
-                <button class="box"></button>
-                <button class="box"></button> -->
+                <button id="2" class="box"></button>
+                <button id="3" class="box"></button> -->
             </div>
             <div class="row">
                 <button class="box"></button>
@@ -25,7 +28,7 @@
                 <button class="box green"></button>
             </div>
             <div class="row">
-                <button class="box"></button>
+                <button class=""></button>
                 <button class="box green"></button>
                 <button class="box"></button>
             </div>
