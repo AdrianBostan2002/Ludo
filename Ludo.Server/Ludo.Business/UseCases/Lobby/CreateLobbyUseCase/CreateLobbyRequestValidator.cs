@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.Lobby.CreateLobby
 {
-    public class CreateLobbyRequestValidator: AbstractValidator<CreateLobbyRequest>
+    public class CreateLobbyRequestValidator : AbstractValidator<CreateLobbyRequest>
     {
         public CreateLobbyRequestValidator()
         {

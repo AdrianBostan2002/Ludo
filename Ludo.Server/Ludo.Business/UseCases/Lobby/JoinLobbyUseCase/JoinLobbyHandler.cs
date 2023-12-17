@@ -4,7 +4,7 @@ using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.Lobby.JoinLobbyUseCase
 {
-    public class JoinLobbyHandler: IRequestHandler<JoinLobbyRequest, List<ILobbyParticipant>>
+    public class JoinLobbyHandler : IRequestHandler<JoinLobbyRequest, List<ILobbyParticipant>>
     {
         private readonly ILobbyService _lobbyService;
 

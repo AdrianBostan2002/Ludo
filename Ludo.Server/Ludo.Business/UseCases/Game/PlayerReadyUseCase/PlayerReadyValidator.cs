@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Ludo.Business.UseCases.Lobby.JoinLobbyUseCase
+namespace Ludo.Business.UseCases.Game.PlayerReadyUseCase
 {
-    public class JoinLobbyValidator : AbstractValidator<JoinLobbyRequest>
+    public class PlayerReadyValidator: AbstractValidator<PlayerReadyRequest>
     {
-        public JoinLobbyValidator()
+        public PlayerReadyValidator()
         {
             RuleFor(x => x.Username).NotNull().NotEmpty();
             RuleFor(x => x.ConnectionId).NotNull().NotEmpty();

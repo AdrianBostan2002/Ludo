@@ -1,141 +1,113 @@
-﻿using Ludo.Domain.Entities;
+﻿using Ludo.Business.UseCases.Game.CreateGameUseCase;
+using Ludo.Business.UseCases.Game.PlayerLeaveUseCase;
+using Ludo.Business.UseCases.Game.PlayerReadyUseCase;
+using Ludo.Business.UseCases.Game.RollDiceUseCase;
+using Ludo.Business.UseCases.Game.StartGamePreprocessing;
 using Ludo.Domain.Interfaces;
+using Ludo.MediatRPattern.Interfaces;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Ludo.Server.Hubs
 {
     public class GameHub : Hub
     {
-        private ILobbyService _lobbyService;
-        private IGameService _gameService;
+        //private ILobbyService _lobbyService;
+        //private IGameService _gameService;
 
-        public GameHub(ILobbyService lobbyService, IGameService gameService)
+        //public GameHub(ILobbyService lobbyService, IGameService gameService)
+        //{
+        //    _lobbyService = lobbyService ?? throw new ArgumentNullException(nameof(lobbyService));
+        //    _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        //}
+
+        private readonly IMediator _mediator;
+
+        public GameHub(IMediator mediator)
         {
-            _lobbyService = lobbyService ?? throw new ArgumentNullException(nameof(lobbyService));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-        }
-
-        //This could transform in CreateNewGameUseCase
-        private IGame CreateNewGame(int lobbyId)
-        {
-            ILobby lobby = _lobbyService.GetLobbyById(lobbyId);
-
-            _gameService.CreateNewGame(lobby);
-
-            IGame game = _gameService.GetGameById(lobbyId);
-
-            return game;
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public Task StartGamePreprocessing(int lobbyId, string username)
         {
-            //This could transform into StartGamePreprocessing
-            IGame game = _gameService.GetGameById(lobbyId);
+            var request = new StartGamePreprocessingRequest { Username = username, LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
 
-            if (game == null)
-            {
-                game = CreateNewGame(lobbyId);
-            }
-
-            _gameService.AddNewPlayerIntoGame(game, username, Context.ConnectionId);
-
-            List<IPlayer> readyPlayers = _gameService.GetReadyPlayers(lobbyId);
-
-            var readyPlayersName = readyPlayers.Select(p => p.Name).ToList();
-            //return readyPlayersName
+            var requestResponse = _mediator.Send(request);
+            List<string> readyPlayersName = requestResponse.Result;
 
             return Clients.Caller.SendAsync("PreprocessingSuccessfully", readyPlayersName);
         }
 
         public Task StartGame(int lobbyId)
         {
-            //transform into StartGameUseCase
-            if (!_gameService.CheckIfGameCanStart(lobbyId))
+            try
+            {
+                var request = new StartGameRequest { LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
+
+                var requestResponse = _mediator.Send(request);
+                (IGame game, List<IPlayer> playersWithoutCaller) = requestResponse.Result;
+
+                NotifyPlayersThatNewGameStarted(game, playersWithoutCaller);
+                return Clients.Caller.SendAsync("StartGameSucceded", game);
+            }
+            catch (Exception)
             {
                 return Clients.Caller.SendAsync("StartGameFailed", new { lobbyId });
             }
-
-            IGame game = _gameService.GetGameById(lobbyId);
-
-            //this will be removed from here
-            if (game == null)
-            {
-                //call CreateNewGameUseCase
-                game = CreateNewGame(lobbyId);
-            }
-
-
-            _gameService.AssignPlayersPiecesRandomColors(game.Players);
-            //StartGameUseCase will return IGame
-            List<IPlayer> playersWithoutCaller = GetPlayersWithoutCaller(game);
-
-            NotifyPlayersThatNewGameStarted(game, playersWithoutCaller);
-
-            return Clients.Caller.SendAsync("StartGameSucceded", game);
         }
 
         public Task ReadyToStartGame(int lobbyId, string username)
         {
-            //Transform into PlayerIsReadyToStartGameUseCase
-            IGame game = _gameService.GetGameById(lobbyId);
+            //try
+            //{
+            var request = new PlayerReadyRequest { Username = username, LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
+            var requestResult = _mediator.Send(request);
 
-            if (game == null)
-            {
-                game = CreateNewGame(lobbyId);
-            }
+            var playersWithoutCaller = requestResult.Result;
 
-            IPlayer player = _gameService.GetPlayer(lobbyId, username);
-
-            if (player == null)
-            {
-                throw new Exception("Player should be in lobby");
-            }
-
-            player.IsReady = true;
-
-            //return Game
-
-            List<IPlayer> playersWithoutCaller = GetPlayersWithoutCaller(game);
-
-            NotifyThatNewPlayerIsReady(playersWithoutCaller, username);
-
+            NotifyPlayersThatSomeone(playersWithoutCaller, "NewPlayerReady", username);
             return Clients.Caller.SendAsync("ReadySuccessfully");
+            //}
+            //catch (Exception)
+            //{
+            //    //Show notification
+            //}
         }
 
         public Task PlayerLeave(int lobbyId, string username)
         {
-            bool isRemoved = _gameService.RemovePlayerFromGame(lobbyId, username);
+            try
+            {
+                var request = new PlayerLeaveRequest { Username = username, LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
 
-            if (!isRemoved)
+                var requestResponse = _mediator.Send(request);
+                var playersWithoutCaller = requestResponse.Result;
+
+                NotifyPlayersThatSomeone(playersWithoutCaller, "PlayerLeftGame", username);
+                return Clients.Caller.SendAsync("LeavingSucceeded");
+            }
+            catch (Exception)
             {
                 return Clients.Caller.SendAsync("LeavingFailed");
             }
-
-            IGame game = _gameService.GetGameById(lobbyId);
-
-            List<IPlayer> playersWithoutCaller = GetPlayersWithoutCaller(game);
-
-            NotifyPlayersThatSomeoneLeftGame(playersWithoutCaller, username);
-
-            return Clients.Caller.SendAsync("LeavingSucceeded");
         }
 
         public Task RollDice(int gameId)
         {
-            int randomNumber = Random.Shared.Next(1, 6);
+            //try
+            //{
+                var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
 
-            IGame game = _gameService.GetGameById(gameId);
+                var requestResponse = _mediator.Send(request);
+                (List<IPlayer> playersWithouCaller, int randomNumber) = requestResponse.Result;
+                
+                NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
+                return Clients.Caller.SendAsync("DiceRolled", randomNumber);
+            //}
+            //catch (Exception)
+            //{
 
-            if (game == null)
-            {
-                throw new ArgumentException("Game doesn't exist");
-            }
-
-            var playersWithouCaller = GetPlayersWithoutCaller(game);
-
-            NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
-
-            return Clients.Caller.SendAsync("DiceRolled", randomNumber);
+            //}
         }
 
         private void NotifyPlayersThatNewGameStarted(IGame game, List<IPlayer> players)
@@ -146,11 +118,11 @@ namespace Ludo.Server.Hubs
             }
         }
 
-        private void NotifyThatNewPlayerIsReady(List<IPlayer> players, string username)
+        private void NotifyPlayersThatSomeone(List<IPlayer> players, string action, string username)
         {
             foreach (var player in players)
             {
-                Clients.Client(player.ConnectionId).SendAsync("NewPlayerReady", username);
+                Clients.Client(player.ConnectionId).SendAsync(action, username);
             }
         }
 
@@ -159,21 +131,6 @@ namespace Ludo.Server.Hubs
             foreach (var player in players)
             {
                 Clients.Client(player.ConnectionId).SendAsync("DiceRolled", diceNumber);
-            }
-        }
-
-        private List<IPlayer> GetPlayersWithoutCaller(IGame game)
-        {
-            IEnumerable<IPlayer> caller = game.Players.Where(p => p.ConnectionId.Equals(Context.ConnectionId));
-
-            return game.Players.Except(caller).ToList();
-        }
-
-        private void NotifyPlayersThatSomeoneLeftGame(List<IPlayer> players, string username)
-        {
-            foreach (var player in players)
-            {
-                Clients.Client(player.ConnectionId).SendAsync("PlayerLeftGame", username);
             }
         }
     }

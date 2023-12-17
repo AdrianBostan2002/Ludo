@@ -3,7 +3,7 @@ using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.Lobby.ParticipantLeave
 {
-    public class ParticipantLeaveHandler: IRequestHandler<ParticipantLeaveRequest, List<ILobbyParticipant>>
+    public class ParticipantLeaveHandler : IRequestHandler<ParticipantLeaveRequest, List<ILobbyParticipant>>
     {
         private readonly ILobbyService _lobbyService;
 

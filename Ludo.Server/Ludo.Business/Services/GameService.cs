@@ -177,5 +177,12 @@ namespace Ludo.Business.Services
 
             return true;
         }
+
+        public List<IPlayer> GetPlayersWithoutCaller(IGame game, string connectionId)
+        {
+            IEnumerable<IPlayer> caller = game.Players.Where(p => p.ConnectionId.Equals(connectionId));
+
+            return game.Players.Except(caller).ToList();
+        }
     }
 }

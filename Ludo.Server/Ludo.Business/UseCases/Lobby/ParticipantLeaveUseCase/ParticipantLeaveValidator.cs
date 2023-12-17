@@ -3,7 +3,7 @@ using Ludo.Business.UseCases.Lobby.ParticipantLeave;
 
 namespace Ludo.Business.UseCases.Lobby.ParticipantLeaveUseCase
 {
-    public class ParticipantLeaveValidator: AbstractValidator<ParticipantLeaveRequest>
+    public class ParticipantLeaveValidator : AbstractValidator<ParticipantLeaveRequest>
     {
         public ParticipantLeaveValidator()
         {
