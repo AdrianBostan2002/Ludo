@@ -5,10 +5,13 @@ import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { ColorType } from '../shared/enums/color-type';
 import { getColorString } from '../shared/utils/color-type-converter';
-import { faChessPawn, faFilm } from '@fortawesome/free-solid-svg-icons';
-import { Cell } from '../shared/entities/cell';
-import { CellType } from '../shared/enums/cell-type';
+import { IconDefinition, faChessPawn, faCircle, faClose, faDotCircle, faFaceMehBlank, faFilm, faLineChart, faLink, faList, faPersonWalkingDashedLineArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+
+interface Piece {
+  position: number,
+  color: ColorType;
+}
 
 @Component({
   selector: 'app-board',
@@ -17,30 +20,22 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 })
 export class BoardComponent implements OnInit {
   filmIcon = faChessPawn;
-  defaultEmptyIcon: IconProp = ["far", "circle"];
-  
+
   game: Game = this.initializeEmptyGame();
   currentGameId: Number = 0;
   currentDirection: string = "down";
 
-  firstSetOfBoxes: Cell[] = [
-    {color: ColorType.Red, pieces: [], type : CellType.Basic}, 
-    {color: ColorType.Red, pieces: [], type : CellType.Basic},
-    {color: ColorType.Red, pieces: [], type : CellType.Basic}
+  lastPiece: Piece={color: ColorType.White, position:0};
+
+  pieces: Piece[] = [
+    { position: 1, color: ColorType.Blue}, {position: 1, color: ColorType.Red}, {position: 5, color: ColorType.Green}
   ];
 
-  buttons = [
-    { id: '1', pieces: [{ id: "1", icon: this.filmIcon }] },
-    { id: '2', pieces: [{ id: "2", icon: this.filmIcon }] },
-    { id: '3', pieces: [] },
-    // Add more buttons as needed
-  ];
-  
+  defaultEmptyIcon: IconDefinition = faCircle;
   handleButtonClick(button: any) {
     // Handle button click logic here
   }
 
-  
 
   constructor(private gameService: GameService, private route: ActivatedRoute) { }
 
@@ -76,21 +71,32 @@ export class BoardComponent implements OnInit {
   //   // Implement your logic to determine cell direction
   //   const direction = cell.type === CellType.Special ? 'vertical' : 'horizontal'; // Replace with your logic
 
-  moveIcon(sourceButton: HTMLButtonElement) {
-    // Find the target button (for example, next adjacent button)
-    const targetButtonId = 'some-logic-to-find-target'; // Implement your logic here
-    const targetButton = document.getElementById(targetButtonId);
 
-    // Check if the target button exists
-    if (targetButton) {
-      // Get the icon from the source button
-      const icon = sourceButton.querySelector('.icon');
 
-      // Remove the icon from the source button
-      //sourceButton.removeChild(icon);
+  getIcon(position: number): IconProp {
+    const piece = this.pieces.find((p) => p.position === position);
 
-      // Append the icon to the target button
-      //targetButton.appendChild(icon);
+    if (piece?.color === ColorType.Blue || piece?.color == ColorType.Red || piece?.color == ColorType.Green || piece?.color == ColorType.Yellow) {
+      this.lastPiece = piece;    
+      return this.filmIcon;
+      }
+
+    return faClose; // Default icon if no piece found for the button
+  }
+
+  getIconClasses(position: number): string[] {
+    const piece = this.pieces.find((p) => p.position === position);
+
+    switch (piece?.color) {
+      case ColorType.Blue:
+        return ['blue-icon'];
+      case ColorType.Red:
+        return ['red-icon'];
+      case ColorType.Green:
+        return ['green-icon'];
+      // Add cases for other colors
+      default:
+        return [];
     }
   }
 

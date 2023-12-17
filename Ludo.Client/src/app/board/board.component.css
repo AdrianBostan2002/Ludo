@@ -63,10 +63,25 @@
   h1{ text-align: center; }
 
   fa-icon {
-    color: red;
     display: flex;
     flex-direction: column;
     height: 21px;
+  }
+
+  .blue-icon{
+    color: blue;
+  }
+
+  .red-icon{
+    color: red;
+  }
+
+  .green-icon{
+    color: green;
+  }
+
+  .yellow-icon{
+    color: yellow;
   }
 
   .piece-position {

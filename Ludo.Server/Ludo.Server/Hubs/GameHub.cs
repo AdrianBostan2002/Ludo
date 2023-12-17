@@ -1,4 +1,5 @@
-﻿using Ludo.Domain.Interfaces;
+﻿using Ludo.Domain.Entities;
+using Ludo.Domain.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Ludo.Server.Hubs
@@ -119,6 +120,24 @@ namespace Ludo.Server.Hubs
             return Clients.Caller.SendAsync("LeavingSucceeded");
         }
 
+        public Task RollDice(int gameId)
+        {
+            int randomNumber = Random.Shared.Next(1, 6);
+
+            IGame game = _gameService.GetGameById(gameId);
+
+            if (game == null)
+            {
+                throw new ArgumentException("Game doesn't exist");
+            }
+
+            var playersWithouCaller = GetPlayersWithoutCaller(game);
+
+            NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
+
+            return Clients.Caller.SendAsync("DiceRolled", randomNumber);
+        }
+
         private void NotifyPlayersThatNewGameStarted(IGame game, List<IPlayer> players)
         {
             foreach (var player in players)
@@ -132,6 +151,14 @@ namespace Ludo.Server.Hubs
             foreach (var player in players)
             {
                 Clients.Client(player.ConnectionId).SendAsync("NewPlayerReady", username);
+            }
+        }
+
+        private void NotifyPlayersThatANewDiceRolled(List<IPlayer> players, int diceNumber)
+        {
+            foreach (var player in players)
+            {
+                Clients.Client(player.ConnectionId).SendAsync("DiceRolled", diceNumber);
             }
         }
 

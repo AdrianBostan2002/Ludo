@@ -16,6 +16,7 @@ export class GamePageComponent {
   private currentGameId: number = 0;
   private currentGameParticipant !: User;
   private currentGame!: Game | undefined;
+  randomDiceNumber: string='';
 
   constructor(private gameService: GameService, private lobbyService: LobbyService, private route: ActivatedRoute) {
   }

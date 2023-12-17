@@ -13,13 +13,14 @@ export class GameService {
 
   connectionUrl = `https://localhost:7192/gameHub`;
 
-  private lobbyId: number = 0;
+  lobbyId: number = 0;
 
   private hubConnection: signalR.HubConnection = new signalR.HubConnectionBuilder()
     .withUrl(this.connectionUrl)
     .build();
 
   game$: BehaviorSubject<Game | undefined> = new BehaviorSubject<Game | undefined>(undefined);
+  diceNumber$: Subject<number> = new Subject<number>();
   currentGame!: Game;
 
   newReadyPlayer$: Subject<string> = new Subject<string>();
@@ -72,7 +73,7 @@ export class GameService {
     this.hubConnection.send("StartGame", Number(lobbyId));
   }
 
-  public async playerLeave(lobbyId: number, player: User){
+  public async playerLeave(lobbyId: number, player: User) {
     await this.checkConnection();
 
     this.hubConnection.send("PlayerLeave", Number(lobbyId), player.username);
@@ -87,6 +88,12 @@ export class GameService {
     } catch (error) {
       console.error('Error during connection or sending signal:', error);
     }
+  }
+
+  public roleDice = async (gameId: number) =>{
+    await this.checkConnection();
+
+    this.hubConnection.send("RollDice", Number(gameId));
   }
 
   public addGameListener = () => {
@@ -124,15 +131,21 @@ export class GameService {
     });
 
     this.hubConnection.on('LeavingSucceeded', () => {
-      
+
       this.disconnectFromHub();
       //this.router.navigate(['']);
       console.log("Leaving Game Succeeded");
-      
+
     });
 
     this.hubConnection.on('PlayerLeftGame', (data) => {
       console.log(`${data} left game`);
+    });
+
+    this.hubConnection.on('DiceRolled', (data) => {
+      console.log(`Dice rolled: ${data}`);
+
+      this.diceNumber$.next(data);
     });
   }
 
