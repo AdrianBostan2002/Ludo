@@ -1,10 +1,9 @@
-﻿using Ludo.Domain.Entities;
-using Ludo.Domain.Interfaces;
+﻿using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.Game.RollDiceUseCase
 {
-    public class RollDiceHandler: IRequestHandler<RollDiceRequest, (List<IPlayer>, int)>
+    public class RollDiceHandler : IRequestHandler<RollDiceRequest, (List<IPlayer>, int)>
     {
         private readonly IGameService _gameService;
 

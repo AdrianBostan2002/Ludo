@@ -14,6 +14,7 @@ export class GameService {
   connectionUrl = `https://localhost:7192/gameHub`;
 
   lobbyId: number = 0;
+  currentUser?: User;
 
   private hubConnection: signalR.HubConnection = new signalR.HubConnectionBuilder()
     .withUrl(this.connectionUrl)
@@ -27,7 +28,13 @@ export class GameService {
 
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    window.addEventListener('beforeunload', (event: Event): void => {
+      if (this.lobbyId !== 0 && this.currentUser !== undefined) {
+        this.playerLeave(this.lobbyId, this.currentUser);
+      }
+    });
+  }
 
   public startConnection = (): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
@@ -56,6 +63,7 @@ export class GameService {
 
   public async startGamePreprocessing(lobbyId: number, user: User) {
     this.lobbyId = lobbyId;
+    this.currentUser = user;
     await this.checkConnection();
 
     this.hubConnection.send("StartGamePreprocessing", Number(lobbyId), user.username);
@@ -90,7 +98,7 @@ export class GameService {
     }
   }
 
-  public roleDice = async (gameId: number) =>{
+  public roleDice = async (gameId: number) => {
     await this.checkConnection();
 
     this.hubConnection.send("RollDice", Number(gameId));

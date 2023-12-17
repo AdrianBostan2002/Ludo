@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.Game.PlayerReadyUseCase
 {
-    public class PlayerReadyValidator: AbstractValidator<PlayerReadyRequest>
+    public class PlayerReadyValidator : AbstractValidator<PlayerReadyRequest>
     {
         public PlayerReadyValidator()
         {

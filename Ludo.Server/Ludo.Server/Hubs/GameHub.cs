@@ -6,26 +6,21 @@ using Ludo.Business.UseCases.Game.StartGamePreprocessing;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Ludo.Server.Hubs
 {
     public class GameHub : Hub
     {
-        //private ILobbyService _lobbyService;
-        //private IGameService _gameService;
-
-        //public GameHub(ILobbyService lobbyService, IGameService gameService)
-        //{
-        //    _lobbyService = lobbyService ?? throw new ArgumentNullException(nameof(lobbyService));
-        //    _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-        //}
-
         private readonly IMediator _mediator;
 
         public GameHub(IMediator mediator)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+
         }
 
         public Task StartGamePreprocessing(int lobbyId, string username)

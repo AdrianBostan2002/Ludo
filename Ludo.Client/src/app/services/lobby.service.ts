@@ -11,6 +11,7 @@ import { RoleType } from '../shared/enums/roletype.enum';
 export class LobbyService {
   lobbyParticipants: string[] = [];
   lobbyId$: Subject<number> = new Subject<number>();
+  lobbyId: number = 0;
   currentLobbyParticipant: User = new User();
   data: string = '';
   connectionUrl = `https://localhost:7192/lobbyHub`;
@@ -19,7 +20,13 @@ export class LobbyService {
     .withUrl(this.connectionUrl)
     .build();
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    window.addEventListener('beforeunload', (event: Event): void => {
+      if (this.lobbyId !== 0 && this.currentLobbyParticipant) {
+        this.participantLeave(this.lobbyId, this.currentLobbyParticipant);
+      }
+    });
+  }
 
   public createLobbyParticipant(username: string, role: RoleType): void {
     this.currentLobbyParticipant.username = username;
@@ -43,6 +50,7 @@ export class LobbyService {
         .then(() => {
           console.log('Connection started');
           this.hubConnection.send("JoinLobby", lobbyId, username);
+          this.lobbyId = lobbyId;
         })
         .catch(err => console.log('Error while starting connection: ' + err));
     } else {
@@ -66,6 +74,7 @@ export class LobbyService {
     this.hubConnection.on('JoinedLobby', (data) => {
       this.data = data;
       this.lobbyId$.next(data.lobbyId);
+      this.lobbyId = data.lobbyId;
       this.lobbyParticipants.push(data.username);
       console.log(data);
       this.router.navigate(['/lobby', data.lobbyId]);

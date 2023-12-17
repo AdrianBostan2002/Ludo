@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.Game.RollDiceUseCase
 {
-    public class RollDiceValidator: AbstractValidator<RollDiceRequest>
+    public class RollDiceValidator : AbstractValidator<RollDiceRequest>
     {
         public RollDiceValidator()
         {
