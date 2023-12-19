@@ -18,17 +18,12 @@ namespace Ludo.Server.Hubs
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
-        {
-
-        }
-
         public Task StartGamePreprocessing(int lobbyId, string username)
         {
             var request = new StartGamePreprocessingRequest { Username = username, LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
 
-            var requestResponse = _mediator.Send(request);
-            List<string> readyPlayersName = requestResponse.Result;
+            var response = _mediator.Send(request);
+            List<string> readyPlayersName = response.Result;
 
             return Clients.Caller.SendAsync("PreprocessingSuccessfully", readyPlayersName);
         }
@@ -39,8 +34,8 @@ namespace Ludo.Server.Hubs
             {
                 var request = new StartGameRequest { LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
 
-                var requestResponse = _mediator.Send(request);
-                (IGame game, List<IPlayer> playersWithoutCaller) = requestResponse.Result;
+                var response = _mediator.Send(request);
+                (IGame game, List<IPlayer> playersWithoutCaller) = response.Result;
 
                 NotifyPlayersThatNewGameStarted(game, playersWithoutCaller);
                 return Clients.Caller.SendAsync("StartGameSucceded", game);
@@ -75,8 +70,8 @@ namespace Ludo.Server.Hubs
             {
                 var request = new PlayerLeaveRequest { Username = username, LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
 
-                var requestResponse = _mediator.Send(request);
-                var playersWithoutCaller = requestResponse.Result;
+                var response = _mediator.Send(request);
+                var playersWithoutCaller = response.Result;
 
                 NotifyPlayersThatSomeone(playersWithoutCaller, "PlayerLeftGame", username);
                 return Clients.Caller.SendAsync("LeavingSucceeded");
@@ -93,8 +88,8 @@ namespace Ludo.Server.Hubs
             //{
                 var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
 
-                var requestResponse = _mediator.Send(request);
-                (List<IPlayer> playersWithouCaller, int randomNumber) = requestResponse.Result;
+                var response = _mediator.Send(request);
+                (List<IPlayer> playersWithouCaller, int randomNumber) = response.Result;
                 
                 NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
                 return Clients.Caller.SendAsync("DiceRolled", randomNumber);

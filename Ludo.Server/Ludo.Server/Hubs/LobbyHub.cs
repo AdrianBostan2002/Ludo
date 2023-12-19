@@ -20,8 +20,8 @@ namespace Ludo.Server.Hubs
         {
             var request = new CreateLobbyRequest { Username = username, ConnectionId = Context.ConnectionId };
 
-            Task<int> requestResult = _mediator.Send(request);
-            int lobbyId = requestResult.Result;
+            Task<int> response = _mediator.Send(request);
+            int lobbyId = response.Result;
 
             return Clients.Caller.SendAsync("JoinedLobby", new { username, lobbyId });
         }
@@ -31,8 +31,8 @@ namespace Ludo.Server.Hubs
             try
             {
                 var request = new JoinLobbyRequest { Username = username, ConnectionId = Context.ConnectionId, LobbyId = lobbyId };
-                var requestResult = _mediator.Send(request);
-                var lobbyParticipants = requestResult.Result;
+                var response = _mediator.Send(request);
+                var lobbyParticipants = response.Result;
 
                 return NotifyAllParticipantsThatANewUserJoinedLobby(lobbyId, lobbyParticipants);
             }
@@ -47,8 +47,8 @@ namespace Ludo.Server.Hubs
             try
             {
                 var request = new ParticipantLeaveRequest { Username = username, LobbyId = lobbyId };
-                var requestResult = _mediator.Send(request);
-                var lobbyParticipants = requestResult.Result;
+                var response = _mediator.Send(request);
+                var lobbyParticipants = response.Result;
 
                 NotifyParticipantsThatSomeoneLeft(lobbyParticipants, username);
                 return Clients.Caller.SendAsync("LeaveLobbySucceeded");
