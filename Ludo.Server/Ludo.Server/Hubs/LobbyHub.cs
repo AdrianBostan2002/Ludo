@@ -1,77 +1,63 @@
-﻿using Ludo.Domain.Entities;
-using Ludo.Domain.Enums;
+﻿using Ludo.Business.UseCases.Lobby.CreateLobby;
+using Ludo.Business.UseCases.Lobby.JoinLobbyUseCase;
+using Ludo.Business.UseCases.Lobby.ParticipantLeave;
 using Ludo.Domain.Interfaces;
+using Ludo.MediatRPattern.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Ludo.Server.Hubs
 {
     public class LobbyHub : Hub
     {
-        private ILobbyService _lobbyService;
+        private readonly IMediator _mediator;
 
-        public LobbyHub(ILobbyService lobbyService)
+        public LobbyHub(IMediator mediator)
         {
-            _lobbyService = lobbyService ?? throw new ArgumentNullException(nameof(lobbyService));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-
-        public async Task Test(string[] yourMessage) =>
-        await Clients.All.SendAsync("your message", yourMessage);
 
         public Task CreatedLobby(string username)
         {
-            //TransformIntoCreateLobbyUseCase
-            bool newLobbyCreated = false;
+            var request = new CreateLobbyRequest { Username = username, ConnectionId = Context.ConnectionId };
 
-            int randomLobbyId = 0;
+            Task<int> response = _mediator.Send(request);
+            int lobbyId = response.Result;
 
-            while (!newLobbyCreated)
-            {
-                randomLobbyId = Random.Shared.Next(100, 999);
-
-                ILobbyParticipant lobbyOwner = CreateNewLobbyParticipant(username, RoleType.Owner);
-
-                newLobbyCreated = _lobbyService.CreateNewLobby(randomLobbyId, lobbyOwner);
-            }
-
-            //Return username, randomLobbyId
-
-            return Clients.Caller.SendAsync("JoinedLobby", new { username, lobbyId = randomLobbyId });
+            return Clients.Caller.SendAsync("JoinedLobby", new { username, lobbyId });
         }
 
         public Task JoinLobby(int lobbyId, string username)
         {
-            //Transform into JoinLobbyUseCase
-            ILobbyParticipant newLobbyParticipant = CreateNewLobbyParticipant(username, RoleType.Regular);
+            try
+            {
+                var request = new JoinLobbyRequest { Username = username, ConnectionId = Context.ConnectionId, LobbyId = lobbyId };
+                var response = _mediator.Send(request);
+                var lobbyParticipants = response.Result;
 
-            if (!_lobbyService.JoinLobby(lobbyId, newLobbyParticipant))
+                return NotifyAllParticipantsThatANewUserJoinedLobby(lobbyId, lobbyParticipants);
+            }
+            catch (Exception)
             {
                 return NotifyCallerThatJoiningFailed();
             }
-
-            var lobbyParticipants = _lobbyService.GetLobbyParticipants(lobbyId);
-
-            if (lobbyParticipants.Count == 0)
-            {
-                throw new Exception("Lobby shouldn't be empty");
-            }
-            //return lobbyId, lobbyParticipants
-
-            return NotifyAllParticipantsThatANewUserJoinedLobby(lobbyId, lobbyParticipants);
         }
 
         public Task ParticipantLeave(int lobbyId, string username)
         {
-            bool isRemoved = _lobbyService.RemoveLobbyParticipant(lobbyId, username);
+            try
+            {
+                var request = new ParticipantLeaveRequest { Username = username, LobbyId = lobbyId };
+                var response = _mediator.Send(request);
+                var lobbyParticipants = response.Result;
 
-            if (!isRemoved)
+                NotifyParticipantsThatSomeoneLeft(lobbyParticipants, username);
+                return Clients.Caller.SendAsync("LeaveLobbySucceeded");
+
+            }
+            catch (Exception)
             {
                 return Clients.Caller.SendAsync("LeaveLobbyFailed");
             }
-
-            var lobbyParticipants = _lobbyService.GetLobbyParticipants(lobbyId);
-
-            NotifyParticipantsThatSomeoneLeft(lobbyParticipants, username);
-            return Clients.Caller.SendAsync("LeaveLobbySucceeded");
         }
 
         private Task NotifyAllParticipantsThatANewUserJoinedLobby(int lobbyId, List<ILobbyParticipant> lobbyParticipants)
@@ -91,11 +77,6 @@ namespace Ludo.Server.Hubs
             return Clients.Client(lastParticipant.ConnectionId).SendAsync("SuccessfullyContectedToLobby", new { lobbyParticipants, lobbyId });
         }
 
-        private Task NotifyCallerThatJoiningSucceded(ILobby lobby)
-        {
-            return Clients.Caller.SendAsync("SuccessfullyContectedToLobby", lobby.Participants);
-        }
-
         private Task NotifyCallerThatJoiningFailed()
         {
             return Clients.Caller.SendAsync("UnSuccessfullyContectedToLobby");
@@ -107,16 +88,6 @@ namespace Ludo.Server.Hubs
             {
                 Clients.Client(participant.ConnectionId).SendAsync("PlayerLeftLobby", username);
             }
-        }
-
-        //This method will be moved into lobbyService
-        private ILobbyParticipant CreateNewLobbyParticipant(string username, RoleType role)
-        {
-            ILobbyParticipant lobbyOwner = new LobbyParticipant();
-            lobbyOwner.Name = username;
-            lobbyOwner.ConnectionId = Context.ConnectionId;
-            lobbyOwner.Role = role;
-            return lobbyOwner;
         }
     }
 }

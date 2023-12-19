@@ -1,4 +1,5 @@
 ﻿using Ludo.Domain.Entities;
+using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using System.Collections.Immutable;
 
@@ -88,6 +89,15 @@ namespace Ludo.Business.Services
             }
 
             return null;
+        }
+
+        public ILobbyParticipant CreateNewLobbyParticipant(string username, RoleType role, string connectionId)
+        {
+            ILobbyParticipant lobbyOwner = new LobbyParticipant();
+            lobbyOwner.Name = username;
+            lobbyOwner.ConnectionId = connectionId;
+            lobbyOwner.Role = role;
+            return lobbyOwner;
         }
     }
 }

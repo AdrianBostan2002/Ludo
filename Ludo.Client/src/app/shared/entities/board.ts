@@ -1,5 +1,6 @@
 import { Cell } from "./cell";
 
 export interface Board{
-    cells: Cell[];
+    cells: Cell[][];
+    finalCells: Cell[];
 }

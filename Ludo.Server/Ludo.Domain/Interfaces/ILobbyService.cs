@@ -1,4 +1,6 @@
-﻿namespace Ludo.Domain.Interfaces
+﻿using Ludo.Domain.Enums;
+
+namespace Ludo.Domain.Interfaces
 {
     public interface ILobbyService
     {
@@ -8,5 +10,6 @@
         List<ILobbyParticipant> GetLobbyParticipants(int lobbyId);
         int LobbiesCount();
         ILobby GetLobbyById(int id);
+        ILobbyParticipant CreateNewLobbyParticipant(string username, RoleType role, string connectionId);
     }
 }

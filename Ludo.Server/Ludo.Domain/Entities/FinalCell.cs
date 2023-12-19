@@ -8,5 +8,13 @@ namespace Ludo.Domain.Entities
         public List<Piece> Pieces { get; set; }
 
         public ColorType Color { get; set; }
+
+        private CellType _type;
+        public CellType Type { get { return _type; } }
+
+        public FinalCell()
+        {
+            _type = CellType.Final;
+        }
     }
 }

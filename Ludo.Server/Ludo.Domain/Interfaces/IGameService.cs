@@ -12,5 +12,7 @@ namespace Ludo.Domain.Interfaces
         IPlayer GetPlayer(int gameId, string username);
         bool CheckIfGameCanStart(int gameId);
         bool RemovePlayerFromGame(int gameId, string username);
+        void AssignPlayersPiecesRandomColors(List<IPlayer> players);
+        List<IPlayer> GetPlayersWithoutCaller(IGame game, string connectionId);
     }
 }

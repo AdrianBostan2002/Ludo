@@ -7,6 +7,8 @@ namespace Ludo.Domain.Interfaces
     {
         List<Piece> Pieces { get; set; }
 
-        ColorType Color { get; set; }   
+        ColorType Color { get; set; }
+
+        CellType Type { get; }
     }
 }

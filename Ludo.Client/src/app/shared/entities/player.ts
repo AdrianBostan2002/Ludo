@@ -2,5 +2,7 @@ import { Piece } from "./piece";
 
 export interface Player{
     name: string,
-    pieces: Piece[]
+    connectionId: string,
+    pieces: Piece[],
+    isReady: boolean
 }

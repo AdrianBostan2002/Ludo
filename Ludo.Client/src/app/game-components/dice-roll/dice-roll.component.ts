@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GameService } from 'src/app/services/game.service';
 
 @Component({
   selector: 'app-dice-roll',
@@ -7,11 +8,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DiceRollComponent {
 
+  gameId: number=0;
+
+  constructor(private gameService: GameService){}
+
+  ngOnInit(): void {
+    this.gameId = this.gameService.lobbyId;
+
+    this.gameService.diceNumber$.subscribe((diceNumber)=>{
+      this.diceRolled(diceNumber)
+    });
+  }
+
   rollDice() {
+    this.gameService.roleDice(this.gameId);
+  }
+
+  diceRolled(diceNumber: Number) {
     const dice = document.querySelectorAll(".die-list");
     dice.forEach((die: any) => {
       this.toggleClasses(die);
-      (die as HTMLElement).dataset['roll'] = this.getRandomNumber(1, 6).toString();
+      (die as HTMLElement).dataset['roll'] = diceNumber.toString();
     });
   }
 

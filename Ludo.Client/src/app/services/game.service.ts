@@ -13,19 +13,28 @@ export class GameService {
 
   connectionUrl = `https://localhost:7192/gameHub`;
 
-  private lobbyId: number = 0;
+  lobbyId: number = 0;
+  currentUser?: User;
 
   private hubConnection: signalR.HubConnection = new signalR.HubConnectionBuilder()
     .withUrl(this.connectionUrl)
     .build();
 
-  game$: Subject<Game> = new Subject<Game>();
+  game$: BehaviorSubject<Game | undefined> = new BehaviorSubject<Game | undefined>(undefined);
+  diceNumber$: Subject<number> = new Subject<number>();
+  currentGame!: Game;
 
   newReadyPlayer$: Subject<string> = new Subject<string>();
 
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    window.addEventListener('beforeunload', (event: Event): void => {
+      if (this.lobbyId !== 0 && this.currentUser !== undefined) {
+        this.playerLeave(this.lobbyId, this.currentUser);
+      }
+    });
+  }
 
   public startConnection = (): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
@@ -54,6 +63,7 @@ export class GameService {
 
   public async startGamePreprocessing(lobbyId: number, user: User) {
     this.lobbyId = lobbyId;
+    this.currentUser = user;
     await this.checkConnection();
 
     this.hubConnection.send("StartGamePreprocessing", Number(lobbyId), user.username);
@@ -71,7 +81,7 @@ export class GameService {
     this.hubConnection.send("StartGame", Number(lobbyId));
   }
 
-  public async playerLeave(lobbyId: number, player: User){
+  public async playerLeave(lobbyId: number, player: User) {
     await this.checkConnection();
 
     this.hubConnection.send("PlayerLeave", Number(lobbyId), player.username);
@@ -88,6 +98,12 @@ export class GameService {
     }
   }
 
+  public roleDice = async (gameId: number) => {
+    await this.checkConnection();
+
+    this.hubConnection.send("RollDice", Number(gameId));
+  }
+
   public addGameListener = () => {
     this.hubConnection.on('PreprocessingSuccessfully', (data) => {
       console.log('PreprocessingSuccessfully');
@@ -97,14 +113,17 @@ export class GameService {
       });
     });
 
-    this.hubConnection.on('StartGameSucceded', (data: StartGameSuccesfullyResponse) => {
-      console.log(data);
+    this.hubConnection.on('StartGameSucceded', (data: Game) => {
+      console.log('data.game:', data);
+      this.game$.next(data);
+      this.currentGame = data;
       this.router.navigate([`game/${this.lobbyId}`]);
-      this.game$.next(data.game);
     });
 
-    this.hubConnection.on('GameStarted', (data: StartGameSuccesfullyResponse) => {
-      console.log(data);
+    this.hubConnection.on('GameStarted', (data: Game) => {
+      console.log('data.game:', data);
+      this.game$.next(data);
+      this.currentGame = data;
       this.router.navigate([`game/${this.lobbyId}`]);
     });
 
@@ -120,15 +139,21 @@ export class GameService {
     });
 
     this.hubConnection.on('LeavingSucceeded', () => {
-      
+
       this.disconnectFromHub();
       //this.router.navigate(['']);
       console.log("Leaving Game Succeeded");
-      
+
     });
 
     this.hubConnection.on('PlayerLeftGame', (data) => {
       console.log(`${data} left game`);
+    });
+
+    this.hubConnection.on('DiceRolled', (data) => {
+      console.log(`Dice rolled: ${data}`);
+
+      this.diceNumber$.next(data);
     });
   }
 
