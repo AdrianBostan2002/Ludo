@@ -53,7 +53,6 @@ export class BoardComponent implements OnInit {
 
   private initializeEmptyGame(): Game {
     let game: Game = {
-      board: { cells: [], finalCells: [] },
       id: 0,
       players: []
     };

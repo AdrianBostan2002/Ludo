@@ -1,9 +1,10 @@
-﻿using Ludo.Domain.Interfaces;
+﻿using Ludo.Domain.DTOs;
+using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.Game.CreateGameUseCase
 {
-    public class StartGameHandler: IRequestHandler<StartGameRequest, (IGame, List<IPlayer>)>
+    public class StartGameHandler: IRequestHandler<StartGameRequest, (GameDto, List<IPlayer>)>
     {
         private readonly IGameService _gameService;
 
@@ -12,7 +13,7 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
-        public Task<(IGame, List<IPlayer>)> Handle(StartGameRequest request)
+        public Task<(GameDto, List<IPlayer>)> Handle(StartGameRequest request)
         {
             if (!_gameService.CheckIfGameCanStart(request.LobbyId))
             {
@@ -24,9 +25,20 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
             _gameService.AssignPlayersPiecesRandomColors(game.Players);
             List<IPlayer> playersWithoutCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);
 
-            (IGame, List<IPlayer>) result = (game, playersWithoutCaller);
+            GameDto gameDto = CreateGameDto(game);
+
+            (GameDto, List<IPlayer>) result = (gameDto, playersWithoutCaller);
 
             return Task.FromResult(result);
+        }
+
+        private GameDto CreateGameDto(IGame game)
+        {
+            return new GameDto
+            {
+                Id = game.Id,
+                Players = game.Players
+            };
         }
     }
 }

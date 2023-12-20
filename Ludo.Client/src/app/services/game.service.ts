@@ -5,6 +5,8 @@ import { Game } from '../shared/entities/game';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { User } from '../shared/interfaces/user.interface';
 import { Router } from '@angular/router';
+import { PieceMoved } from '../shared/entities/piece-moved';
+import { ColorType } from '../shared/enums/color-type';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,36 @@ export class GameService {
   game$: BehaviorSubject<Game | undefined> = new BehaviorSubject<Game | undefined>(undefined);
   diceNumber$: Subject<number> = new Subject<number>();
   currentGame!: Game;
+  
+  pieces : PieceMoved[] = [
+    {
+      nextPosition: 1,
+      piece: {color: ColorType.Red}
+    }, 
+    {
+      nextPosition: 2,
+      piece: {color: ColorType.Green}
+    }, 
+    {
+      nextPosition: 3,
+      piece: {color: ColorType.Blue}
+    }, 
+    {
+      nextPosition: 4,
+      piece: {color: ColorType.Green}
+    }, 
+    {
+      nextPosition: 5,
+      piece: {color: ColorType.Blue}
+    }, 
+    {
+      nextPosition: 6,
+      piece: {color: ColorType.Yellow}
+    }, 
+  ];
 
+  piecesMoved$: BehaviorSubject<PieceMoved[]> = new BehaviorSubject<PieceMoved[]>(this.pieces);
+  
   newReadyPlayer$: Subject<string> = new Subject<string>();
 
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);

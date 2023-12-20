@@ -3,6 +3,7 @@ using Ludo.Business.UseCases.Game.PlayerLeaveUseCase;
 using Ludo.Business.UseCases.Game.PlayerReadyUseCase;
 using Ludo.Business.UseCases.Game.RollDiceUseCase;
 using Ludo.Business.UseCases.Game.StartGamePreprocessing;
+using Ludo.Domain.DTOs;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
 using Microsoft.AspNetCore.SignalR;
@@ -35,7 +36,7 @@ namespace Ludo.Server.Hubs
                 var request = new StartGameRequest { LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
 
                 var response = _mediator.Send(request);
-                (IGame game, List<IPlayer> playersWithoutCaller) = response.Result;
+                (GameDto game, List<IPlayer> playersWithoutCaller) = response.Result;
 
                 NotifyPlayersThatNewGameStarted(game, playersWithoutCaller);
                 return Clients.Caller.SendAsync("StartGameSucceded", game);
@@ -100,7 +101,7 @@ namespace Ludo.Server.Hubs
             //}
         }
 
-        private void NotifyPlayersThatNewGameStarted(IGame game, List<IPlayer> players)
+        private void NotifyPlayersThatNewGameStarted(GameDto game, List<IPlayer> players)
         {
             foreach (var player in players)
             {

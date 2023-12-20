@@ -1,6 +1,11 @@
 <div (click)="togglePiece()" [ngClass]="getCellColor(color)">
-    <app-piece *ngFor="let i of getArray(numberOfPieces); let index = index" [style.left.%]="getLeftPosition(index)"
-        [style.top.%]="getTopPosition(index)" [color]="redColor"></app-piece>
+    <!-- <app-piece *ngFor="let i of getArray(numberOfPieces); let index = index" [style.left.%]="getLeftPosition(index)"
+        [style.top.%]="getTopPosition(index)" [color]="redColor"></app-piece> -->
+
+
+        <app-piece *ngFor="let piece of pieces; let index = index" [style.left.%]="getLeftPosition(index)"
+        [style.top.%]="getTopPosition(index)" [color]="piece.color"></app-piece>
+
 </div>
 <!-- 
 <div (click)="togglePiece()" [ngClass]="getNumberOfPiecesInfo(2)">

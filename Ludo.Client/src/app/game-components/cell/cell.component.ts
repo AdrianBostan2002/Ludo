@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { GameService } from 'src/app/services/game.service';
 import { Game } from 'src/app/shared/entities/game';
+import { Piece } from 'src/app/shared/entities/piece';
 import { ColorType } from 'src/app/shared/enums/color-type';
 
 @Component({
@@ -14,7 +15,9 @@ export class CellComponent {
   game: Game = this.initializeEmptyGame();
   currentGameId: number = 0;
   numberOfPieces: number = 0;
+  pieces: Piece[] = [];
   @Input() color!: ColorType;
+  @Input() position!: number;
 
   redColor: ColorType = ColorType.Red;
   blueColor: ColorType = ColorType.Blue;
@@ -35,6 +38,17 @@ export class CellComponent {
     //   }
     //   console.log('current game:', this.game)
     // });
+
+    this.gameService.piecesMoved$.subscribe((piecesMoved) => {
+      piecesMoved.forEach((pieceMoved) => {
+        if (pieceMoved.nextPosition === this.position) {
+            this.pieces.push(pieceMoved.piece);            
+        }
+        if(pieceMoved.previousPosition === this.position){
+          this.pieces.filter(piece => piece!== pieceMoved.piece);
+        }
+      })
+    });
   }
 
   // TEST FUNCTION TO DISPLAY PIECES ON A CELL
@@ -71,7 +85,6 @@ export class CellComponent {
 
   private initializeEmptyGame(): Game {
     let game: Game = {
-      board: { cells: [], finalCells: [] },
       id: 0,
       players: []
     };
