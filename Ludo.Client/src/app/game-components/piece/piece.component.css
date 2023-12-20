@@ -1,0 +1,25 @@
+div {
+    width: 10px;
+    height: 10px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    border: 1px solid black;
+    background: black;
+}
+
+.blue-icon {
+    background: blue;
+}
+
+.red-icon {
+    background: red;
+}
+
+.green-icon {
+    background: green;
+}
+
+.yellow-icon {
+    background: yellow;
+}

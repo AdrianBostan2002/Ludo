@@ -1,1 +1,22 @@
-<p>cell works!</p>
+<div (click)="togglePiece()" [ngClass]="getCellColor(color)">
+    <app-piece *ngFor="let i of getArray(numberOfPieces); let index = index" [style.left.%]="getLeftPosition(index)"
+        [style.top.%]="getTopPosition(index)" [color]="redColor"></app-piece>
+</div>
+<!-- 
+<div (click)="togglePiece()" [ngClass]="getNumberOfPiecesInfo(2)">
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+</div>
+
+<div (click)="togglePiece()" [ngClass]="getNumberOfPiecesInfo(3)">
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+</div>
+
+<div (click)="togglePiece()" [ngClass]="getNumberOfPiecesInfo(4)">
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+</div> -->

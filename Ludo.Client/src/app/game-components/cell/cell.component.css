@@ -1,0 +1,29 @@
+div {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+}
+
+app-piece {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.blue-icon {
+    background: blue;
+}
+
+.red-icon {
+    background: red;
+}
+
+.green-icon {
+    background: green;
+}
+
+.yellow-icon {
+    background: yellow;
+}
