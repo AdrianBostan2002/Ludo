@@ -184,5 +184,16 @@ namespace Ludo.Business.Services
 
             return game.Players.Except(caller).ToList();
         }
+
+        public void AssignRandomOrderForRollingDice(IGame game)
+        {
+            var random = new Random();
+
+            var randomOrderPlayersConnectionId = game.Players.OrderBy(c => random.Next()).Select(p=>p.ConnectionId);
+
+            Queue<string> piecesMoveOrder = new Queue<string>(randomOrderPlayersConnectionId);
+            
+            game.RollDiceOrder = piecesMoveOrder;
+        }
     }
 }

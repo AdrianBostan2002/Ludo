@@ -101,6 +101,11 @@ namespace Ludo.Server.Hubs
             //}
         }
 
+        public Task MovePiece(string username, int position, int lastDiceNumber)
+        {
+            return Clients.Caller.SendAsync("Ok");
+        }
+
         private void NotifyPlayersThatNewGameStarted(GameDto game, List<IPlayer> players)
         {
             foreach (var player in players)
@@ -123,6 +128,11 @@ namespace Ludo.Server.Hubs
             {
                 Clients.Client(player.ConnectionId).SendAsync("DiceRolled", diceNumber);
             }
+        }
+
+        private void NotifyPlayerThatShouldRollDice(string connectionId)
+        {
+            Clients.Client(connectionId).SendAsync("CanRollDice");
         }
     }
 }

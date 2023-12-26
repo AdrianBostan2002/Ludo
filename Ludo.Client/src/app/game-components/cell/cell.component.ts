@@ -16,6 +16,7 @@ export class CellComponent {
   currentGameId: number = 0;
   numberOfPieces: number = 0;
   pieces: Piece[] = [];
+  canMovePiece: boolean = false;
   @Input() color!: ColorType;
   @Input() position!: number;
 
@@ -27,33 +28,62 @@ export class CellComponent {
   constructor(private gameService: GameService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // this.route.params.pipe(
-    //   switchMap(params => {
-    //     this.currentGameId = params['gameId'];
-    //     return this.gameService.game$;
-    //   })
-    // ).subscribe(game => {
-    //   if (game != undefined) {
-    //     this.game = game;
-    //   }
-    //   console.log('current game:', this.game)
-    // });
+    this.route.params.pipe(
+      switchMap(params => {
+        this.currentGameId = params['gameId'];
+        return this.gameService.game$;
+      })
+    ).subscribe(game => {
+      if (game != undefined) {
+        this.game = game;
+        this.startGamePieces();
+      }
+    });
 
     this.gameService.piecesMoved$.subscribe((piecesMoved) => {
-      piecesMoved.forEach((pieceMoved) => {
-        if (pieceMoved.nextPosition === this.position) {
-            this.pieces.push(pieceMoved.piece);            
-        }
-        if(pieceMoved.previousPosition === this.position){
-          this.pieces.filter(piece => piece!== pieceMoved.piece);
-        }
-      })
+      this.newPiecesEvent(piecesMoved);
+    });
+
+    this.gameService.canMovePiece$.subscribe((movePiece)=>{
+      this.canMovePiece = movePiece;
     });
   }
 
+  private startGamePieces(){
+    this.game.players.forEach((player)=>{
+      this.newPiecesEvent(player.pieces);
+    });
+  }
+
+  private newPiecesEvent(pieces: Piece[]){
+    pieces.forEach((piece) => {
+      if (piece.nextPosition === this.position) {
+          this.pieces.push(piece);            
+      }
+      if(piece.previousPosition === this.position){
+        this.pieces.filter(piece => piece!== piece);
+      }
+    })
+  }
+
   // TEST FUNCTION TO DISPLAY PIECES ON A CELL
-  togglePiece(): void {
-    this.numberOfPieces++;
+  movePiece(): void {
+    //this.numberOfPieces++;
+    if(this.canMovePiece){
+      let player = this.game.players.filter((p)=>p.name===this.gameService.currentUser?.username)[0];
+
+      let playerColor = player.pieces[0].color;
+
+      let hasPlayerPieceOnThisCell: boolean = false;
+
+      hasPlayerPieceOnThisCell = player.pieces.some((piece) => {
+        return piece.color === playerColor;
+      });
+
+      if(hasPlayerPieceOnThisCell){
+        this.gameService.movePiece(this.position);
+      }
+    }
   }
 
   getArray(value: number): number[] {
@@ -86,7 +116,8 @@ export class CellComponent {
   private initializeEmptyGame(): Game {
     let game: Game = {
       id: 0,
-      players: []
+      players: [],
+      firstDiceRoller: ''
     };
 
     return game;

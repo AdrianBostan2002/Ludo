@@ -14,5 +14,6 @@ namespace Ludo.Domain.Interfaces
         bool RemovePlayerFromGame(int gameId, string username);
         void AssignPlayersPiecesRandomColors(List<IPlayer> players);
         List<IPlayer> GetPlayersWithoutCaller(IGame game, string connectionId);
+        void AssignRandomOrderForRollingDice(IGame game);
     }
 }

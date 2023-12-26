@@ -47,14 +47,14 @@ export class BoardComponent implements OnInit {
       if (game != undefined) {
         this.game = game;
       }
-      console.log('current game:', this.game)
     });
   }
 
   private initializeEmptyGame(): Game {
     let game: Game = {
       id: 0,
-      players: []
+      players: [],
+      firstDiceRoller: ''
     };
 
     return game;

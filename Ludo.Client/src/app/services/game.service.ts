@@ -7,6 +7,7 @@ import { User } from '../shared/interfaces/user.interface';
 import { Router } from '@angular/router';
 import { PieceMoved } from '../shared/entities/piece-moved';
 import { ColorType } from '../shared/enums/color-type';
+import { Piece } from '../shared/entities/piece';
 
 @Injectable({
   providedIn: 'root'
@@ -17,48 +18,21 @@ export class GameService {
 
   lobbyId: number = 0;
   currentUser?: User;
+  currentGame!: Game;
+  lastDiceNumber: Number = 0;
 
   private hubConnection: signalR.HubConnection = new signalR.HubConnectionBuilder()
     .withUrl(this.connectionUrl)
     .build();
 
   game$: BehaviorSubject<Game | undefined> = new BehaviorSubject<Game | undefined>(undefined);
+  canRoleDice$: Subject<boolean> = new Subject<boolean>();
+  canMovePiece$: Subject<boolean> = new Subject<boolean>();
   diceNumber$: Subject<number> = new Subject<number>();
-  currentGame!: Game;
-  
-  pieces : PieceMoved[] = [
-    {
-      nextPosition: 1,
-      piece: {color: ColorType.Red}
-    }, 
-    {
-      nextPosition: 2,
-      piece: {color: ColorType.Green}
-    }, 
-    {
-      nextPosition: 3,
-      piece: {color: ColorType.Blue}
-    }, 
-    {
-      nextPosition: 4,
-      piece: {color: ColorType.Green}
-    }, 
-    {
-      nextPosition: 5,
-      piece: {color: ColorType.Blue}
-    }, 
-    {
-      nextPosition: 6,
-      piece: {color: ColorType.Yellow}
-    }, 
-  ];
-
-  piecesMoved$: BehaviorSubject<PieceMoved[]> = new BehaviorSubject<PieceMoved[]>(this.pieces);
-  
+  piecesMoved$: Subject<Piece[]> = new Subject<Piece[]>();
   newReadyPlayer$: Subject<string> = new Subject<string>();
-
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
+  
   constructor(private router: Router) {
     window.addEventListener('beforeunload', (event: Event): void => {
       if (this.lobbyId !== 0 && this.currentUser !== undefined) {
@@ -135,6 +109,14 @@ export class GameService {
     this.hubConnection.send("RollDice", Number(gameId));
   }
 
+  public movePiece = async (position: number) =>{
+    await this.checkConnection();
+
+    
+
+    this.hubConnection.send("MovePiece", this.currentUser?.username, position, this.lastDiceNumber);
+  }
+
   public addGameListener = () => {
     this.hubConnection.on('PreprocessingSuccessfully', (data) => {
       console.log('PreprocessingSuccessfully');
@@ -184,7 +166,12 @@ export class GameService {
     this.hubConnection.on('DiceRolled', (data) => {
       console.log(`Dice rolled: ${data}`);
 
+      this.lastDiceNumber = data;
       this.diceNumber$.next(data);
+    });
+
+    this.hubConnection.on('CanRollDice', ()=>{
+      this.canRoleDice$.next(false);
     });
   }
 
