@@ -42,10 +42,10 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
         //TODO: Will be deleted after ui round cells will contain an index 
         public void PiecesOnStartPositionAddedOnBoard(IGame game)
         {
-            int GREEN_START_POSITION = 5;
-            int RED_START_POSITION = 20;
-            int YELLOW_START_POSITION = 53;
-            int BLUE_START_POSITION = 67;
+            int GREEN_START_POSITION = 0;
+            int YELLOW_START_POSITION = 13;
+            int BLUE_START_POSITION = 26;
+            int RED_START_POSITION = 39;
 
             foreach (var player in game.Players)
             {
@@ -68,7 +68,7 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
                         break;
                 }
 
-                game.Board.Cells[position - 1].Pieces = player.Pieces;
+                game.Board.Cells[position].Pieces = player.Pieces;
             }
 
         }

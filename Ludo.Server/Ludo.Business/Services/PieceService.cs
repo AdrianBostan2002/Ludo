@@ -7,10 +7,10 @@ namespace Ludo.Business.Services
 {
     public class PieceService : IPieceService
     {
-        private const int GREEN_START_POSITION = 5;
-        private const int RED_START_POSITION = 20;
-        private const int YELLOW_START_POSITION = 53;
-        private const int BLUE_START_POSITION = 67;
+        private const int GREEN_START_POSITION = 0;
+        private const int YELLOW_START_POSITION = 13;
+        private const int BLUE_START_POSITION = 26;
+        private const int RED_START_POSITION = 39;
 
         public Piece CreatePiece(ColorType color)
         {
