@@ -8,6 +8,6 @@ namespace Ludo.Domain.DTOs
 
         public int NextPosition { get; set; }
 
-        public int PreviousPosition { get; set; }   
+        public int? PreviousPosition { get; set; }   
     }
 }

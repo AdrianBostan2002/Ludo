@@ -95,6 +95,7 @@ export class GameService {
   public async checkConnection(): Promise<void> {
     try {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
+        console.log("Connecting........")
         await this.startConnection();
       }
 
@@ -109,12 +110,12 @@ export class GameService {
     this.hubConnection.send("RollDice", Number(gameId));
   }
 
-  public movePiece = async (position: number) =>{
+  public movePiece = async (position: number, pieceColor: ColorType) =>{
     await this.checkConnection();
 
-    
+    let piece: Piece = {color: pieceColor, previousPosition: position };
 
-    this.hubConnection.send("MovePiece", this.currentUser?.username, position, this.lastDiceNumber);
+    this.hubConnection.send("MovePiece", this.currentUser?.username, Number(this.lobbyId), piece, this.lastDiceNumber);
   }
 
   public addGameListener = () => {
@@ -172,6 +173,12 @@ export class GameService {
 
     this.hubConnection.on('CanRollDice', ()=>{
       this.canRoleDice$.next(false);
+    });
+
+    this.hubConnection.on('PiecesMoved', (data)=>{
+      let piecesMoved: Piece[] = data;
+      console.log("Called again");
+      this.piecesMoved$.next(piecesMoved);
     });
   }
 

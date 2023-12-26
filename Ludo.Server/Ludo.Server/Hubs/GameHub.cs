@@ -1,5 +1,6 @@
 ﻿using Ludo.Business.UseCases.Game.CreateGameUseCase;
 using Ludo.Business.UseCases.Game.PlayerLeaveUseCase;
+using Ludo.Business.UseCases.Game.PlayerMovePieceUseCase;
 using Ludo.Business.UseCases.Game.PlayerReadyUseCase;
 using Ludo.Business.UseCases.Game.RollDiceUseCase;
 using Ludo.Business.UseCases.Game.StartGamePreprocessing;
@@ -101,9 +102,30 @@ namespace Ludo.Server.Hubs
             //}
         }
 
-        public Task MovePiece(string username, int position, int lastDiceNumber)
+        public Task MovePiece(string username, int gameId, PieceDto piece, int lastDiceNumber)
         {
-            return Clients.Caller.SendAsync("Ok");
+            //try
+            //{
+                var request = new PlayerMovePieceRequest
+                { 
+                    Username = username, 
+                    GameId = gameId, 
+                    Piece = piece, 
+                    DiceNumber = lastDiceNumber,
+                    ConnectionId = Context.ConnectionId
+                };
+
+                var response = _mediator.Send(request);
+                (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, string playerWhoShouldRollDicesConnectionId) = response.Result;
+
+                NotifyPlayersThatPiecesMoved(piecesMoved, playersWithoutCaller);
+                NotifyPlayerThatShouldRollDice(playerWhoShouldRollDicesConnectionId);
+                return Clients.Caller.SendAsync("PiecesMoved", piecesMoved);
+            //}
+            //catch (Exception)
+            //{
+
+            //}
         }
 
         private void NotifyPlayersThatNewGameStarted(GameDto game, List<IPlayer> players)
@@ -133,6 +155,14 @@ namespace Ludo.Server.Hubs
         private void NotifyPlayerThatShouldRollDice(string connectionId)
         {
             Clients.Client(connectionId).SendAsync("CanRollDice");
+        }
+
+        private void NotifyPlayersThatPiecesMoved(List<PieceDto> piecesMoved, List<IPlayer> players)
+        {
+            foreach(var player in players)
+            {
+                Clients.Client(player.ConnectionId).SendAsync("PiecesMoved", piecesMoved);
+            }
         }
     }
 }

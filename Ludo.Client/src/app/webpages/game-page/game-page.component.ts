@@ -14,7 +14,7 @@ import { User } from 'src/app/shared/interfaces/user.interface';
 export class GamePageComponent {
 
   private currentGameId: number = 0;
-  private currentGameParticipant !: User;
+  public currentGameParticipant !: User;
   private currentGame!: Game | undefined;
   randomDiceNumber: string='';
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { Subscribable, Subscription, switchMap } from 'rxjs';
 import { GameService } from 'src/app/services/game.service';
 import { Game } from 'src/app/shared/entities/game';
 import { Piece } from 'src/app/shared/entities/piece';
@@ -17,6 +17,7 @@ export class CellComponent {
   numberOfPieces: number = 0;
   pieces: Piece[] = [];
   canMovePiece: boolean = false;
+  piecesMovedSubscription?: Subscription;
   @Input() color!: ColorType;
   @Input() position!: number;
 
@@ -40,48 +41,54 @@ export class CellComponent {
       }
     });
 
-    this.gameService.piecesMoved$.subscribe((piecesMoved) => {
-      this.newPiecesEvent(piecesMoved);
-    });
+    if(this.piecesMovedSubscription==undefined){
+      this.piecesMovedSubscription = this.gameService.piecesMoved$.subscribe((piecesMoved) => {
+        this.newPiecesEvent(piecesMoved);
+        console.log("C111111");
+      });
+    }
 
-    this.gameService.canMovePiece$.subscribe((movePiece)=>{
+    this.gameService.canMovePiece$.subscribe((movePiece) => {
       this.canMovePiece = movePiece;
     });
   }
 
-  private startGamePieces(){
-    this.game.players.forEach((player)=>{
+  private startGamePieces() {
+    this.game.players.forEach((player) => {
       this.newPiecesEvent(player.pieces);
     });
   }
 
-  private newPiecesEvent(pieces: Piece[]){
+  private newPiecesEvent(pieces: Piece[]) {
     pieces.forEach((piece) => {
       if (piece.nextPosition === this.position) {
-          this.pieces.push(piece);            
+        this.pieces.push(piece);
       }
-      if(piece.previousPosition === this.position){
-        this.pieces.filter(piece => piece!== piece);
+      if (piece.previousPosition === this.position) {
+        const indexToRemove = this.pieces.findIndex(p => p.color === piece.color);
+
+        if (indexToRemove !== -1) {
+          this.pieces.splice(indexToRemove, 1);
+        }
       }
     })
   }
 
-  // TEST FUNCTION TO DISPLAY PIECES ON A CELL
   movePiece(): void {
     //this.numberOfPieces++;
-    if(this.canMovePiece){
-      let player = this.game.players.filter((p)=>p.name===this.gameService.currentUser?.username)[0];
+    if (this.canMovePiece) {
+      let player = this.game.players.filter((p) => p.name === this.gameService.currentUser?.username)[0];
 
       let playerColor = player.pieces[0].color;
 
       let hasPlayerPieceOnThisCell: boolean = false;
 
-      hasPlayerPieceOnThisCell = player.pieces.some((piece) => {
+      hasPlayerPieceOnThisCell = this.pieces.some((piece) => {
         return piece.color === playerColor;
       });
 
-      if(hasPlayerPieceOnThisCell){
-        this.gameService.movePiece(this.position);
+      if (hasPlayerPieceOnThisCell) {
+        this.gameService.movePiece(this.position, playerColor);
       }
     }
   }
@@ -121,5 +128,11 @@ export class CellComponent {
     };
 
     return game;
+  }
+
+  ngOnDestroy(): void {
+    if (this.piecesMovedSubscription) {
+      this.piecesMovedSubscription.unsubscribe();
+    }
   }
 }
