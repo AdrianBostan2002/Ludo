@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Ludo.Domain.DTOs;
 using Ludo.Domain.Entities;
+using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
 using System;
@@ -43,15 +44,22 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             //}
             //is replaced temporary by next if
 
-            if ((request.Piece.PreviousPosition == 0 || request.Piece.PreviousPosition == 13 ||
-                request.Piece.PreviousPosition == 26 || request.Piece.PreviousPosition == 39) &&
-                request.DiceNumber == 6)
+            currentPiece = currentCell.Pieces.FirstOrDefault();
+
+            if (currentCell.Pieces.Count() != 1)
+            {
+                currentPiece = currentCell.Pieces.Where(p => p.Color == request.Piece.Color).FirstOrDefault();
+            }
+
+            int basePosition = _pieceService.GetBasePosition(currentPiece.Color);
+
+            if (basePosition==request.Piece.PreviousPosition && request.DiceNumber == 6)
             {
                 //should put on the table
                 //but I will pass 6 cells
 
                 currentPiece = currentCell.Pieces.FirstOrDefault();
-                nextPosition = ((int)request.Piece.PreviousPosition + request.DiceNumber) % 52;
+                nextPosition = (int)request.Piece.PreviousPosition+1;
 
                 game.Board.Cells[nextPosition].Pieces.Add(currentPiece);
                 currentCell.Pieces.Remove(currentPiece);
@@ -63,29 +71,26 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
                     PreviousPosition = request.Piece.PreviousPosition
                 });
             }
-            else
+            else if(!(basePosition == request.Piece.PreviousPosition))
             {
-                Piece pieceThatWillBeMoved = currentCell.Pieces.FirstOrDefault();
+                currentPiece = currentCell.Pieces.FirstOrDefault();
 
                 if (currentCell.Pieces.Count() != 1)
                 {
-                    pieceThatWillBeMoved = currentCell.Pieces.Where(p => p.Color == request.Piece.Color).FirstOrDefault();
-
+                    currentPiece = currentCell.Pieces.Where(p => p.Color == request.Piece.Color).FirstOrDefault();
                 }
 
                 nextPosition = ((int)request.Piece.PreviousPosition + request.DiceNumber) % 52;
 
-                game.Board.Cells[nextPosition].Pieces.Add(pieceThatWillBeMoved);
-                currentCell.Pieces.Remove(pieceThatWillBeMoved);
+                game.Board.Cells[nextPosition].Pieces.Add(currentPiece);
+                currentCell.Pieces.Remove(currentPiece);
 
                 piecesMoved.Add(new PieceDto
                 {
-                    Color = pieceThatWillBeMoved.Color,
+                    Color = currentPiece.Color,
                     NextPosition = nextPosition,
                     PreviousPosition = request.Piece.PreviousPosition
                 });
-
-
             }
 
             var playersWithouCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);

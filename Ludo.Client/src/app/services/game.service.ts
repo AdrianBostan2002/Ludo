@@ -167,8 +167,11 @@ export class GameService {
     this.hubConnection.on('DiceRolled', (data) => {
       console.log(`Dice rolled: ${data}`);
 
-      this.lastDiceNumber = data;
-      this.diceNumber$.next(data);
+      if(data.canMovePieces)
+
+      this.lastDiceNumber = data.diceNumber;
+      this.diceNumber$.next(data.diceNumber);
+      this.canMovePiece$.next(data.canMovePieces)
     });
 
     this.hubConnection.on('CanRollDice', ()=>{
@@ -177,7 +180,7 @@ export class GameService {
 
     this.hubConnection.on('PiecesMoved', (data)=>{
       let piecesMoved: Piece[] = data;
-      console.log("Called again");
+      this.canMovePiece$.next(false);
       this.piecesMoved$.next(piecesMoved);
     });
   }

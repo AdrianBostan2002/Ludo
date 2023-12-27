@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import { GameService } from 'src/app/services/game.service';
 import { Game } from 'src/app/shared/entities/game';
 
@@ -14,6 +14,9 @@ export class DiceRollComponent {
   currentGame?: Game;
   canRollDice: boolean = true;
 
+  canRoleDiceSubscription?: Subscription;
+  diceNumberSubscription?: Subscription;
+
   constructor(private gameService: GameService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -24,11 +27,11 @@ export class DiceRollComponent {
 
     this.gameId = this.gameService.lobbyId;
 
-    this.gameService.canRoleDice$.subscribe((canRoleDice) => {
+    this.canRoleDiceSubscription = this.gameService.canRoleDice$.subscribe((canRoleDice) => {
       this.canRollDice = canRoleDice;
     })
 
-    this.gameService.diceNumber$.subscribe((diceNumber) => {
+    this.diceNumberSubscription = this.gameService.diceNumber$.subscribe((diceNumber) => {
       this.diceRolled(diceNumber)
     });
   }
@@ -43,7 +46,7 @@ export class DiceRollComponent {
       this.toggleClasses(die);
       (die as HTMLElement).dataset['roll'] = diceNumber.toString();
       this.canRollDice = true;
-      this.gameService.canMovePiece$.next(true);
+      //this.gameService.canMovePiece$.next(true);
     });
   }
 
@@ -56,5 +59,14 @@ export class DiceRollComponent {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  ngOnDestroy(): void {
+    if (this.canRoleDiceSubscription!=undefined) {
+      this.canRoleDiceSubscription.unsubscribe();
+    }
+    if(this.diceNumberSubscription!=undefined){
+      this.diceNumberSubscription;
+    }
   }
 }

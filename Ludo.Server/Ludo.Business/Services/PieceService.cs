@@ -26,26 +26,9 @@ namespace Ludo.Business.Services
 
             if (pieces.Count != 0)
             {
-                int startPosition=0;
                 var firstPiece = pieces.FirstOrDefault();
 
-                switch(firstPiece.Color) 
-                {
-                    case ColorType.Green:
-                        startPosition = GREEN_START_POSITION;
-                        break;
-                    case ColorType.Red:
-                        startPosition = RED_START_POSITION;
-                        break;
-                    case ColorType.Yellow:
-                        startPosition = YELLOW_START_POSITION;
-                        break;
-                    case ColorType.Blue:
-                        startPosition = BLUE_START_POSITION;
-                        break;
-                    default:
-                        break;
-                }
+                int startPosition = GetBasePosition(firstPiece.Color);
 
                 foreach (Piece piece in pieces)
                 {
@@ -60,6 +43,31 @@ namespace Ludo.Business.Services
             }
 
             return piecesDto;
+        }
+
+        public int GetBasePosition(ColorType color)
+        {
+            int position = 0;
+
+            switch (color)
+            {
+                case ColorType.Green:
+                    position = GREEN_START_POSITION;
+                    break;
+                case ColorType.Red:
+                    position = RED_START_POSITION;
+                    break;
+                case ColorType.Yellow:
+                    position = YELLOW_START_POSITION;
+                    break;
+                case ColorType.Blue:
+                    position = BLUE_START_POSITION;
+                    break;
+                default:
+                    break;
+            }
+
+            return position;
         }
     }
 }

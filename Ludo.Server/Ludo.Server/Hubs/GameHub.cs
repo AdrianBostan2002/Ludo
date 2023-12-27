@@ -88,13 +88,17 @@ namespace Ludo.Server.Hubs
         {
             //try
             //{
-                var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
+            var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
 
-                var response = _mediator.Send(request);
-                (List<IPlayer> playersWithouCaller, int randomNumber) = response.Result;
-                
-                NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
-                return Clients.Caller.SendAsync("DiceRolled", randomNumber);
+            var response = _mediator.Send(request);
+            (List<IPlayer> playersWithouCaller, int randomNumber, string nextDiceRoller, bool canMovePieces) = response.Result;
+
+            NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
+            if (nextDiceRoller != "")
+            {
+                NotifyPlayerThatShouldRollDice(nextDiceRoller);
+            }
+            return Clients.Caller.SendAsync("DiceRolled", new { diceNumber = randomNumber, canMovePieces });
             //}
             //catch (Exception)
             //{
@@ -106,21 +110,21 @@ namespace Ludo.Server.Hubs
         {
             //try
             //{
-                var request = new PlayerMovePieceRequest
-                { 
-                    Username = username, 
-                    GameId = gameId, 
-                    Piece = piece, 
-                    DiceNumber = lastDiceNumber,
-                    ConnectionId = Context.ConnectionId
-                };
+            var request = new PlayerMovePieceRequest
+            {
+                Username = username,
+                GameId = gameId,
+                Piece = piece,
+                DiceNumber = lastDiceNumber,
+                ConnectionId = Context.ConnectionId
+            };
 
-                var response = _mediator.Send(request);
-                (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, string playerWhoShouldRollDicesConnectionId) = response.Result;
+            var response = _mediator.Send(request);
+            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, string playerWhoShouldRollDicesConnectionId) = response.Result;
 
-                NotifyPlayersThatPiecesMoved(piecesMoved, playersWithoutCaller);
-                NotifyPlayerThatShouldRollDice(playerWhoShouldRollDicesConnectionId);
-                return Clients.Caller.SendAsync("PiecesMoved", piecesMoved);
+            NotifyPlayersThatPiecesMoved(piecesMoved, playersWithoutCaller);
+            NotifyPlayerThatShouldRollDice(playerWhoShouldRollDicesConnectionId);
+            return Clients.Caller.SendAsync("PiecesMoved", piecesMoved);
             //}
             //catch (Exception)
             //{
@@ -148,7 +152,7 @@ namespace Ludo.Server.Hubs
         {
             foreach (var player in players)
             {
-                Clients.Client(player.ConnectionId).SendAsync("DiceRolled", diceNumber);
+                Clients.Client(player.ConnectionId).SendAsync("DiceRolled", new { diceNumber, canMovePieces = false });
             }
         }
 
@@ -159,7 +163,7 @@ namespace Ludo.Server.Hubs
 
         private void NotifyPlayersThatPiecesMoved(List<PieceDto> piecesMoved, List<IPlayer> players)
         {
-            foreach(var player in players)
+            foreach (var player in players)
             {
                 Clients.Client(player.ConnectionId).SendAsync("PiecesMoved", piecesMoved);
             }

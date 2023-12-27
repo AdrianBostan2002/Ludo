@@ -41,7 +41,5 @@ export class GamePageComponent {
     //console.log('current game:', this.currentGame);
 
     this.currentGameParticipant = this.lobbyService.currentLobbyParticipant;
-
-    this.gameService.addGameListener();
   }
 }

@@ -131,7 +131,7 @@ export class CellComponent {
   }
 
   ngOnDestroy(): void {
-    if (this.piecesMovedSubscription) {
+    if (this.piecesMovedSubscription!=undefined) {
       this.piecesMovedSubscription.unsubscribe();
     }
   }

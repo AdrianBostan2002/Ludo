@@ -189,11 +189,45 @@ namespace Ludo.Business.Services
         {
             var random = new Random();
 
-            var randomOrderPlayersConnectionId = game.Players.OrderBy(c => random.Next()).Select(p=>p.ConnectionId);
+            var randomOrderPlayersConnectionId = game.Players.OrderBy(c => random.Next()).Select(p => p.ConnectionId);
 
             Queue<string> piecesMoveOrder = new Queue<string>(randomOrderPlayersConnectionId);
-            
+
             game.RollDiceOrder = piecesMoveOrder;
+        }
+
+        public bool CheckIfPlayerPiecesAreOnStartPosition(IGame game, IPlayer player)
+        {
+            int startPosition = 0;
+            Piece firstPiece = player.Pieces.FirstOrDefault();
+
+            if (firstPiece != null)
+            {
+                switch (firstPiece.Color)
+                {
+                    case ColorType.Green:
+                        startPosition = _pieceService.GREEN_START_POSITION;
+                        break;
+                    case ColorType.Red:
+                        startPosition = _pieceService.RED_START_POSITION;
+                        break;
+                    case ColorType.Yellow:
+                        startPosition = _pieceService.YELLOW_START_POSITION;
+                        break;
+                    case ColorType.Blue:
+                        startPosition = _pieceService.BLUE_START_POSITION;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (game.Board.Cells[startPosition].Pieces.Count == 4)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
