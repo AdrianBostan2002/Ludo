@@ -2,10 +2,15 @@
     <div class="row">
         <div class="red-section black-border">
             <div class="white">
+                <app-cell [type]="'red-home'"></app-cell>
+                <app-cell [type]="'red-home'"></app-cell>
+                <app-cell [type]="'red-home'"></app-cell>
+                <app-cell [type]="'red-home'"></app-cell>
+
+                <!-- <div class="red"></div>
                 <div class="red"></div>
                 <div class="red"></div>
-                <div class="red"></div>
-                <div class="red"></div>
+                <div class="red"></div> -->
             </div>
         </div>
         <div class="lane-section">
@@ -22,8 +27,8 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="greenColor"></app-cell>
-                <app-cell [color]="greenColor"></app-cell>
+                <app-cell [type]="'green-icon'"></app-cell>
+                <app-cell [type]="'green-icon'"></app-cell>
                 <!-- <div id="4" class="box">
                 </div>
                 <div id="5" class="box green">
@@ -33,7 +38,7 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="greenColor"></app-cell>
+                <app-cell [type]="'green-icon'"></app-cell>
                 <app-cell></app-cell>
                 <!-- <div id="7" class="box"></div>
                 <div id="8" class="box green"></div>
@@ -41,7 +46,7 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="greenColor"></app-cell>
+                <app-cell [type]="'green-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="10" class="box"></div>
@@ -50,7 +55,7 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="greenColor"></app-cell>
+                <app-cell [type]="'green-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="13" class="box"></div>
@@ -59,7 +64,7 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="greenColor"></app-cell>
+                <app-cell [type]="'green-icon'"></app-cell>
                 <app-cell></app-cell>
                 <!-- <div id="16" class="box"></div>
                 <div id="17" class="box green"></div>
@@ -68,10 +73,15 @@
         </div>
         <div class="green-section black-border">
             <div class="white">
+                <app-cell [type]="'green-home'"></app-cell>
+                <app-cell [type]="'green-home'"></app-cell>
+                <app-cell [type]="'green-home'"></app-cell>
+                <app-cell [type]="'green-home'"></app-cell>
+
+                <!-- <div class="green"></div>
                 <div class="green"></div>
                 <div class="green"></div>
-                <div class="green"></div>
-                <div class="green"></div>
+                <div class="green"></div> -->
             </div>
         </div>
     </div>
@@ -79,7 +89,7 @@
         <div class="lane-section">
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="redColor"></app-cell>
+                <app-cell [type]="'red-icon'"></app-cell>
                 <app-cell></app-cell>
                 <app-cell></app-cell>
                 <app-cell></app-cell>
@@ -94,11 +104,11 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="redColor"></app-cell>
-                <app-cell [color]="redColor"></app-cell>
-                <app-cell [color]="redColor"></app-cell>
-                <app-cell [color]="redColor"></app-cell>
-                <app-cell [color]="redColor"></app-cell>
+                <app-cell [type]="'red-icon'"></app-cell>
+                <app-cell [type]="'red-icon'"></app-cell>
+                <app-cell [type]="'red-icon'"></app-cell>
+                <app-cell [type]="'red-icon'"></app-cell>
+                <app-cell [type]="'red-icon'"></app-cell>
 
                 <!-- <div id="25" class="box"></div>
                 <div id="26" class="box red"></div>
@@ -123,7 +133,13 @@
                 <div id="36" class="box"></div> -->
             </div>
         </div>
-        <div class="winning-section"></div>
+        <div class="winning-section">
+            <app-cell [type]="'green-final'"></app-cell>
+            <app-cell [type]="'red-final'"></app-cell>
+            <app-cell [type]="'yellow-final'"></app-cell>
+            <app-cell [type]="'blue-final'"></app-cell>
+
+        </div>
         <div class="lane-section">
             <div class="row">
                 <app-cell></app-cell>
@@ -141,11 +157,11 @@
                 <div id="42" class="box"></div> -->
             </div>
             <div class="row">
-                <app-cell [color]="yellowColor"></app-cell>
-                <app-cell [color]="yellowColor"></app-cell>
-                <app-cell [color]="yellowColor"></app-cell>
-                <app-cell [color]="yellowColor"></app-cell>
-                <app-cell [color]="yellowColor"></app-cell>
+                <app-cell [type]="'yellow-icon'"></app-cell>
+                <app-cell [type]="'yellow-icon'"></app-cell>
+                <app-cell [type]="'yellow-icon'"></app-cell>
+                <app-cell [type]="'yellow-icon'"></app-cell>
+                <app-cell [type]="'yellow-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="43" class="box yellow"></div>
@@ -160,7 +176,7 @@
                 <app-cell></app-cell>
                 <app-cell></app-cell>
                 <app-cell></app-cell>
-                <app-cell [color]="yellowColor"></app-cell>
+                <app-cell [type]="'yellow-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="49" class="box"></div>
@@ -175,16 +191,21 @@
     <div class="row">
         <div class="blue-section black-border">
             <div class="white">
+                <app-cell [type]="'blue-home'"></app-cell>
+                <app-cell [type]="'blue-home'"></app-cell>
+                <app-cell [type]="'blue-home'"></app-cell>
+                <app-cell [type]="'blue-home'"></app-cell>
+
+                <!-- <div class="blue"></div>
                 <div class="blue"></div>
                 <div class="blue"></div>
-                <div class="blue"></div>
-                <div class="blue"></div>
+                <div class="blue"></div> -->
             </div>
         </div>
         <div class="lane-section">
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="blueColor"></app-cell>
+                <app-cell [type]="'blue-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="55" class="box"></div>
@@ -193,7 +214,7 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="blueColor"></app-cell>
+                <app-cell [type]="'blue-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="58" class="box"></div>
@@ -202,7 +223,7 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="blueColor"></app-cell>
+                <app-cell [type]="'blue-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="61" class="box"></div>
@@ -211,7 +232,7 @@
             </div>
             <div class="row">
                 <app-cell></app-cell>
-                <app-cell [color]="blueColor"></app-cell>
+                <app-cell [type]="'blue-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="64" class="box"></div>
@@ -219,8 +240,8 @@
             <div id="66" class="box"></div> -->
             </div>
             <div class="row">
-                <app-cell [color]="blueColor"></app-cell>
-                <app-cell [color]="blueColor"></app-cell>
+                <app-cell [type]="'blue-icon'"></app-cell>
+                <app-cell [type]="'blue-icon'"></app-cell>
                 <app-cell></app-cell>
 
                 <!-- <div id="67" class="box blue"></div>
@@ -239,10 +260,15 @@
         </div>
         <div class="yellow-section black-border">
             <div class="white">
+                <app-cell [type]="'yellow-home'"></app-cell>
+                <app-cell [type]="'yellow-home'"></app-cell>
+                <app-cell [type]="'yellow-home'"></app-cell>
+                <app-cell [type]="'yellow-home'"></app-cell>
+
+                <!-- <div class="yellow"></div>
                 <div class="yellow"></div>
                 <div class="yellow"></div>
-                <div class="yellow"></div>
-                <div class="yellow"></div>
+                <div class="yellow"></div> -->
             </div>
         </div>
     </div>

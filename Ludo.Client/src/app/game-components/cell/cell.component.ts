@@ -14,6 +14,7 @@ export class CellComponent {
   game: Game = this.initializeEmptyGame();
   currentGameId: number = 0;
   numberOfPieces: number = 0;
+  @Input() type!: string;
   @Input() color!: ColorType;
 
   redColor: ColorType = ColorType.Red;
@@ -52,6 +53,38 @@ export class CellComponent {
 
   getTopPosition(index: number): number {
     return 10 + Math.floor(index / 4) * 25;
+  }
+
+  getCellType(cellType: string) {
+    //return [cellType];
+    switch (cellType) {
+      case 'green-icon':
+        return ['green-icon'];
+      case 'red-icon':
+        return ['red-icon'];
+      case 'blue-icon':
+        return ['blue-icon'];
+      case 'yellow-icon':
+        return ['yellow-icon'];
+      case 'green-home':
+        return ['green-home'];
+      case 'red-home':
+        return ['red-home'];
+      case 'blue-home':
+        return ['blue-home'];
+      case 'yellow-home':
+        return ['yellow-home'];
+      case 'green-final':
+        return ['green-final'];
+      case 'red-final':
+        return ['red-final'];
+      case 'blue-final':
+        return ['blue-final'];
+      case 'yellow-final':
+        return ['yellow-final'];
+      default:
+        return [];
+    }
   }
 
   getCellColor(colorType: ColorType) {
