@@ -27,10 +27,6 @@ namespace Ludo.Business.Services
                 Cells = cells,
             };
 
-            List<ICell> finalCells = GetFinalCells(board);
-
-            board.FinalCells = finalCells;
-
             return board;
         }
 
@@ -46,13 +42,6 @@ namespace Ludo.Business.Services
             var specialCellEntity = specialCell.FirstOrDefault() as SpecialCell;
             specialCellEntity.FinalCells = new List<ICell>();
             specialCellEntity.FinalCells.AddRange(finalCells);
-
-            //var homeCellInitialized = InitializeFinalCells(homeCell);
-            //var basicCellInitialized = InitializeFinalCells(basicCells);
-            //var specialCellInitialized = InitializeFinalCells(specialCell);
-            //var basicOneCellInitialized = InitializeFinalCells(basicCell);
-
-            //specialCellInitialized[1].AddRange(finalCells);
 
             cells.AddRange(homeCell);
             cells.AddRange(basicCells);
@@ -78,16 +67,5 @@ namespace Ludo.Business.Services
         {
             return  board.Cells.OfType<SpecialCell>().SelectMany(c => c.FinalCells).ToList();
         }
-
-        private List<List<ICell>> InitializeFinalCells(List<ICell> cells)
-        {
-            var boardCells = new List<List<ICell>>
-            {
-                cells,
-                new List<ICell>()
-            };
-
-            return boardCells;
-        }        
     }
 }

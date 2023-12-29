@@ -91,6 +91,8 @@ export class CellComponent {
         this.gameService.movePiece(this.position, playerColor);
       }
     }
+  }
+
   togglePiece(): void {
     this.numberOfPieces++;
   }
@@ -99,7 +101,9 @@ export class CellComponent {
     return new Array(value);
   }
 
-  getPieceSize(numberOfPieces: number): number {
+  getPieceSize(): number {
+    let numberOfPieces = this.pieces.length;
+
     if (numberOfPieces > 4) {
       return 50;
     }
@@ -111,7 +115,9 @@ export class CellComponent {
     return Math.max(minSize, baseSize - sizeDecrement * (Math.min(numberOfPieces, 16) - 1));
   }
 
-  getLeftPosition(index: number, numberOfPieces: number): number {
+  getLeftPosition(index: number): number {
+    let numberOfPieces = this.pieces.length;
+
     switch (numberOfPieces) {
       case 1:
         return 60;
@@ -126,7 +132,9 @@ export class CellComponent {
     }
   }
 
-  getTopPosition(index: number, numberOfPieces: number): number {
+  getTopPosition(index: number): number {
+    let numberOfPieces = this.pieces.length;
+
     switch (numberOfPieces) {
       case 1:
         return 60;
