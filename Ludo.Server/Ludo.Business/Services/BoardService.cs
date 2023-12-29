@@ -37,7 +37,7 @@ namespace Ludo.Business.Services
         private void CreateSideOfBoard(List<ICell> cells, ColorType homeColor, ColorType finalColor)
         {
             List<ICell> homeCell = CreateSetOfCells(CellType.Home, homeColor, 1);
-            List<ICell> basicCells = CreateSetOfCells(CellType.Basic, ColorType.White, 11);
+            List<ICell> basicCells = CreateSetOfCells(CellType.Basic, ColorType.White, 10);
             List<ICell> specialCell = CreateSetOfCells(CellType.Special, finalColor, 1);
             List<ICell> basicCell = CreateSetOfCells(CellType.Basic, ColorType.White, 1);
 

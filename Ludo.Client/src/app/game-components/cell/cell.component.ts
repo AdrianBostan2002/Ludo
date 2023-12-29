@@ -66,7 +66,7 @@ export class CellComponent {
       }
       if (piece.previousPosition === this.position) {
         const indexToRemove = this.pieces.findIndex(p => p.color === piece.color);
-
+        
         if (indexToRemove !== -1) {
           this.pieces.splice(indexToRemove, 1);
         }
