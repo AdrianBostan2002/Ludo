@@ -1,27 +1,10 @@
-<div (click)="movePiece()" [ngClass]="getCellColor(color)">
-    <!-- <app-piece *ngFor="let i of getArray(numberOfPieces); let index = index" [style.left.%]="getLeftPosition(index)"
-        [style.top.%]="getTopPosition(index)" [color]="redColor"></app-piece> -->
-
-
-        <app-piece *ngFor="let piece of pieces; let index = index" [style.left.%]="getLeftPosition(index)"
-        [style.top.%]="getTopPosition(index)" [color]="piece.color"></app-piece>
-
-</div>
-<!-- 
-<div (click)="togglePiece()" [ngClass]="getNumberOfPiecesInfo(2)">
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
+<div (click)="movePiece()" [ngClass]="getCellType(type)">
+    <app-piece *ngFor="let piece of pieces; let index = index"
+        [style.width.%]="getPieceSize()" [style.height.%]="getPieceSize()"
+        [style.left.%]="getLeftPosition(index)" [style.top.%]="getTopPosition(index)"
+        [color]="redColor" [pieceSize]="getPieceSize()">
+    </app-piece>
 </div>
 
-<div (click)="togglePiece()" [ngClass]="getNumberOfPiecesInfo(3)">
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-</div>
-
-<div (click)="togglePiece()" [ngClass]="getNumberOfPiecesInfo(4)">
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-    <app-piece *ngIf="isPiecePlaced()"></app-piece>
-</div> -->
+<!--  <app-piece *ngFor="let piece of pieces; let index = index" [style.left.%]="getLeftPosition(index)"
+[style.top.%]="getTopPosition(index)" [color]="piece.color"></app-piece> -->

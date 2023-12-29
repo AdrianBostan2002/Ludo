@@ -16,54 +16,64 @@
 } */
 
 .red-section {
-  background-color: #d44044;
+  background-color: red;
   width: 250px;
   /* 600/15*6 */
   height: 250px;
 }
 
 .green-section {
-  background-color: #3d8119;
+  background-color: green;
   width: 250px;
   /* 600/15*6 */
   height: 250px;
 }
 
 .blue-section {
-  background-color: #4b73e2;
+  background-color: blue;
   width: 250px;
   /* 600/15*6 */
   height: 250px;
 }
 
 .yellow-section {
-  background-color: #d5d500;
+  background-color: yellow;
   width: 250px;
   /* 600/15*6 */
   height: 250px;
 }
 
 .winning-section {
-  border-top: 63px solid #3d8119;
-  border-left: 63px solid #d44044;
-  border-right: 63px solid #d5d500;
-  border-bottom: 63px solid #4b73e2;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  /* border-top: 63px solid green;
+  border-left: 63px solid red;
+  border-right: 63px solid yellow;
+  border-bottom: 63px solid blue; */
 }
 
+/* .winning-section app-cell {
+  flex: 1;
+  width: calc(50% - 1px);
+  margin: 0;
+  box-sizing: border-box;
+} */
+
 .red {
-  background-color: #d44044;
+  background-color: red;
 }
 
 .green {
-  background-color: #3d8119;
+  background-color: green;
 }
 
 .blue {
-  background-color: #4b73e2;
+  background-color: blue;
 }
 
 .yellow {
-  background-color: #d5d500;
+  background-color: yellow;
 }
 
 .black-border {
@@ -78,14 +88,14 @@
   border: 1px solid black;
 }
 
-.white div {
+/* .white app-cell {
   border-radius: 50%;
   width: 40px;
   height: 40px;
   float: left;
   margin: 16px;
   border: 1px solid black;
-}
+} */
 
 h1 {
   text-align: center;

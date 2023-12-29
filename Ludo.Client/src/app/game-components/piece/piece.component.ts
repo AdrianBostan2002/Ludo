@@ -8,6 +8,7 @@ import { ColorType } from 'src/app/shared/enums/color-type';
 })
 export class PieceComponent {
   @Input() color!: ColorType;
+  @Input() pieceSize!: number;
 
   getPieceColor(colorType: ColorType) {
     switch (colorType) {
