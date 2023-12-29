@@ -38,7 +38,6 @@ export class CellComponent {
     // });
   }
 
-  // TEST FUNCTION TO DISPLAY PIECES ON A CELL
   togglePiece(): void {
     this.numberOfPieces++;
   }
@@ -47,16 +46,49 @@ export class CellComponent {
     return new Array(value);
   }
 
-  getLeftPosition(index: number): number {
-    return 10 + (index % 4) * 25;
+  getPieceSize(numberOfPieces: number): number {
+    if (numberOfPieces > 4) {
+      return 50;
+    }
+
+    const baseSize = 70; // Change this to your desired base size
+    const minSize = 40; // Change this to your desired minimum size
+    const sizeDecrement = (baseSize - minSize) / 15; // Adjust based on the maximum number of pieces
+
+    return Math.max(minSize, baseSize - sizeDecrement * (Math.min(numberOfPieces, 16) - 1));
   }
 
-  getTopPosition(index: number): number {
-    return 10 + Math.floor(index / 4) * 25;
+  getLeftPosition(index: number, numberOfPieces: number): number {
+    switch (numberOfPieces) {
+      case 1:
+        return 60;
+      case 2:
+        return 35 + index * 50;
+      case 3:
+        return 35 + (index % 2) * 50 + Math.floor(index / 2) * 25;
+      case 4:
+        return 35 + (index % 2) * 50;
+      default:
+        return 25 + (index % 4) * 25;
+    }
+  }
+
+  getTopPosition(index: number, numberOfPieces: number): number {
+    switch (numberOfPieces) {
+      case 1:
+        return 60;
+      case 2:
+        return 60;
+      case 3:
+        return 35 + Math.floor(index / 2) * 50;
+      case 4:
+        return 35 + Math.floor(index / 2) * 50;
+      default:
+        return 25 + Math.floor(index / 4) * 25;
+    }
   }
 
   getCellType(cellType: string) {
-    //return [cellType];
     switch (cellType) {
       case 'green-icon':
         return ['green-icon'];
