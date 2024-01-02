@@ -19,6 +19,8 @@ namespace Ludo.Business.Services
             _pieceService = pieceService ?? throw new ArgumentNullException(nameof(pieceService));
         }
 
+        //TODO: Rezolva situatia in care un jucator duce piesa pe celula triunghi, si ramane fara piese
+        //sa nu blochezi jocul
         public void CreateNewGame(ILobby lobby)
         {
             Board board = _boardService.CreateBoard();
@@ -183,6 +185,44 @@ namespace Ludo.Business.Services
             IEnumerable<IPlayer> caller = game.Players.Where(p => p.ConnectionId.Equals(connectionId));
 
             return game.Players.Except(caller).ToList();
+        }
+
+        public void AssignRandomOrderForRollingDice(IGame game)
+        {
+            var random = new Random();
+
+            var randomOrderPlayersConnectionId = game.Players.OrderBy(c => random.Next()).Select(p => p.ConnectionId);
+
+            Queue<string> piecesMoveOrder = new Queue<string>(randomOrderPlayersConnectionId);
+
+            game.RollDiceOrder = piecesMoveOrder;
+        }
+
+        public bool CheckIfPlayerPiecesAreOnSpawnPosition(IGame game, IPlayer player)
+        {
+            ColorType playerColor = player.Pieces.FirstOrDefault().Color;
+
+            SpawnPieces? playerPiecesSpawnPosition = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == playerColor);
+
+            return !playerPiecesSpawnPosition.Pieces.Any(p => p == null);
+        }
+
+        public bool CheckIfPlayerWonTheGame(IPlayer player)
+        {
+            return player.Pieces.Count == 0;
+        }
+
+        public void PieceMovedOnWinningCell(IGame game, IPlayer player)
+        {
+            if (CheckIfPlayerWonTheGame(player))
+            {
+                if(game.Ranking == null)
+                {
+                    game.Ranking = new List<IPlayer>();
+                }
+
+                game.Ranking.Add(player);
+            }
         }
     }
 }

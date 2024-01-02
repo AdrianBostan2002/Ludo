@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormControl, FormGroup } from '@angular/forms';
-import { LobbyService } from './services/lobby.service';
-import { GameService } from './services/game.service';
 
 @Component({
   selector: 'app-root',

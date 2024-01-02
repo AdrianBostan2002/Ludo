@@ -19,23 +19,21 @@ interface Piece {
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
-  filmIcon = faChessPawn;
 
   game: Game = this.initializeEmptyGame();
   currentGameId: Number = 0;
   currentDirection: string = "down";
 
-  lastPiece: Piece={color: ColorType.White, position:0};
+  redColor: ColorType = ColorType.Red;
+  blueColor: ColorType = ColorType.Blue;
+  greenColor: ColorType = ColorType.Green;
+  yellowColor: ColorType = ColorType.Yellow;
+
+  lastPiece: Piece = { color: ColorType.White, position: 0 };
 
   pieces: Piece[] = [
-    { position: 1, color: ColorType.Blue}, {position: 1, color: ColorType.Red}, {position: 5, color: ColorType.Green}
+    { position: 1, color: ColorType.Blue }, { position: 1, color: ColorType.Red }, { position: 5, color: ColorType.Green }
   ];
-
-  defaultEmptyIcon: IconDefinition = faCircle;
-  handleButtonClick(button: any) {
-    // Handle button click logic here
-  }
-
 
   constructor(private gameService: GameService, private route: ActivatedRoute) { }
 
@@ -49,15 +47,14 @@ export class BoardComponent implements OnInit {
       if (game != undefined) {
         this.game = game;
       }
-      console.log('current game:', this.game)
     });
   }
 
   private initializeEmptyGame(): Game {
     let game: Game = {
-      board: { cells: [], finalCells: [] },
       id: 0,
-      players: []
+      players: [],
+      firstDiceRoller: ''
     };
 
     return game;
@@ -70,19 +67,6 @@ export class BoardComponent implements OnInit {
   // getCellDirection(cell: any): { [key: string]: string } {
   //   // Implement your logic to determine cell direction
   //   const direction = cell.type === CellType.Special ? 'vertical' : 'horizontal'; // Replace with your logic
-
-
-
-  getIcon(position: number): IconProp {
-    const piece = this.pieces.find((p) => p.position === position);
-
-    if (piece?.color === ColorType.Blue || piece?.color == ColorType.Red || piece?.color == ColorType.Green || piece?.color == ColorType.Yellow) {
-      this.lastPiece = piece;    
-      return this.filmIcon;
-      }
-
-    return faClose; // Default icon if no piece found for the button
-  }
 
   getIconClasses(position: number): string[] {
     const piece = this.pieces.find((p) => p.position === position);

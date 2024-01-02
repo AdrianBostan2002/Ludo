@@ -1,8 +1,10 @@
 ﻿using Ludo.Business.UseCases.Game.CreateGameUseCase;
 using Ludo.Business.UseCases.Game.PlayerLeaveUseCase;
+using Ludo.Business.UseCases.Game.PlayerMovePieceUseCase;
 using Ludo.Business.UseCases.Game.PlayerReadyUseCase;
 using Ludo.Business.UseCases.Game.RollDiceUseCase;
 using Ludo.Business.UseCases.Game.StartGamePreprocessing;
+using Ludo.Domain.DTOs;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
 using Microsoft.AspNetCore.SignalR;
@@ -35,7 +37,7 @@ namespace Ludo.Server.Hubs
                 var request = new StartGameRequest { LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
 
                 var response = _mediator.Send(request);
-                (IGame game, List<IPlayer> playersWithoutCaller) = response.Result;
+                (GameDto game, List<IPlayer> playersWithoutCaller) = response.Result;
 
                 NotifyPlayersThatNewGameStarted(game, playersWithoutCaller);
                 return Clients.Caller.SendAsync("StartGameSucceded", game);
@@ -86,13 +88,17 @@ namespace Ludo.Server.Hubs
         {
             //try
             //{
-                var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
+            var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
 
-                var response = _mediator.Send(request);
-                (List<IPlayer> playersWithouCaller, int randomNumber) = response.Result;
-                
-                NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
-                return Clients.Caller.SendAsync("DiceRolled", randomNumber);
+            var response = _mediator.Send(request);
+            (List<IPlayer> playersWithouCaller, int randomNumber, string nextDiceRoller, bool canMovePieces) = response.Result;
+
+            NotifyPlayersThatANewDiceRolled(playersWithouCaller, randomNumber);
+            if (nextDiceRoller != "")
+            {
+                NotifyPlayerThatShouldRollDice(nextDiceRoller);
+            }
+            return Clients.Caller.SendAsync("DiceRolled", new { diceNumber = randomNumber, canMovePieces });
             //}
             //catch (Exception)
             //{
@@ -100,7 +106,33 @@ namespace Ludo.Server.Hubs
             //}
         }
 
-        private void NotifyPlayersThatNewGameStarted(IGame game, List<IPlayer> players)
+        public Task MovePiece(string username, int gameId, PieceDto piece, int lastDiceNumber)
+        {
+            //try
+            //{
+            var request = new PlayerMovePieceRequest
+            {
+                Username = username,
+                GameId = gameId,
+                Piece = piece,
+                DiceNumber = lastDiceNumber,
+                ConnectionId = Context.ConnectionId
+            };
+
+            var response = _mediator.Send(request);
+            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, string playerWhoShouldRollDicesConnectionId) = response.Result;
+
+            NotifyPlayersThatPiecesMoved(piecesMoved, playersWithoutCaller);
+            NotifyPlayerThatShouldRollDice(playerWhoShouldRollDicesConnectionId);
+            return Clients.Caller.SendAsync("PiecesMoved", piecesMoved);
+            //}
+            //catch (Exception)
+            //{
+
+            //}
+        }
+
+        private void NotifyPlayersThatNewGameStarted(GameDto game, List<IPlayer> players)
         {
             foreach (var player in players)
             {
@@ -120,7 +152,20 @@ namespace Ludo.Server.Hubs
         {
             foreach (var player in players)
             {
-                Clients.Client(player.ConnectionId).SendAsync("DiceRolled", diceNumber);
+                Clients.Client(player.ConnectionId).SendAsync("DiceRolled", new { diceNumber, canMovePieces = false });
+            }
+        }
+
+        private void NotifyPlayerThatShouldRollDice(string connectionId)
+        {
+            Clients.Client(connectionId).SendAsync("CanRollDice");
+        }
+
+        private void NotifyPlayersThatPiecesMoved(List<PieceDto> piecesMoved, List<IPlayer> players)
+        {
+            foreach (var player in players)
+            {
+                Clients.Client(player.ConnectionId).SendAsync("PiecesMoved", piecesMoved);
             }
         }
     }

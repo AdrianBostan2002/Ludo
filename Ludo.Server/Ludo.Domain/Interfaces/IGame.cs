@@ -7,5 +7,7 @@ namespace Ludo.Domain.Interfaces
         int Id { get; set; } 
         Board? Board { get; set; }
         List<IPlayer>? Players { get; set; }
+        Queue<string> RollDiceOrder {  get; set; }    
+        List<IPlayer> Ranking { get; set; }
     }
 }

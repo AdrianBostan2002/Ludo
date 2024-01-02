@@ -1,95 +1,134 @@
-.board{
-    width: fit-content;
-    border: 10px solid #11262e;
-    border-radius: 5px;
-    margin: 10px auto;
-  }
-  .row{ display: flex; }
-  .box{
-    width: 40px;
-    height: 40px;
-    border: 1px solid black;
-  }
-  
-  .red-section{ 
-    background-color: #d44044; 
-    width: 250px; /* 600/15*6 */
-    height: 250px;
-  }
-  
-  .green-section{ 
-    background-color: #3d8119; 
-    width: 250px; /* 600/15*6 */
-    height: 250px;
-  }
-  
-  .blue-section{ 
-    background-color: #4b73e2; 
-    width: 250px; /* 600/15*6 */
-    height: 250px;
-  }
-  
-  .yellow-section{ 
-    background-color: #d5d500; 
-    width: 250px; /* 600/15*6 */
-    height: 250px;
-  }
-  
-  .winning-section{
-    border-top: 63px solid #3d8119;
-    border-left: 63px solid #d44044;
-    border-right: 63px solid #d5d500;
-    border-bottom: 63px solid #4b73e2;
-  }
-  
-  .red{ background-color: #d44044; }
-  .green{ background-color: #3d8119; }
-  .blue{ background-color: #4b73e2; }
-  .yellow{ background-color: #d5d500; }
-  .black-border{ border: 1px solid black; }
-  .white{ 
-    background-color: white; width: 150px; height: 150px; 
-    margin: 20% auto;
-    border: 1px solid black;
-  }
-  .white div{
-    border-radius: 50%;
-    width: 40px; height: 40px;
-    float: left;
-    margin: 16px;
-    border: 1px solid black;
-  }
-  
-  h1{ text-align: center; }
+.board {
+  width: fit-content;
+  border: 10px solid #11262e;
+  border-radius: 5px;
+  margin: 10px auto;
+}
 
-  fa-icon {
-    display: flex;
-    flex-direction: column;
-    height: 21px;
-  }
+.row {
+  display: flex;
+}
 
-  .blue-icon{
-    color: blue;
-  }
+/* app-cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid black;
+} */
 
-  .red-icon{
-    color: red;
-  }
+.red-section {
+  background-color: red;
+  width: 250px;
+  /* 600/15*6 */
+  height: 250px;
+}
 
-  .green-icon{
-    color: green;
-  }
+.green-section {
+  background-color: green;
+  width: 250px;
+  /* 600/15*6 */
+  height: 250px;
+}
 
-  .yellow-icon{
-    color: yellow;
-  }
+.blue-section {
+  background-color: blue;
+  width: 250px;
+  /* 600/15*6 */
+  height: 250px;
+}
 
-  .piece-position {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    border: 1px solid #ccc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.yellow-section {
+  background-color: yellow;
+  width: 250px;
+  /* 600/15*6 */
+  height: 250px;
+}
+
+.winning-section {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  /* border-top: 63px solid green;
+  border-left: 63px solid red;
+  border-right: 63px solid yellow;
+  border-bottom: 63px solid blue; */
+}
+
+/* .winning-section app-cell {
+  flex: 1;
+  width: calc(50% - 1px);
+  margin: 0;
+  box-sizing: border-box;
+} */
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.black-border {
+  border: 1px solid black;
+}
+
+.white {
+  background-color: white;
+  width: 150px;
+  height: 150px;
+  margin: 20% auto;
+  border: 1px solid black;
+}
+
+/* .white app-cell {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  float: left;
+  margin: 16px;
+  border: 1px solid black;
+} */
+
+h1 {
+  text-align: center;
+}
+
+fa-icon {
+  display: flex;
+  flex-direction: column;
+  height: 21px;
+}
+
+.blue-icon {
+  color: blue;
+}
+
+.red-icon {
+  color: red;
+}
+
+.green-icon {
+  color: green;
+}
+
+.yellow-icon {
+  color: yellow;
+}
+
+.piece-position {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
