@@ -8,11 +8,8 @@ namespace Ludo.Business.Services
     public class PieceService : IPieceService
     {
         public int GREEN_START_POSITION => 0;
-
         public int YELLOW_START_POSITION => 13;
-
         public int BLUE_START_POSITION => 26;
-
         public int RED_START_POSITION => 39;
 
         public Piece CreatePiece(ColorType color)
@@ -24,25 +21,28 @@ namespace Ludo.Business.Services
         {
             var piecesDto = new List<PieceDto>();
 
-            if (pieces.Count != 0)
+            for (int i = 0; i < pieces.Count; i++)
             {
-                var firstPiece = pieces.FirstOrDefault();
+                int startPosition = GetSpawnPosition(pieces[i].Color, i);
 
-                int startPosition = GetBasePosition(firstPiece.Color);
-
-                foreach (Piece piece in pieces)
+                PieceDto pieceDto = new PieceDto
                 {
-                    PieceDto pieceDto = new PieceDto
-                    {
-                        Color = piece.Color,
-                        NextPosition = startPosition,
-                    };
+                    Color = pieces[i].Color,
+                    NextPosition = startPosition,
+                };
 
-                    piecesDto.Add(pieceDto);
-                }
+                piecesDto.Add(pieceDto);
             }
 
             return piecesDto;
+        }
+
+        public int GetSpawnPosition(ColorType color, int index)
+        {
+            int colorIndex = (int)color;
+            string position = $"{colorIndex + 5}{colorIndex}{index}";
+
+            return int.Parse(position);
         }
 
         public int GetBasePosition(ColorType color)

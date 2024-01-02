@@ -26,9 +26,19 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
             IGame game = _gameService.GetGameById(request.LobbyId);
 
             _gameService.AssignPlayersPiecesRandomColors(game.Players);
-            _gameService.AssignRandomOrderForRollingDice(game);
 
-            PiecesOnStartPositionAddedOnBoard(game);
+            game.Board.SpawnPositions = new List<SpawnPieces>();
+
+            foreach (var player in game.Players)
+            {
+                game.Board.SpawnPositions.Add(new SpawnPieces
+                {
+                    Color = player.Pieces[0].Color,
+                    Pieces = new List<Piece>(player.Pieces)
+                });
+            }
+
+            _gameService.AssignRandomOrderForRollingDice(game);
 
             List<IPlayer> playersWithoutCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);
 
@@ -37,40 +47,6 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
             (GameDto, List<IPlayer>) result = (gameDto, playersWithoutCaller);
 
             return Task.FromResult(result);
-        }
-
-        //TODO: Will be deleted after ui round cells will contain an index 
-        public void PiecesOnStartPositionAddedOnBoard(IGame game)
-        {
-            int GREEN_START_POSITION = 0;
-            int YELLOW_START_POSITION = 13;
-            int BLUE_START_POSITION = 26;
-            int RED_START_POSITION = 39;
-
-            foreach (var player in game.Players)
-            {
-                var color = player.Pieces.FirstOrDefault().Color;
-
-                int position = 0;
-                switch (color)
-                {
-                    case Domain.Enums.ColorType.Red:
-                        position = RED_START_POSITION;
-                        break;
-                    case Domain.Enums.ColorType.Green:
-                        position = GREEN_START_POSITION;
-                        break;
-                    case Domain.Enums.ColorType.Blue:
-                        position = BLUE_START_POSITION;
-                        break;
-                    case Domain.Enums.ColorType.Yellow:
-                        position = YELLOW_START_POSITION;
-                        break;
-                }
-
-                game.Board.Cells[position].Pieces = player.Pieces;
-            }
-
         }
 
         private GameDto CreateGameDto(IGame game)

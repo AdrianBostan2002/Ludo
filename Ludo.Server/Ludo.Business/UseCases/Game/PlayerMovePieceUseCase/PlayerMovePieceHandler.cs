@@ -4,6 +4,7 @@ using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
+using System.Numerics;
 
 namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 {
@@ -36,48 +37,35 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             //Case when Piece is on final cell
             if (CheckIfPieceIsOnFinalCell((int)request.Piece.PreviousPosition))
             {
-                MovePieceFromFinalCell(request, game.Board.Cells, piecesMoved, basePosition);
+                MovePieceFromFinalCell(request, game, piecesMoved, basePosition);
             } //////////////////////////////////////////////////////////
             else
             {
-                ICell currentCell = game.Board.Cells[(int)request.Piece.PreviousPosition];
-                Piece currentPiece;
-
                 int nextPosition;
 
-                //if(request.Position>=0 && request.Position <= 52)
-                //{
-
-                //}
-                //is replaced temporary by next if
-
-                currentPiece = currentCell.Pieces.FirstOrDefault();
-
-                if (currentCell.Pieces.Count() != 1)
-                {
-                    currentPiece = currentCell.Pieces.Where(p => p.Color == request.Piece.Color).FirstOrDefault();
-                }
-
-                //Case when Piece is on homecell and I first rolled 6 and I can move piece
-                if (CheckIfICanPutMyFirstPieceOnHomeCell(request, basePosition))
+                //Case when Piece is not on board and I first rolled 6 and I can move piece to home cell
+                if (CheckIfICanPutMyFirstPieceOnHomeCell(request))
                 {
                     //should put on the table
                     //but I will pass 6 cells
 
-                    PutPieceOnHomeCell(request, game.Board.Cells, piecesMoved, currentCell);
+                    PutPieceOnHomeCell(request, game, piecesMoved, basePosition);
                 }////////////////////////////////////////////////////////////////////
                 else/* if (!(basePosition == request.Piece.PreviousPosition))*/
                 {
                     //Case when I have at least one piece which is not on home cell
 
-                    //currentPiece = currentCell.Pieces.FirstOrDefault();
+                    ICell currentCell = game.Board.Cells[(int)request.Piece.PreviousPosition];
+                    Piece currentPiece;
 
-                    //if (currentCell.Pieces.Count() != 1)
-                    //{
-                    //    currentPiece = currentCell.Pieces.Where(p => p.Color == request.Piece.Color).FirstOrDefault();
-                    //}
+                    currentPiece = currentCell.Pieces.FirstOrDefault();
 
-                    nextPosition = ((int)request.Piece.PreviousPosition + request.DiceNumber) % 52;
+                    if (currentCell.Pieces.Count() != 1)
+                    {
+                        currentPiece = currentCell.Pieces.Where(p => p.Color == request.Piece.Color).FirstOrDefault();
+                    }
+
+                    nextPosition = ((int)request.Piece.PreviousPosition + request.DiceNumber);
 
                     int specialCellUpperBound = (basePosition - 2);
 
@@ -85,10 +73,10 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
                     {
                         specialCellUpperBound = 52 - 2;
 
-                        if (nextPosition == 0)
-                        {
-                            nextPosition = 52;
-                        }
+                        //if (nextPosition == 0)
+                        //{
+                        //    nextPosition = 52;
+                        //}
                     }
 
                     int specialCellLowerBound = specialCellUpperBound - 6;
@@ -96,12 +84,12 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
                     //Case when I try to go to a final cell
                     if (CheckIfICanMovePieceOnFinalCell(request, nextPosition, specialCellUpperBound, specialCellLowerBound))
                     {
-                        MovePieceOnFinalCell(request, game.Board.Cells, piecesMoved, nextPosition, currentPiece, specialCellUpperBound);
+                        MovePieceOnFinalCell(request, game, piecesMoved, nextPosition, currentCell, currentPiece, specialCellUpperBound);
                     }///////////////////////////////////
                     else
                     {
                         //Case when Piece moves normally and I try to replace a new piece
-                        
+
                         RemoveEnemyPiece(request, game, piecesMoved, nextPosition);
                         MovePiece(piecesMoved, game.Board.Cells, currentCell, currentPiece, nextPosition, (int)request.Piece.PreviousPosition);
                     }
@@ -120,18 +108,26 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         private void RemoveEnemyPiece(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int nextPosition)
         {
+            nextPosition %= 52;
+
             if (!(game.Board.Cells[nextPosition] is HomeCell))
             {
                 var differentColorPieces = game.Board.Cells[nextPosition].Pieces.Where(p => p.Color != request.Piece.Color).ToList();
 
                 foreach (var piece in differentColorPieces)
                 {
-                    int homePosition = _pieceService.GetBasePosition(piece.Color);
+                    SpawnPieces? playerSpawnPieces = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == piece.Color);
+
+                    int emptySpawnPieceIndex = playerSpawnPieces.Pieces.FindIndex(p => p == null);
+
+                    playerSpawnPieces.Pieces[emptySpawnPieceIndex] = piece;
+
+                    int spawnPosition = _pieceService.GetSpawnPosition(piece.Color, emptySpawnPieceIndex);
 
                     piecesMoved.Add(new PieceDto
                     {
                         Color = piece.Color,
-                        NextPosition = homePosition,
+                        NextPosition = spawnPosition,
                         PreviousPosition = nextPosition
                     });
                 }
@@ -142,6 +138,8 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         private void MovePiece(List<PieceDto> piecesMoved, List<ICell> boardCells, ICell currentCell, Piece currentPiece, int nextPosition, int previousPosition)
         {
+            nextPosition %= 52;
+
             boardCells[nextPosition].Pieces.Add(currentPiece);
 
             currentCell.Pieces.Remove(currentPiece);
@@ -149,39 +147,76 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             AddNewPieceMoved(piecesMoved, currentPiece.Color, nextPosition, previousPosition);
         }
 
-        private void MovePieceOnFinalCell(PlayerMovePieceRequest request, List<ICell> boardCells, List<PieceDto> piecesMoved, int nextPosition, Piece currentPiece, int specialCellUpperBound)
+        private void MovePieceOnFinalCell(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int nextPosition, ICell currentCell, Piece currentPiece, int specialCellUpperBound)
         {
+            List<ICell> boardCells = game.Board.Cells;
+            //this doesn't work for green yet
             var specialCell = boardCells[specialCellUpperBound] as SpecialCell;
 
-            specialCell.FinalCells[nextPosition - specialCellUpperBound - 1].Pieces.Add(currentPiece);
+            if (nextPosition - specialCellUpperBound == 6)
+            {
+                //remove player piece
+                IPlayer? player = game.Players.FirstOrDefault(p => p.ConnectionId == request.ConnectionId);
 
-            var specialCellNextPosition = CreateFinalCellPosition(currentPiece.Color, nextPosition - specialCellUpperBound);
+                currentCell.Pieces.Remove(currentPiece);
+                player.Pieces.Remove(currentPiece);
 
-            AddNewPieceMoved(piecesMoved, currentPiece.Color, specialCellNextPosition, (int)request.Piece.PreviousPosition);
+                _gameService.PieceMovedOnWinningCell(game, player);
+
+                int winningCellNextPosition = CreateWinningCellPosition(currentPiece.Color);
+                AddNewPieceMoved(piecesMoved, currentPiece.Color, winningCellNextPosition, request.Piece.PreviousPosition.Value);
+            }
+            else
+            {
+                specialCell.FinalCells[nextPosition - specialCellUpperBound - 1].Pieces.Add(currentPiece);
+                currentCell.Pieces.Remove(currentPiece);
+
+                var specialCellNextPosition = CreateFinalCellPosition(currentPiece.Color, nextPosition - specialCellUpperBound - 1);
+
+                AddNewPieceMoved(piecesMoved, currentPiece.Color, specialCellNextPosition, (int)request.Piece.PreviousPosition);
+            }
+
         }
 
         private static bool CheckIfICanMovePieceOnFinalCell(PlayerMovePieceRequest request, int nextPosition, int specialCellUpperBound, int specialCellLowerBound)
         {
+            //if(specialCellUpperBound == 50 && nextPosition>=0 && nextPosition<=4)
+            //{
+            //    nextPosition = specialCellUpperBound + nextPosition + 2;
+            //}
+
             return request.Piece.PreviousPosition >= specialCellLowerBound &&
                                     request.Piece.PreviousPosition <= specialCellUpperBound &&
                                     nextPosition > specialCellUpperBound;
         }
 
-        private void PutPieceOnHomeCell(PlayerMovePieceRequest request, List<ICell> boardCells, List<PieceDto> piecesMoved, ICell currentCell)
+        private void PutPieceOnHomeCell(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int basePosition)
         {
-            Piece currentPiece = currentCell.Pieces.FirstOrDefault();
-            int nextPosition = (int)request.Piece.PreviousPosition + 1;
+            ColorType pieceColor = request.Piece.Color;
 
-            MovePiece(piecesMoved, boardCells, currentCell, currentPiece, nextPosition, (int)request.Piece.PreviousPosition);
+            SpawnPieces spawnPosition = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == pieceColor);
+
+            int pieceIndex = request.Piece.PreviousPosition.Value % 10;
+            Piece currentPiece = spawnPosition.Pieces[pieceIndex];
+
+            int colorIndex = (int)pieceColor;
+
+            game.Board.Cells[basePosition].Pieces.Add(currentPiece);
+
+            spawnPosition.Pieces[pieceIndex] = null;
+
+            AddNewPieceMoved(piecesMoved, currentPiece.Color, basePosition, request.Piece.PreviousPosition.Value);
         }
 
-        private static bool CheckIfICanPutMyFirstPieceOnHomeCell(PlayerMovePieceRequest request, int basePosition)
+        private bool CheckIfICanPutMyFirstPieceOnHomeCell(PlayerMovePieceRequest request)
         {
-            return basePosition == request.Piece.PreviousPosition && request.DiceNumber == 6;
+            return request.Piece.PreviousPosition >= 610 && request.Piece.PreviousPosition <= 943 && request.DiceNumber == 6;
         }
 
-        private void MovePieceFromFinalCell(PlayerMovePieceRequest request, List<ICell> boardCells, List<PieceDto> piecesMoved, int basePosition)
+        private void MovePieceFromFinalCell(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int basePosition)
         {
+            List<ICell> boardCells = game.Board.Cells;
+
             int nextPosition = (int)(request.Piece.PreviousPosition + request.DiceNumber);
 
             int specialCellsPosition = basePosition - 2;
@@ -200,12 +235,20 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             if (nextPosition % 10 == 5)
             {
                 //Piece is on triangle cell
+                IPlayer? player = game.Players.FirstOrDefault(p => p.ConnectionId == request.ConnectionId);
+
+                player.Pieces.Remove(currentPiece);
+                specialCells.Pieces.Remove(currentPiece);
+                _gameService.PieceMovedOnWinningCell(game, player);
+
                 int winningCellNextPosition = CreateWinningCellPosition(currentPiece.Color);
                 AddNewPieceMoved(piecesMoved, currentPiece.Color, winningCellNextPosition, (int)request.Piece.PreviousPosition);
             }
             else if (nextPosition % 10 < 5)
             {
-                int finalCellNextPosition = CreateFinalCellPosition(currentPiece.Color, nextPosition);
+                int finalCellNextPosition = CreateFinalCellPosition(currentPiece.Color, nextPosition % 10);
+                specialCells.FinalCells[(int)request.Piece.PreviousPosition % 10].Pieces.Remove(currentPiece);
+                specialCells.FinalCells[nextPosition % 10].Pieces.Add(currentPiece);
                 AddNewPieceMoved(piecesMoved, currentPiece.Color, finalCellNextPosition, (int)request.Piece.PreviousPosition);
             }
         }
@@ -217,7 +260,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         private int CreateWinningCellPosition(ColorType pieceColor)
         {
-            string position = $"{(int)pieceColor}{(int)pieceColor}{(int)pieceColor}{(int)pieceColor}";
+            string position = $"{(int)pieceColor}{(int)pieceColor}5";
 
             return int.Parse(position);
         }

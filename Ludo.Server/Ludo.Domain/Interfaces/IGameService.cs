@@ -15,6 +15,8 @@ namespace Ludo.Domain.Interfaces
         void AssignPlayersPiecesRandomColors(List<IPlayer> players);
         List<IPlayer> GetPlayersWithoutCaller(IGame game, string connectionId);
         void AssignRandomOrderForRollingDice(IGame game);
-        bool CheckIfPlayerPiecesAreOnStartPosition(IGame game, IPlayer player);
+        bool CheckIfPlayerPiecesAreOnSpawnPosition(IGame game, IPlayer player);
+        bool CheckIfPlayerWonTheGame(IPlayer player);
+        void PieceMovedOnWinningCell(IGame game, IPlayer player);
     }
 }

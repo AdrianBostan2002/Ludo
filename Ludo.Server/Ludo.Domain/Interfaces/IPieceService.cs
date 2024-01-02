@@ -15,6 +15,8 @@ namespace Ludo.Domain.Interfaces
 
         List<PieceDto> AssignPiecesStartPosition(List<Piece> pieces);
 
+        int GetSpawnPosition(ColorType color, int index);
+
         int GetBasePosition(ColorType color);
     }
 }

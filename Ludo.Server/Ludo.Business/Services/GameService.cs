@@ -19,6 +19,8 @@ namespace Ludo.Business.Services
             _pieceService = pieceService ?? throw new ArgumentNullException(nameof(pieceService));
         }
 
+        //TODO: Rezolva situatia in care un jucator duce piesa pe celula triunghi, si ramane fara piese
+        //sa nu blochezi jocul
         public void CreateNewGame(ILobby lobby)
         {
             Board board = _boardService.CreateBoard();
@@ -196,38 +198,31 @@ namespace Ludo.Business.Services
             game.RollDiceOrder = piecesMoveOrder;
         }
 
-        public bool CheckIfPlayerPiecesAreOnStartPosition(IGame game, IPlayer player)
+        public bool CheckIfPlayerPiecesAreOnSpawnPosition(IGame game, IPlayer player)
         {
-            int startPosition = 0;
-            Piece firstPiece = player.Pieces.FirstOrDefault();
+            ColorType playerColor = player.Pieces.FirstOrDefault().Color;
 
-            if (firstPiece != null)
+            SpawnPieces? playerPiecesSpawnPosition = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == playerColor);
+
+            return !playerPiecesSpawnPosition.Pieces.Any(p => p == null);
+        }
+
+        public bool CheckIfPlayerWonTheGame(IPlayer player)
+        {
+            return player.Pieces.Count == 0;
+        }
+
+        public void PieceMovedOnWinningCell(IGame game, IPlayer player)
+        {
+            if (CheckIfPlayerWonTheGame(player))
             {
-                switch (firstPiece.Color)
+                if(game.Ranking == null)
                 {
-                    case ColorType.Green:
-                        startPosition = _pieceService.GREEN_START_POSITION;
-                        break;
-                    case ColorType.Red:
-                        startPosition = _pieceService.RED_START_POSITION;
-                        break;
-                    case ColorType.Yellow:
-                        startPosition = _pieceService.YELLOW_START_POSITION;
-                        break;
-                    case ColorType.Blue:
-                        startPosition = _pieceService.BLUE_START_POSITION;
-                        break;
-                    default:
-                        break;
+                    game.Ranking = new List<IPlayer>();
                 }
 
-                if (game.Board.Cells[startPosition].Pieces.Count == 4)
-                {
-                    return true;
-                }
+                game.Ranking.Add(player);
             }
-
-            return false;
         }
     }
 }

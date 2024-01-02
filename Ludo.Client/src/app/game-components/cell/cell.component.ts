@@ -36,7 +36,7 @@ export class CellComponent {
       })
     ).subscribe(game => {
       if (game != undefined) {
-        this.game = game;
+          this.game = game;
         this.startGamePieces();
       }
     });

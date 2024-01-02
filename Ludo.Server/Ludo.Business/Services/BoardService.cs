@@ -62,10 +62,5 @@ namespace Ludo.Business.Services
 
             return createdCells;
         }
-
-        private List<ICell> GetFinalCells(Board board)
-        {
-            return  board.Cells.OfType<SpecialCell>().SelectMany(c => c.FinalCells).ToList();
-        }
     }
 }
