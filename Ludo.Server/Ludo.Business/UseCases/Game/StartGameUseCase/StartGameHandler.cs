@@ -51,8 +51,7 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
 
         private GameDto CreateGameDto(IGame game)
         {
-            string firstDiceRollerConnectionId = game.RollDiceOrder.Dequeue();
-            game.RollDiceOrder.Enqueue(firstDiceRollerConnectionId);
+            string firstDiceRollerConnectionId = _gameService.GetNextDiceRoller(game);
 
             var firstDiceRollerName = game.Players.Where(p => p.ConnectionId.Equals(firstDiceRollerConnectionId))
                 .Select(p => p.Name)

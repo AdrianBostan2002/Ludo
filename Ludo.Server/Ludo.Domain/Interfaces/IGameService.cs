@@ -16,7 +16,9 @@ namespace Ludo.Domain.Interfaces
         List<IPlayer> GetPlayersWithoutCaller(IGame game, string connectionId);
         void AssignRandomOrderForRollingDice(IGame game);
         bool CheckIfPlayerPiecesAreOnSpawnPosition(IGame game, IPlayer player);
-        bool CheckIfPlayerWonTheGame(IPlayer player);
+        bool CheckIfPlayerPicesAreOnTriangleCell(IPlayer player);
         void PieceMovedOnWinningCell(IGame game, IPlayer player);
+        bool CheckIfGameIsFinished(IGame game, IPlayer player);
+        string GetNextDiceRoller(IGame game);
     }
 }

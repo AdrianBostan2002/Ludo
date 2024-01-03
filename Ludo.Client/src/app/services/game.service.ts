@@ -183,6 +183,10 @@ export class GameService {
       this.canMovePiece$.next(false);
       this.piecesMoved$.next(piecesMoved);
     });
+
+    this.hubConnection.on('GameFinished', (data)=>{
+      
+    });
   }
 
   public disconnectFromHub() {
