@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { PieceMoved } from '../shared/entities/piece-moved';
 import { ColorType } from '../shared/enums/color-type';
 import { Piece } from '../shared/entities/piece';
+import { Player } from '../shared/entities/player';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,7 @@ export class GameService {
   piecesMoved$: Subject<Piece[]> = new Subject<Piece[]>();
   newReadyPlayer$: Subject<string> = new Subject<string>();
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  gameFinished$: Subject<Player[]> = new Subject();
 
   constructor(private router: Router) {
     window.addEventListener('beforeunload', (event: Event): void => {
@@ -116,6 +118,10 @@ export class GameService {
 
     let piece: Piece = { color: pieceColor, previousPosition: position };
 
+    if (position >= 610 && position <= 943 && this.lastDiceNumber != 6) {
+      return;
+    }
+
     this.hubConnection.send("MovePiece", this.currentUser?.username, Number(this.lobbyId), piece, this.lastDiceNumber);
   }
 
@@ -183,6 +189,11 @@ export class GameService {
       let piecesMoved: Piece[] = data;
       this.canMovePiece$.next(false);
       this.piecesMoved$.next(piecesMoved);
+    });
+
+    this.hubConnection.on('GameFinished', (data) => {
+      console.log(data);
+      this.gameFinished$.next(data);
     });
   }
 

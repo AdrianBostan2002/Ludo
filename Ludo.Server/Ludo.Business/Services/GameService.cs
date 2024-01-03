@@ -29,7 +29,8 @@ namespace Ludo.Business.Services
             {
                 Id = lobby.LobbyId,
                 Board = board,
-                Players = new List<IPlayer>()
+                Players = new List<IPlayer>(),
+                Ranking = new List<IPlayer>()
             };
 
             _games = _games.Add(lobby.LobbyId, newGame);
@@ -193,36 +194,52 @@ namespace Ludo.Business.Services
 
             var randomOrderPlayersConnectionId = game.Players.OrderBy(c => random.Next()).Select(p => p.ConnectionId);
 
-            Queue<string> piecesMoveOrder = new Queue<string>(randomOrderPlayersConnectionId);
+            LinkedList<string> piecesMoveOrder = new LinkedList<string>(randomOrderPlayersConnectionId);
 
             game.RollDiceOrder = piecesMoveOrder;
         }
 
         public bool CheckIfPlayerPiecesAreOnSpawnPosition(IGame game, IPlayer player)
         {
-            ColorType playerColor = player.Pieces.FirstOrDefault().Color;
+            ColorType playerColor = player.Pieces.FirstOrDefault(p => p != null).Color;
 
             SpawnPieces? playerPiecesSpawnPosition = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == playerColor);
 
             return !playerPiecesSpawnPosition.Pieces.Any(p => p == null);
         }
 
-        public bool CheckIfPlayerWonTheGame(IPlayer player)
+        public bool CheckIfPlayerPicesAreOnTriangleCell(IPlayer player)
         {
             return player.Pieces.Count == 0;
         }
 
         public void PieceMovedOnWinningCell(IGame game, IPlayer player)
         {
-            if (CheckIfPlayerWonTheGame(player))
+            if (CheckIfPlayerPicesAreOnTriangleCell(player))
             {
-                if(game.Ranking == null)
-                {
-                    game.Ranking = new List<IPlayer>();
-                }
-
                 game.Ranking.Add(player);
             }
+        }
+
+        public bool CheckIfGameIsFinished(IGame game, IPlayer player)
+        {
+            if(game.Ranking.Count == game.Players.Count - 1)
+            {
+                game.Ranking.AddRange(game.Players.Except(game.Ranking));
+                return true;
+            }
+
+            return false;
+        }
+
+        public string GetNextDiceRoller(IGame game)
+        {
+            string nextDiceRoller = game.RollDiceOrder.First.Value;
+            game.RollDiceOrder.RemoveFirst();
+
+            game.RollDiceOrder.AddLast(nextDiceRoller);
+
+            return nextDiceRoller;
         }
     }
 }

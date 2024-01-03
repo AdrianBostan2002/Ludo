@@ -120,10 +120,17 @@ namespace Ludo.Server.Hubs
             };
 
             var response = _mediator.Send(request);
-            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, string playerWhoShouldRollDicesConnectionId) = response.Result;
+            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, 
+                string playerWhoShouldRollDicesConnectionId, List<IPlayer> ranking) = response.Result;
 
             NotifyPlayersThatPiecesMoved(piecesMoved, playersWithoutCaller);
             NotifyPlayerThatShouldRollDice(playerWhoShouldRollDicesConnectionId);
+
+            if (ranking.Count != 0)
+            {
+                NotifyPlayersThatGameFinished(ranking);
+            }
+
             return Clients.Caller.SendAsync("PiecesMoved", piecesMoved);
             //}
             //catch (Exception)
@@ -166,6 +173,14 @@ namespace Ludo.Server.Hubs
             foreach (var player in players)
             {
                 Clients.Client(player.ConnectionId).SendAsync("PiecesMoved", piecesMoved);
+            }
+        }
+
+        private void NotifyPlayersThatGameFinished(List<IPlayer> ranking)
+        {
+            foreach (var player in ranking)
+            {
+                Clients.Client(player.ConnectionId).SendAsync("GameFinished", ranking);
             }
         }
     }

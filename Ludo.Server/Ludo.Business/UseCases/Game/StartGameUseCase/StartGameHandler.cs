@@ -34,7 +34,9 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
                 game.Board.SpawnPositions.Add(new SpawnPieces
                 {
                     Color = player.Pieces[0].Color,
+                    //TODO: Here is first modify
                     Pieces = new List<Piece>(player.Pieces)
+                    //Pieces = player.Pieces
                 });
             }
 
@@ -51,8 +53,7 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
 
         private GameDto CreateGameDto(IGame game)
         {
-            string firstDiceRollerConnectionId = game.RollDiceOrder.Dequeue();
-            game.RollDiceOrder.Enqueue(firstDiceRollerConnectionId);
+            string firstDiceRollerConnectionId = _gameService.GetNextDiceRoller(game);
 
             var firstDiceRollerName = game.Players.Where(p => p.ConnectionId.Equals(firstDiceRollerConnectionId))
                 .Select(p => p.Name)

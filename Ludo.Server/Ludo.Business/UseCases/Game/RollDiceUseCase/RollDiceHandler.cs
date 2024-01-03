@@ -16,6 +16,15 @@ namespace Ludo.Business.UseCases.Game.RollDiceUseCase
         {
             int randomNumber = Random.Shared.Next(1, 7);
 
+            if (randomNumber%2==0)
+            {
+                randomNumber = 6;
+            }
+            else
+            {
+                randomNumber = 2;
+            }
+
             IGame game = _gameService.GetGameById(request.GameId);
 
             if (game == null)
@@ -28,14 +37,9 @@ namespace Ludo.Business.UseCases.Game.RollDiceUseCase
             string nextDiceRoller = "";
             bool canMovePieces = true;
 
-            // callerPlayer.pieces.count != 4
-            // atunci nu mai verificam asta
-            //CheckIfPlayerPiecesAreOnSpawnPosition e falsa daca avem un winning piece
-
             if (randomNumber != 6 && _gameService.CheckIfPlayerPiecesAreOnSpawnPosition(game, callerPlayer))
             {
-                nextDiceRoller = game.RollDiceOrder.Dequeue();
-                game.RollDiceOrder.Enqueue(nextDiceRoller);
+                nextDiceRoller = _gameService.GetNextDiceRoller(game);
                 canMovePieces = false;
             }
 

@@ -4,11 +4,10 @@ using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
-using System.Numerics;
 
 namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 {
-    public class PlayerMovePieceHandler : IRequestHandler<PlayerMovePieceRequest, (List<PieceDto>, List<IPlayer>, string)>
+    public class PlayerMovePieceHandler : IRequestHandler<PlayerMovePieceRequest, (List<PieceDto>, List<IPlayer>, string, List<IPlayer>)>
     {
         private readonly IGameService _gameService;
         private readonly IPieceService _pieceService;
@@ -21,8 +20,11 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         //TODO: Fix problem when trying to take another piece if you both are on the same cell
 
-        public Task<(List<PieceDto>, List<IPlayer>, string)> Handle(PlayerMovePieceRequest request)
+        public Task<(List<PieceDto>, List<IPlayer>, string, List<IPlayer>)> Handle(PlayerMovePieceRequest request)
         {
+            bool isGameFinished = false;
+            bool playerShouldBeRemovedFromQueue = false;
+
             IGame game = _gameService.GetGameById(request.GameId);
 
             if (game == null)
@@ -38,7 +40,9 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             if (CheckIfPieceIsOnFinalCell((int)request.Piece.PreviousPosition))
             {
                 MovePieceFromFinalCell(request, game, piecesMoved, basePosition);
-            } //////////////////////////////////////////////////////////
+
+                CheckIfPlayerShouldBeRemovedFromQueue(request, out isGameFinished, out playerShouldBeRemovedFromQueue, game);
+            }
             else
             {
                 int nextPosition;
@@ -72,11 +76,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
                     if (basePosition == 0)
                     {
                         specialCellUpperBound = 52 - 2;
-
-                        //if (nextPosition == 0)
-                        //{
-                        //    nextPosition = 52;
-                        //}
                     }
 
                     int specialCellLowerBound = specialCellUpperBound - 6;
@@ -85,7 +84,9 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
                     if (CheckIfICanMovePieceOnFinalCell(request, nextPosition, specialCellUpperBound, specialCellLowerBound))
                     {
                         MovePieceOnFinalCell(request, game, piecesMoved, nextPosition, currentCell, currentPiece, specialCellUpperBound);
-                    }///////////////////////////////////
+
+                        CheckIfPlayerShouldBeRemovedFromQueue(request, out isGameFinished, out playerShouldBeRemovedFromQueue, game);
+                    }
                     else
                     {
                         //Case when Piece moves normally and I try to replace a new piece
@@ -98,12 +99,30 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
             var playersWithouCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);
 
-            string nextDiceRoller = game.RollDiceOrder.Dequeue();
-            game.RollDiceOrder.Enqueue(nextDiceRoller);
+            if (playerShouldBeRemovedFromQueue)
+            {
+                game.RollDiceOrder.RemoveFirst();
+            }
 
-            (List<PieceDto> pieces, List<IPlayer> players, string connectionId) result = (piecesMoved, playersWithouCaller, nextDiceRoller);
+            string nextDiceRoller = _gameService.GetNextDiceRoller(game);
+
+            List<IPlayer> ranking = new List<IPlayer>();
+
+            if (isGameFinished)
+            {
+                ranking = game.Ranking;
+            }
+
+            (List<PieceDto> pieces, List<IPlayer> players, string connectionId, List<IPlayer> ranking) result = (piecesMoved, playersWithouCaller, nextDiceRoller, ranking);
 
             return Task.FromResult(result);
+        }
+
+        private void CheckIfPlayerShouldBeRemovedFromQueue(PlayerMovePieceRequest request, out bool isGameFinished, out bool playerShouldBeRemovedFromQueue, IGame game)
+        {
+            IPlayer? player = game.Players.FirstOrDefault(p => p.ConnectionId == request.ConnectionId);
+            playerShouldBeRemovedFromQueue = _gameService.CheckIfPlayerPicesAreOnTriangleCell(player);
+            isGameFinished = _gameService.CheckIfGameIsFinished(game, player);
         }
 
         private void RemoveEnemyPiece(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int nextPosition)
@@ -147,19 +166,29 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             AddNewPieceMoved(piecesMoved, currentPiece.Color, nextPosition, previousPosition);
         }
 
-        private void MovePieceOnFinalCell(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int nextPosition, ICell currentCell, Piece currentPiece, int specialCellUpperBound)
+        //Returns true if player should be removed from queue
+        private void MovePieceOnFinalCell
+        (
+            PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved,
+            int nextPosition, ICell currentCell, Piece currentPiece, int specialCellUpperBound
+        )
         {
             List<ICell> boardCells = game.Board.Cells;
-            //this doesn't work for green yet
+
             var specialCell = boardCells[specialCellUpperBound] as SpecialCell;
 
             if (nextPosition - specialCellUpperBound == 6)
             {
-                //remove player piece
                 IPlayer? player = game.Players.FirstOrDefault(p => p.ConnectionId == request.ConnectionId);
 
                 currentCell.Pieces.Remove(currentPiece);
-                player.Pieces.Remove(currentPiece);
+
+                var currentPieceIndex = RemoveSpawnPosition(game, currentPiece);
+
+                if (currentPieceIndex != -1)
+                {
+                    player.Pieces.Remove(player.Pieces[currentPieceIndex]);
+                }
 
                 _gameService.PieceMovedOnWinningCell(game, player);
 
@@ -175,7 +204,20 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
                 AddNewPieceMoved(piecesMoved, currentPiece.Color, specialCellNextPosition, (int)request.Piece.PreviousPosition);
             }
+        }
 
+        private int RemoveSpawnPosition(IGame game, Piece currentPiece)
+        {
+            var spawnPosition = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == currentPiece.Color);
+
+            var emptySpawnPositionIndex = spawnPosition.Pieces.IndexOf(null);
+
+            if (emptySpawnPositionIndex != -1)
+            {
+                spawnPosition.Pieces.RemoveAt(emptySpawnPositionIndex);
+            }
+
+            return emptySpawnPositionIndex;
         }
 
         private static bool CheckIfICanMovePieceOnFinalCell(PlayerMovePieceRequest request, int nextPosition, int specialCellUpperBound, int specialCellLowerBound)
@@ -197,12 +239,28 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             SpawnPieces spawnPosition = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == pieceColor);
 
             int pieceIndex = request.Piece.PreviousPosition.Value % 10;
-            Piece currentPiece = spawnPosition.Pieces[pieceIndex];
+
+            Piece currentPiece = null;
+
+            if (pieceIndex < spawnPosition.Pieces.Count)
+            {
+                currentPiece = spawnPosition.Pieces[pieceIndex % spawnPosition.Pieces.Count];
+            }
+            else
+            {
+                currentPiece = spawnPosition.Pieces.LastOrDefault(p => p != null);
+            }
 
             int colorIndex = (int)pieceColor;
 
+            if(currentPiece == null)
+            {
+                currentPiece = spawnPosition.Pieces.FirstOrDefault(p => p != null);
+            }
+
             game.Board.Cells[basePosition].Pieces.Add(currentPiece);
 
+            pieceIndex = spawnPosition.Pieces.IndexOf(currentPiece);
             spawnPosition.Pieces[pieceIndex] = null;
 
             AddNewPieceMoved(piecesMoved, currentPiece.Color, basePosition, request.Piece.PreviousPosition.Value);
@@ -237,8 +295,15 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
                 //Piece is on triangle cell
                 IPlayer? player = game.Players.FirstOrDefault(p => p.ConnectionId == request.ConnectionId);
 
-                player.Pieces.Remove(currentPiece);
-                specialCells.Pieces.Remove(currentPiece);
+                specialCell.Pieces.Remove(currentPiece);
+
+                var currentPieceIndex = RemoveSpawnPosition(game, currentPiece);
+
+                if (currentPieceIndex != -1)
+                {
+                    player.Pieces.Remove(player.Pieces[currentPieceIndex]);
+                }
+
                 _gameService.PieceMovedOnWinningCell(game, player);
 
                 int winningCellNextPosition = CreateWinningCellPosition(currentPiece.Color);
