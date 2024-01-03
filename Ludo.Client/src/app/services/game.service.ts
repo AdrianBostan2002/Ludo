@@ -20,6 +20,7 @@ export class GameService {
   currentUser?: User;
   currentGame!: Game;
   lastDiceNumber: Number = 0;
+  currentColour!: ColorType;
 
   private hubConnection: signalR.HubConnection = new signalR.HubConnectionBuilder()
     .withUrl(this.connectionUrl)
@@ -32,7 +33,7 @@ export class GameService {
   piecesMoved$: Subject<Piece[]> = new Subject<Piece[]>();
   newReadyPlayer$: Subject<string> = new Subject<string>();
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  
+
   constructor(private router: Router) {
     window.addEventListener('beforeunload', (event: Event): void => {
       if (this.lobbyId !== 0 && this.currentUser !== undefined) {
@@ -110,10 +111,10 @@ export class GameService {
     this.hubConnection.send("RollDice", Number(gameId));
   }
 
-  public movePiece = async (position: number, pieceColor: ColorType) =>{
+  public movePiece = async (position: number, pieceColor: ColorType) => {
     await this.checkConnection();
 
-    let piece: Piece = {color: pieceColor, previousPosition: position };
+    let piece: Piece = { color: pieceColor, previousPosition: position };
 
     this.hubConnection.send("MovePiece", this.currentUser?.username, Number(this.lobbyId), piece, this.lastDiceNumber);
   }
@@ -167,18 +168,18 @@ export class GameService {
     this.hubConnection.on('DiceRolled', (data) => {
       console.log(`Dice rolled: ${data}`);
 
-      if(data.canMovePieces)
+      if (data.canMovePieces)
 
-      this.lastDiceNumber = data.diceNumber;
+        this.lastDiceNumber = data.diceNumber;
       this.diceNumber$.next(data.diceNumber);
       this.canMovePiece$.next(data.canMovePieces)
     });
 
-    this.hubConnection.on('CanRollDice', ()=>{
+    this.hubConnection.on('CanRollDice', () => {
       this.canRoleDice$.next(false);
     });
 
-    this.hubConnection.on('PiecesMoved', (data)=>{
+    this.hubConnection.on('PiecesMoved', (data) => {
       let piecesMoved: Piece[] = data;
       this.canMovePiece$.next(false);
       this.piecesMoved$.next(piecesMoved);

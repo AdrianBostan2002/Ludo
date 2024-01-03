@@ -13,6 +13,7 @@ export class DiceRollComponent {
   gameId: number = 0;
   currentGame?: Game;
   canRollDice: boolean = true;
+  isCurrentPlayerTurn: boolean = false;
 
   canRoleDiceSubscription?: Subscription;
   diceNumberSubscription?: Subscription;
@@ -29,6 +30,7 @@ export class DiceRollComponent {
 
     this.canRoleDiceSubscription = this.gameService.canRoleDice$.subscribe((canRoleDice) => {
       this.canRollDice = canRoleDice;
+      this.isCurrentPlayerTurn = !canRoleDice;
     })
 
     this.diceNumberSubscription = this.gameService.diceNumber$.subscribe((diceNumber) => {
@@ -38,6 +40,10 @@ export class DiceRollComponent {
 
   rollDice() {
     this.gameService.roleDice(this.gameId);
+  }
+
+  isYourTurn() {
+    return !this.canRollDice ? 'green-button' : 'red-button';
   }
 
   diceRolled(diceNumber: Number) {
@@ -62,10 +68,10 @@ export class DiceRollComponent {
   }
 
   ngOnDestroy(): void {
-    if (this.canRoleDiceSubscription!=undefined) {
+    if (this.canRoleDiceSubscription != undefined) {
       this.canRoleDiceSubscription.unsubscribe();
     }
-    if(this.diceNumberSubscription!=undefined){
+    if (this.diceNumberSubscription != undefined) {
       this.diceNumberSubscription;
     }
   }
