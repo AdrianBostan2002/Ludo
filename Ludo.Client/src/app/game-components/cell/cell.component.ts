@@ -107,9 +107,9 @@ export class CellComponent {
       return 50;
     }
 
-    const baseSize = 70; // Change this to your desired base size
-    const minSize = 40; // Change this to your desired minimum size
-    const sizeDecrement = (baseSize - minSize) / 15; // Adjust based on the maximum number of pieces
+    const baseSize = 70;
+    const minSize = 40;
+    const sizeDecrement = (baseSize - minSize) / 15;
 
     return Math.max(minSize, baseSize - sizeDecrement * (Math.min(numberOfPieces, 16) - 1));
   }

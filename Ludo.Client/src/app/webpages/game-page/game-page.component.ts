@@ -20,7 +20,7 @@ export class GamePageComponent {
   private currentGame!: Game | undefined;
   public userColor!: ColorType;
   randomDiceNumber: string = '';
-  isGameOver: boolean = true;
+  isGameOver: boolean = false;
 
   constructor(private gameService: GameService, private lobbyService: LobbyService, private route: ActivatedRoute) {
   }
