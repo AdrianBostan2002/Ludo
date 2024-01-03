@@ -217,7 +217,6 @@ namespace Ludo.Business.Services
         {
             if (CheckIfPlayerPicesAreOnTriangleCell(player))
             {
-
                 game.Ranking.Add(player);
             }
         }

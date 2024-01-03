@@ -1,5 +1,7 @@
 <div>
     <h1>Game Over!</h1>
-    <div *ngFor="let player of players"></div>
+    <div *ngFor="let player of players">
+        <p>{{player.name}}</p>
+    </div>
     <button (click)="homePageRedirect()">Exit</button>
 </div>

@@ -9,5 +9,5 @@
     <div class="dice-section">
         <app-dice-roll></app-dice-roll>
     </div>
-    <app-winning-modal *ngIf="isGameOver"></app-winning-modal>
+    <app-winning-modal [players]="ranking" *ngIf="isGameOver"></app-winning-modal>
 </div>

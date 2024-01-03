@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { PieceMoved } from '../shared/entities/piece-moved';
 import { ColorType } from '../shared/enums/color-type';
 import { Piece } from '../shared/entities/piece';
+import { Player } from '../shared/entities/player';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,7 @@ export class GameService {
   piecesMoved$: Subject<Piece[]> = new Subject<Piece[]>();
   newReadyPlayer$: Subject<string> = new Subject<string>();
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  gameFinished$: Subject<Player[]> = new Subject();
 
   constructor(private router: Router) {
     window.addEventListener('beforeunload', (event: Event): void => {
@@ -186,7 +188,8 @@ export class GameService {
     });
 
     this.hubConnection.on('GameFinished', (data)=>{
-      
+      console.log(data);
+      this.gameFinished$.next(data);
     });
   }
 

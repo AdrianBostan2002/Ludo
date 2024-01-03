@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs';
-import { BoardComponent } from 'src/app/board/board.component';
 import { GameService } from 'src/app/services/game.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { Game } from 'src/app/shared/entities/game';
+import { Player } from 'src/app/shared/entities/player';
 import { ColorType } from 'src/app/shared/enums/color-type';
 import { User } from 'src/app/shared/interfaces/user.interface';
 
@@ -20,6 +20,8 @@ export class GamePageComponent {
   private currentGame!: Game | undefined;
   public userColor!: ColorType;
   randomDiceNumber: string = '';
+
+  ranking: Player[] = [];
   isGameOver: boolean = false;
 
   constructor(private gameService: GameService, private lobbyService: LobbyService, private route: ActivatedRoute) {
@@ -49,6 +51,11 @@ export class GamePageComponent {
 
     let pieces = this.currentGame?.players.find(obj => obj.name == this.currentGameParticipant?.username)?.pieces;
     this.userColor = pieces?.[0]?.color!;
+
+    this.gameService.gameFinished$.subscribe((ranking: Player[]) => {
+      this.ranking = ranking;
+      this.isGameOver = true;
+    });
   }
 
   getPlayerColorClass(color: ColorType) {
