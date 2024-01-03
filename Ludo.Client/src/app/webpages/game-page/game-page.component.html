@@ -1,3 +1,14 @@
-<p>Current player: {{currentGameParticipant.username}}</p>
-<app-board class="board"></app-board>
-<app-dice-roll></app-dice-roll>
+<div class="container">
+    <app-winning-modal></app-winning-modal>
+    <div class="info-section">
+        <h1>{{currentGameParticipant.username}}, you have the
+            <div [ngClass]="getPlayerColorClass(userColor)">{{getPlayerColorText(userColor)}}</div> pieces
+        </h1>
+        <p>Turn: ...</p>
+    </div>
+    <app-board class="board"></app-board>
+    <div class="dice-section">
+        <app-dice-roll></app-dice-roll>
+    </div>
+    <app-winning-modal *ngIf="isGameOver"></app-winning-modal>
+</div>

@@ -36,15 +36,14 @@ export class CellComponent {
       })
     ).subscribe(game => {
       if (game != undefined) {
-          this.game = game;
+        this.game = game;
         this.startGamePieces();
       }
     });
 
-    if(this.piecesMovedSubscription==undefined){
+    if (this.piecesMovedSubscription == undefined) {
       this.piecesMovedSubscription = this.gameService.piecesMoved$.subscribe((piecesMoved) => {
         this.newPiecesEvent(piecesMoved);
-        console.log("C111111");
       });
     }
 
@@ -66,7 +65,7 @@ export class CellComponent {
       }
       if (piece.previousPosition === this.position) {
         const indexToRemove = this.pieces.findIndex(p => p.color === piece.color);
-        
+
         if (indexToRemove !== -1) {
           this.pieces.splice(indexToRemove, 1);
         }
@@ -206,7 +205,7 @@ export class CellComponent {
   }
 
   ngOnDestroy(): void {
-    if (this.piecesMovedSubscription!=undefined) {
+    if (this.piecesMovedSubscription != undefined) {
       this.piecesMovedSubscription.unsubscribe();
     }
   }

@@ -15,6 +15,7 @@ import { HomeComponent } from './game-components/home/home.component';
 import { DiceRollComponent } from './game-components/dice-roll/dice-roll.component'; 
 import { BoardComponent } from './board/board.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { WinningModalComponent } from './winning-modal/winning-modal.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     PieceComponent,
     HomeComponent,
     DiceRollComponent,
-    BoardComponent
+    BoardComponent,
+    WinningModalComponent
   ],
   imports: [
     BrowserModule,

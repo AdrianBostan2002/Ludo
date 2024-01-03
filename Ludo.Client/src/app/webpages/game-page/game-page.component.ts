@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs';
+import { BoardComponent } from 'src/app/board/board.component';
 import { GameService } from 'src/app/services/game.service';
 import { LobbyService } from 'src/app/services/lobby.service';
 import { Game } from 'src/app/shared/entities/game';
+import { ColorType } from 'src/app/shared/enums/color-type';
 import { User } from 'src/app/shared/interfaces/user.interface';
 
 @Component({
@@ -16,7 +18,9 @@ export class GamePageComponent {
   private currentGameId: number = 0;
   public currentGameParticipant !: User;
   private currentGame!: Game | undefined;
-  randomDiceNumber: string='';
+  public userColor!: ColorType;
+  randomDiceNumber: string = '';
+  isGameOver: boolean = true;
 
   constructor(private gameService: GameService, private lobbyService: LobbyService, private route: ActivatedRoute) {
   }
@@ -33,13 +37,47 @@ export class GamePageComponent {
       })
     ).subscribe(game => {
       this.currentGame = game;
-      console.log('current game:', this.currentGame)});
+      console.log('current game:', this.currentGame);
+
+    });
 
     //this.gameService.game$.subscribe(game => {this.currentGame = game; console.log('game:', game)});
     //this.currentGame = this.gameService.currentGame;
 
     //console.log('current game:', this.currentGame);
-
     this.currentGameParticipant = this.lobbyService.currentLobbyParticipant;
+
+    let pieces = this.currentGame?.players.find(obj => obj.name == this.currentGameParticipant?.username)?.pieces;
+    this.userColor = pieces?.[0]?.color!;
+  }
+
+  getPlayerColorClass(color: ColorType) {
+    switch (color) {
+      case ColorType.Blue:
+        return 'blue-text';
+      case ColorType.Yellow:
+        return 'yellow-text';
+      case ColorType.Red:
+        return 'red-text';
+      case ColorType.Green:
+        return 'green-text';
+      default:
+        return '';
+    }
+  }
+
+  getPlayerColorText(color: ColorType) {
+    switch (color) {
+      case ColorType.Blue:
+        return 'BLUE';
+      case ColorType.Yellow:
+        return 'YELLOW';
+      case ColorType.Red:
+        return 'RED';
+      case ColorType.Green:
+        return 'GREEN';
+      default:
+        return '';
+    }
   }
 }

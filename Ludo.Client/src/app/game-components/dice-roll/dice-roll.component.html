@@ -36,4 +36,5 @@
     </ol>
 
 </div>
-<button type="button" id="roll-button" [disabled]="canRollDice" (click)="rollDice()">Roll Dice</button>
+<button type="button" id="roll-button" [ngClass]="isYourTurn()" [disabled]="canRollDice" (click)="rollDice()">Roll
+    Dice</button>

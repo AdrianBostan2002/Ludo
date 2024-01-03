@@ -3,6 +3,7 @@ div {
     width: 40px;
     height: 40px;
     border: 1px solid black;
+    background: #fff;
 }
 
 app-piece {
@@ -68,11 +69,10 @@ app-piece {
     background: yellow;
 }
 
-/* .green-final,
+.green-final,
 .yellow-final,
 .red-final,
 .blue-final {
-    position: absolute;
     width: 0;
     height: 0;
     border-style: solid;
@@ -80,7 +80,7 @@ app-piece {
 
 .green-final {
     border-width: 0 63px 63px 0;
-    border-color: green transparent transparent transparent;
+    border-color: transparent transparent green transparent;
     top: 0;
     left: 0;
 }
@@ -104,7 +104,7 @@ app-piece {
     border-color: transparent yellow transparent transparent;
     bottom: 0;
     right: 0;
-} */
+}
 
 .green-final {
     background: green;

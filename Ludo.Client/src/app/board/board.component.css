@@ -44,21 +44,24 @@
 }
 
 .winning-section {
-  display: flex;
-  flex-wrap: wrap;
-  flex: 1;
-  /* border-top: 63px solid green;
+  /* display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  width: 126px;
+  height: 63px;
+  gap: 0px; */
+  border-top: 63px solid green;
   border-left: 63px solid red;
   border-right: 63px solid yellow;
-  border-bottom: 63px solid blue; */
+  border-bottom: 63px solid blue;
 }
 
-/* .winning-section app-cell {
-  flex: 1;
-  width: calc(50% - 1px);
-  margin: 0;
-  box-sizing: border-box;
-} */
+.winning-section app-cell {
+  display: none;
+  width: 10%;
+  height: 100%;
+}
+
 
 .red {
   background-color: red;

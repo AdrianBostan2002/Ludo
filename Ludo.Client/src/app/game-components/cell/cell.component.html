@@ -1,7 +1,6 @@
 <div (click)="movePiece()" [ngClass]="getCellType(type)">
-    <app-piece *ngFor="let piece of pieces; let index = index" 
-        [style.width.%]="getPieceSize()" [style.height.%]="getPieceSize()"
-        [style.left.%]="getLeftPosition(index)" [style.top.%]="getTopPosition(index)"
+    <app-piece *ngFor="let piece of pieces; let index = index" [style.width.%]="getPieceSize()"
+        [style.height.%]="getPieceSize()" [style.left.%]="getLeftPosition(index)" [style.top.%]="getTopPosition(index)"
         [color]="piece.color" [pieceSize]="getPieceSize()">
     </app-piece>
 </div>
