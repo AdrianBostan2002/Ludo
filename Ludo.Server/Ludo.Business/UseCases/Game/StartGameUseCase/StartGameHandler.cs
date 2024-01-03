@@ -34,7 +34,9 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
                 game.Board.SpawnPositions.Add(new SpawnPieces
                 {
                     Color = player.Pieces[0].Color,
+                    //TODO: Here is first modify
                     Pieces = new List<Piece>(player.Pieces)
+                    //Pieces = player.Pieces
                 });
             }
 

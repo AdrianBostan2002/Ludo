@@ -201,7 +201,7 @@ namespace Ludo.Business.Services
 
         public bool CheckIfPlayerPiecesAreOnSpawnPosition(IGame game, IPlayer player)
         {
-            ColorType playerColor = player.Pieces.FirstOrDefault().Color;
+            ColorType playerColor = player.Pieces.FirstOrDefault(p => p != null).Color;
 
             SpawnPieces? playerPiecesSpawnPosition = game.Board.SpawnPositions.FirstOrDefault(p => p.Color == playerColor);
 
@@ -223,7 +223,13 @@ namespace Ludo.Business.Services
 
         public bool CheckIfGameIsFinished(IGame game, IPlayer player)
         {
-            return game.Ranking.Count == game.Players.Count;
+            if(game.Ranking.Count == game.Players.Count - 1)
+            {
+                game.Ranking.AddRange(game.Players.Except(game.Ranking));
+                return true;
+            }
+
+            return false;
         }
 
         public string GetNextDiceRoller(IGame game)
