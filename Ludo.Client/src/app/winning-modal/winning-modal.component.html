@@ -1,7 +1,7 @@
-<div>
+<div class="container">
     <h1>Game Over!</h1>
-    <li *ngFor="let player of players" class="rank">
-        <p>{{player.name}}</p>
-    </li>
+    <div *ngFor="let player of players; let i = index" class="rank">
+        <p class="numbering">{{i + 1}}. {{player.name}}</p>
+    </div>
     <button (click)="homePageRedirect()">Exit</button>
 </div>

@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Montserrat:wght@300&display=swap');
 
-div {
+.container {
     z-index: 9999;
     width: 500px;
-    height: 200px;
+    max-height: 500px;
     border-radius: 5px;
     background: lightblue;
     font-family: 'Montserrat', sans-serif;
@@ -42,4 +42,17 @@ div {
         cursor: pointer;
         background-color: #ff3f3f;
     }
+}
+
+.rank {
+    margin-bottom: 5px;
+}
+
+.numbering {
+    display: inline-block;
+    width: 200px;
+    max-width: 300px;
+    text-align: left;
+    margin-right: 10px;
+    /* Add margin-right to create space between numbering and player name */
 }
