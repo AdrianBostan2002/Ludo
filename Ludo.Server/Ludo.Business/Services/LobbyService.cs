@@ -59,6 +59,12 @@ namespace Ludo.Business.Services
             }
 
             lobby.Participants.Remove(lobbyParticipant);
+
+            if (lobby.Participants.Count == 0)
+            {
+                _lobbies.Remove(lobby.LobbyId);
+            }
+
             return true;
         }
 
