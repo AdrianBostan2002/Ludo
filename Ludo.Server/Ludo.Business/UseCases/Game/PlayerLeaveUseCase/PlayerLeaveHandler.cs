@@ -23,7 +23,12 @@ namespace Ludo.Business.UseCases.Game.PlayerLeaveUseCase
 
             IGame game = _gameService.GetGameById(request.LobbyId);
 
-            List<IPlayer> playersWithoutCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);
+            List<IPlayer> playersWithoutCaller = new List<IPlayer>();
+
+            if (game != null) 
+            {
+                playersWithoutCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);
+            }
 
             return Task.FromResult(playersWithoutCaller);
         }

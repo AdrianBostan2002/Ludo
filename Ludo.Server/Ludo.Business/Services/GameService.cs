@@ -68,7 +68,7 @@ namespace Ludo.Business.Services
 
             if(game.Players.Count == 0)
             {
-                _games.Remove(game.Id);
+                _games = _games.Remove(game.Id);
             }
 
             return true;
