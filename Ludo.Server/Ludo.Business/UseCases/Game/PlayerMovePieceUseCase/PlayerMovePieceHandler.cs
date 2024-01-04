@@ -253,7 +253,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
             int colorIndex = (int)pieceColor;
 
-            if(currentPiece == null)
+            if (currentPiece == null)
             {
                 currentPiece = spawnPosition.Pieces.FirstOrDefault(p => p != null);
             }

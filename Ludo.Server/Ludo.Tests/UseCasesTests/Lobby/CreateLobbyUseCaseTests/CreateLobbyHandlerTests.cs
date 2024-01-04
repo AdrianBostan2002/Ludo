@@ -27,7 +27,7 @@ namespace Ludo.Tests.UseCasesTests.Lobby.CreateLobbyUseCaseTests
         {
             var expected = true;
             _mockLobbyService.Setup(x => x.CreateNewLobbyParticipant(It.IsAny<string>(), It.IsAny<RoleType>(), It.IsAny<string>()));
-            _mockLobbyService.Setup(x=>x.CreateNewLobby(It.IsAny<int>(), It.IsAny<ILobbyParticipant>())).Returns(true);
+            _mockLobbyService.Setup(x => x.CreateNewLobby(It.IsAny<int>(), It.IsAny<ILobbyParticipant>())).Returns(true);
             var request = CreateRequest();
             var sut = new CreateLobbyHandler(_mockLobbyService.Object);
 

@@ -1,5 +1,4 @@
-﻿using Ludo.Business.Extensions;
-using Ludo.Domain.Entities;
+﻿using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using System.Collections.Immutable;
@@ -64,25 +63,12 @@ namespace Ludo.Business.Services
 
             game.Players.Remove(player);
 
-            if(game.Players.Count == 0)
+            if (game.Players.Count == 0)
             {
                 _games = _games.Remove(game.Id);
             }
 
             return true;
-        }
-
-        private List<IPlayer> TransformLobbyParticipantsIntoPlayers(List<ILobbyParticipant> lobbyParticipants)
-        {
-            List<IPlayer> players = new List<IPlayer>();
-
-            foreach (ILobbyParticipant participant in lobbyParticipants)
-            {
-                IPlayer player = participant.ToPlayer();
-                players.Add(player);
-            }
-
-            return players;
         }
 
         public void AssignPlayersPiecesRandomColors(List<IPlayer> players)
@@ -227,7 +213,7 @@ namespace Ludo.Business.Services
 
         public bool CheckIfGameIsFinished(IGame game, IPlayer player)
         {
-            if(game.Ranking.Count == game.Players.Count - 1)
+            if (game.Ranking.Count == game.Players.Count - 1)
             {
                 game.Ranking.AddRange(game.Players.Except(game.Ranking));
                 return true;

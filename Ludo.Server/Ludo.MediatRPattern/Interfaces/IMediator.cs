@@ -2,6 +2,6 @@
 {
     public interface IMediator
     {
-        Task <TResponse> Send<TResponse>(IRequest<TResponse> entity);
+        Task<TResponse> Send<TResponse>(IRequest<TResponse> entity);
     }
 }

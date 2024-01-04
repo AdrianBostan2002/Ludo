@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.Game.StartGamePreprocessing
 {
-    public class StartGamePreprocessingRequest: IRequest<List<string>>
+    public class StartGamePreprocessingRequest : IRequest<List<string>>
     {
         public int LobbyId { get; set; }
         public string Username { get; set; }

@@ -1,6 +1,6 @@
 ﻿using Ludo.Business.UseCases.Game.PlayerReadyUseCase;
-using Ludo.Domain.Interfaces;
 using Ludo.Domain.Entities;
+using Ludo.Domain.Interfaces;
 using Moq;
 
 namespace Ludo.Tests.UseCasesTests.Game.PlayerReadyUseCaseTests

@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.TestUseCase
 {
-    public class TestValidator: AbstractValidator<TestRequest>
+    public class TestValidator : AbstractValidator<TestRequest>
     {
     }
 }

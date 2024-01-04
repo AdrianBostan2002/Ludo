@@ -31,7 +31,7 @@ namespace Ludo.Business.Services
         {
             ILobby lobby = GetLobbyById(lobbyId);
 
-            if (lobby == null || lobby.Participants.Count>=4)
+            if (lobby == null || lobby.Participants.Count >= 4)
             {
                 return false;
             }
@@ -51,7 +51,7 @@ namespace Ludo.Business.Services
 
             ILobbyParticipant lobbyParticipant = lobby.Participants.Where(p => p.Name.Equals(username)).FirstOrDefault();
 
-            if(lobbyParticipant == null)
+            if (lobbyParticipant == null)
             {
                 return false;
             }

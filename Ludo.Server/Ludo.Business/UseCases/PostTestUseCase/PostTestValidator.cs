@@ -2,11 +2,11 @@
 
 namespace Ludo.Business.UseCases.PostTestUseCase
 {
-    public class PostTestValidator: AbstractValidator<PostTestRequest>
+    public class PostTestValidator : AbstractValidator<PostTestRequest>
     {
         public PostTestValidator()
         {
-            RuleFor(x => x.Person).NotEmpty().WithErrorCode("NotEmpty");                
+            RuleFor(x => x.Person).NotEmpty().WithErrorCode("NotEmpty");
         }
     }
 }

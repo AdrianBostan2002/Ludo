@@ -16,7 +16,7 @@ namespace Ludo.Business.UseCases.Game.RollDiceUseCase
         {
             int randomNumber = Random.Shared.Next(1, 7);
 
-            if (randomNumber%2==0)
+            if (randomNumber % 2 == 0)
             {
                 randomNumber = 6;
             }

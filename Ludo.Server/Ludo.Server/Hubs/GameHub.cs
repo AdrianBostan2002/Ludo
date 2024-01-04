@@ -120,7 +120,7 @@ namespace Ludo.Server.Hubs
             };
 
             var response = _mediator.Send(request);
-            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, 
+            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller,
                 string playerWhoShouldRollDicesConnectionId, List<IPlayer> ranking) = response.Result;
 
             NotifyPlayersThatPiecesMoved(piecesMoved, playersWithoutCaller);

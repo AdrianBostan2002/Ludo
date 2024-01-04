@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.TestUseCase
 {
-    public class TestRequest: IRequest<string>
+    public class TestRequest : IRequest<string>
     {
     }
 }

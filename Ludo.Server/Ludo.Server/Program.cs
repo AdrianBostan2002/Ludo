@@ -37,9 +37,9 @@ builder.Services.AddSingleton<ILobbyService, LobbyService>();
 
 builder.Services.AddSingleton<ICellFactory, CellFactory>();
 
-builder.Services.AddSingleton<IPieceService, PieceService>();  
+builder.Services.AddSingleton<IPieceService, PieceService>();
 
-builder.Services.AddSingleton<IBoardService, BoardService>(); 
+builder.Services.AddSingleton<IBoardService, BoardService>();
 
 builder.Services.AddSingleton<IGameService, GameService>();
 

@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.Game.CreateGameUseCase
 {
-    public class StartGameValidator: AbstractValidator<StartGameRequest>
+    public class StartGameValidator : AbstractValidator<StartGameRequest>
     {
         public StartGameValidator()
         {

@@ -27,7 +27,7 @@ namespace Ludo.Server.Controllers
         {
             _hub.Clients.All.SendAsync("NewMessageToOtherClients", "Another client created a new instance");
 
-            return Ok(new {Message = "Successfully sent message to all clients"});
+            return Ok(new { Message = "Successfully sent message to all clients" });
         }
 
         [HttpGet]
