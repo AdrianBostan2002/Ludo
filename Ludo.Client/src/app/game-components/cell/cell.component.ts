@@ -50,6 +50,14 @@ export class CellComponent {
     this.gameService.canMovePiece$.subscribe((movePiece) => {
       this.canMovePiece = movePiece;
     });
+
+    this.gameService.playerLeft.subscribe((pieceColor) => {
+      const indexToRemove = this.pieces.findIndex(p => p.color === pieceColor);
+
+      if (indexToRemove !== -1) {
+        this.pieces.splice(indexToRemove, 1);
+      }
+    })
   }
 
   private startGamePieces() {
@@ -74,7 +82,6 @@ export class CellComponent {
   }
 
   movePiece(): void {
-    //this.numberOfPieces++;
     if (this.canMovePiece) {
       let player = this.game.players.filter((p) => p.name === this.gameService.currentUser?.username)[0];
 

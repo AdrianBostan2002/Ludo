@@ -9,6 +9,7 @@ import { PieceMoved } from '../shared/entities/piece-moved';
 import { ColorType } from '../shared/enums/color-type';
 import { Piece } from '../shared/entities/piece';
 import { Player } from '../shared/entities/player';
+import { stringToEnum } from '../shared/utils/color-type-converter';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,7 @@ export class GameService {
   newReadyPlayer$: Subject<string> = new Subject<string>();
   isReady$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   gameFinished$: Subject<Player[]> = new Subject();
+  playerLeft: Subject<ColorType> = new Subject();
 
   constructor(private router: Router) {
     window.addEventListener('beforeunload', (event: Event): void => {
@@ -92,7 +94,7 @@ export class GameService {
   public async playerLeave(lobbyId: number, player: User) {
     await this.checkConnection();
 
-    this.hubConnection.send("PlayerLeave", Number(lobbyId), player.username);
+    this.hubConnection.send("PlayerLeave", Number(lobbyId), player.username, this.currentColour);
   }
 
   public async checkConnection(): Promise<void> {
@@ -137,6 +139,7 @@ export class GameService {
     this.hubConnection.on('StartGameSucceded', (data: Game) => {
       console.log('data.game:', data);
       this.game$.next(data);
+      this.setColor(data.players);
       this.currentGame = data;
       this.router.navigate([`game/${this.lobbyId}`]);
     });
@@ -144,6 +147,7 @@ export class GameService {
     this.hubConnection.on('GameStarted', (data: Game) => {
       console.log('data.game:', data);
       this.game$.next(data);
+      this.setColor(data.players);
       this.currentGame = data;
       this.router.navigate([`game/${this.lobbyId}`]);
     });
@@ -168,7 +172,8 @@ export class GameService {
     });
 
     this.hubConnection.on('PlayerLeftGame', (data) => {
-      console.log(`${data} left game`);
+      let colorEnum: ColorType = stringToEnum<ColorType>(ColorType, data);
+      this.playerLeft.next(colorEnum);
     });
 
     this.hubConnection.on('DiceRolled', (data) => {
@@ -199,6 +204,12 @@ export class GameService {
 
   public disconnectFromHub() {
     this.hubConnection.stop();
+  }
+
+  private setColor(players: Player[]) {
+    let currentPlayer = players.filter((player) => player.name == this.currentUser?.username)[0];
+
+    this.currentColour = currentPlayer.pieces[0].color;
   }
 }
 
