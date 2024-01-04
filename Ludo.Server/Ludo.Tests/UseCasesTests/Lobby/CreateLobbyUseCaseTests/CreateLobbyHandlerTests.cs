@@ -16,11 +16,13 @@ namespace Ludo.Tests.UseCasesTests.Lobby.CreateLobbyUseCaseTests
             Assert.IsNotNull(() => new CreateLobbyHandler(_mockLobbyService.Object));
         }
 
+        [TestMethod]
         public void Constructor_LobbyServiceIsNull_ThrowsArgumentNullException()
         {
             Assert.ThrowsException<ArgumentNullException>(() => new CreateLobbyHandler(null));
         }
 
+        [TestMethod]
         public void Handle_HappyFlow_ReturnsRandomLobbyId()
         {
             var expected = true;
@@ -31,7 +33,6 @@ namespace Ludo.Tests.UseCasesTests.Lobby.CreateLobbyUseCaseTests
 
             var response = sut.Handle(request);
             var actual = CheckIfRandomLobbyIdIsValid(response.Result);
-
 
             Assert.AreEqual(expected, actual);
         }

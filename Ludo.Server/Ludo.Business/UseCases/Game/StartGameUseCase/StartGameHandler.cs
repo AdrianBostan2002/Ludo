@@ -25,6 +25,11 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
 
             IGame game = _gameService.GetGameById(request.LobbyId);
 
+            if (game == null)
+            {
+                throw new Exception("Game doesn't exist");
+            }
+
             _gameService.AssignPlayersPiecesRandomColors(game.Players);
 
             game.Board.SpawnPositions = new List<SpawnPieces>();
@@ -34,9 +39,7 @@ namespace Ludo.Business.UseCases.Game.CreateGameUseCase
                 game.Board.SpawnPositions.Add(new SpawnPieces
                 {
                     Color = player.Pieces[0].Color,
-                    //TODO: Here is first modify
                     Pieces = new List<Piece>(player.Pieces)
-                    //Pieces = player.Pieces
                 });
             }
 

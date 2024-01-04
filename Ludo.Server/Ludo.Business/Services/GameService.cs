@@ -19,8 +19,6 @@ namespace Ludo.Business.Services
             _pieceService = pieceService ?? throw new ArgumentNullException(nameof(pieceService));
         }
 
-        //TODO: Rezolva situatia in care un jucator duce piesa pe celula triunghi, si ramane fara piese
-        //sa nu blochezi jocul
         public void CreateNewGame(ILobby lobby)
         {
             Board board = _boardService.CreateBoard();
