@@ -241,5 +241,12 @@ namespace Ludo.Business.Services
 
             return nextDiceRoller;
         }
+
+        public int GetRandomDiceNumber()
+        {
+            int randomNumber = Random.Shared.Next(1, 7);
+
+            return randomNumber;
+        }
     }
 }

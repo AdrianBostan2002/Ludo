@@ -20,5 +20,6 @@ namespace Ludo.Domain.Interfaces
         void PieceMovedOnWinningCell(IGame game, IPlayer player);
         bool CheckIfGameIsFinished(IGame game, IPlayer player);
         string GetNextDiceRoller(IGame game);
+        int GetRandomDiceNumber();
     }
 }
