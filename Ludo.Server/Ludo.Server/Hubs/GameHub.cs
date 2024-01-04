@@ -50,8 +50,6 @@ namespace Ludo.Server.Hubs
 
         public Task ReadyToStartGame(int lobbyId, string username)
         {
-            //try
-            //{
             var request = new PlayerReadyRequest { Username = username, LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
             var requestResult = _mediator.Send(request);
 
@@ -59,11 +57,6 @@ namespace Ludo.Server.Hubs
 
             NotifyPlayersThatSomeone(playersWithoutCaller, "NewPlayerReady", username);
             return Clients.Caller.SendAsync("ReadySuccessfully");
-            //}
-            //catch (Exception)
-            //{
-            //    //Show notification
-            //}
         }
 
         public Task PlayerLeave(int lobbyId, string username)
@@ -86,8 +79,6 @@ namespace Ludo.Server.Hubs
 
         public Task RollDice(int gameId)
         {
-            //try
-            //{
             var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
 
             var response = _mediator.Send(request);
@@ -99,17 +90,10 @@ namespace Ludo.Server.Hubs
                 NotifyPlayerThatShouldRollDice(nextDiceRoller);
             }
             return Clients.Caller.SendAsync("DiceRolled", new { diceNumber = randomNumber, canMovePieces });
-            //}
-            //catch (Exception)
-            //{
-
-            //}
         }
 
         public Task MovePiece(string username, int gameId, PieceDto piece, int lastDiceNumber)
         {
-            //try
-            //{
             var request = new PlayerMovePieceRequest
             {
                 Username = username,
@@ -132,11 +116,6 @@ namespace Ludo.Server.Hubs
             }
 
             return Clients.Caller.SendAsync("PiecesMoved", piecesMoved);
-            //}
-            //catch (Exception)
-            //{
-
-            //}
         }
 
         private void NotifyPlayersThatNewGameStarted(GameDto game, List<IPlayer> players)

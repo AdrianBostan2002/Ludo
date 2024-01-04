@@ -18,8 +18,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             _pieceService = pieceService ?? throw new ArgumentNullException(nameof(pieceService));
         }
 
-        //TODO: Fix problem when trying to take another piece if you both are on the same cell
-
         public Task<(List<PieceDto>, List<IPlayer>, string, List<IPlayer>)> Handle(PlayerMovePieceRequest request)
         {
             bool isGameFinished = false;
@@ -36,7 +34,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
             int basePosition = _pieceService.GetBasePosition(request.Piece.Color);
 
-            //Case when Piece is on final cell
             if (CheckIfPieceIsOnFinalCell((int)request.Piece.PreviousPosition))
             {
                 MovePieceFromFinalCell(request, game, piecesMoved, basePosition);
@@ -47,18 +44,12 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             {
                 int nextPosition;
 
-                //Case when Piece is not on board and I first rolled 6 and I can move piece to home cell
                 if (CheckIfICanPutMyFirstPieceOnHomeCell(request))
                 {
-                    //should put on the table
-                    //but I will pass 6 cells
-
                     PutPieceOnHomeCell(request, game, piecesMoved, basePosition);
-                }////////////////////////////////////////////////////////////////////
-                else/* if (!(basePosition == request.Piece.PreviousPosition))*/
+                }
+                else
                 {
-                    //Case when I have at least one piece which is not on home cell
-
                     ICell currentCell = game.Board.Cells[(int)request.Piece.PreviousPosition];
                     Piece currentPiece;
 
@@ -80,7 +71,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
                     int specialCellLowerBound = specialCellUpperBound - 6;
 
-                    //Case when I try to go to a final cell
                     if (CheckIfICanMovePieceOnFinalCell(request, nextPosition, specialCellUpperBound, specialCellLowerBound))
                     {
                         MovePieceOnFinalCell(request, game, piecesMoved, nextPosition, currentCell, currentPiece, specialCellUpperBound);
@@ -89,8 +79,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
                     }
                     else
                     {
-                        //Case when Piece moves normally and I try to replace a new piece
-
                         RemoveEnemyPiece(request, game, piecesMoved, nextPosition);
                         MovePiece(piecesMoved, game.Board.Cells, currentCell, currentPiece, nextPosition, (int)request.Piece.PreviousPosition);
                     }
@@ -166,7 +154,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             AddNewPieceMoved(piecesMoved, currentPiece.Color, nextPosition, previousPosition);
         }
 
-        //Returns true if player should be removed from queue
         private void MovePieceOnFinalCell
         (
             PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved,
@@ -222,11 +209,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         private static bool CheckIfICanMovePieceOnFinalCell(PlayerMovePieceRequest request, int nextPosition, int specialCellUpperBound, int specialCellLowerBound)
         {
-            //if(specialCellUpperBound == 50 && nextPosition>=0 && nextPosition<=4)
-            //{
-            //    nextPosition = specialCellUpperBound + nextPosition + 2;
-            //}
-
             return request.Piece.PreviousPosition >= specialCellLowerBound &&
                                     request.Piece.PreviousPosition <= specialCellUpperBound &&
                                     nextPosition > specialCellUpperBound;
@@ -292,7 +274,6 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
             if (nextPosition % 10 == 5)
             {
-                //Piece is on triangle cell
                 IPlayer? player = game.Players.FirstOrDefault(p => p.ConnectionId == request.ConnectionId);
 
                 specialCell.Pieces.Remove(currentPiece);
