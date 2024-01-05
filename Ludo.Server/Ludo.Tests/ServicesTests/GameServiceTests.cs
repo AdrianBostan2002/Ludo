@@ -1,7 +1,11 @@
-﻿using Ludo.Business.Services;
+﻿using Ludo.Business.Options;
+using Ludo.Business.Services;
 using Ludo.Business.UseCases.Game.PlayerLeaveUseCase;
 using Ludo.Domain.Entities;
 using Ludo.Domain.Interfaces;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,18 +20,37 @@ namespace Ludo.Tests.ServicesTests
     {
         public readonly Mock<IBoardService> _boardService = new Mock<IBoardService>();
         public readonly Mock<IPieceService> _pieceService = new Mock<IPieceService>();
+        IOptions<LudoGameOptions> _options;
         public IGameService _gameService;
+
+        public void Initialize()
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            var services = new ServiceCollection();
+            services.Configure<LudoGameOptions>(configuration.GetSection(LudoGameOptions.Key));
+            var serviceProvider = services.BuildServiceProvider();
+
+            _options = serviceProvider.GetRequiredService<IOptions<LudoGameOptions>>();
+            var ludoOptions = _options.Value;
+
+            _gameService = new GameService(_boardService.Object, _pieceService.Object, _options);
+        }
 
         [TestMethod]
         public void Constructor_ThrowsNothing()
         {
-            Assert.IsNotNull(() => new GameService(_boardService.Object, _pieceService.Object));
+            Initialize();
+            Assert.IsNotNull(() => new GameService(_boardService.Object, _pieceService.Object, _options));
         }
 
         [TestMethod]
         public void AddNewPlayerIntoGame_AddsPlayerToGame()
         {
-            _gameService = new GameService(_boardService.Object, _pieceService.Object);
+            Initialize();
             IGame game = new Game();
 
             IPlayer player = new Player() { Name = "Radu", IsReady = false, ConnectionId = "123" };
@@ -46,7 +69,7 @@ namespace Ludo.Tests.ServicesTests
         [TestMethod]
         public void GetPlayersWithoutCaller_DoesNotReturnCaller()
         {
-            _gameService = new GameService(_boardService.Object, _pieceService.Object);
+            Initialize();
             ILobby lobby = new Lobby() { LobbyId = 123 };
             List<IPlayer> expected = new List<IPlayer>() { new Player { Name = "Adrian", ConnectionId = "101" } };
 
@@ -63,7 +86,7 @@ namespace Ludo.Tests.ServicesTests
         [TestMethod]
         public void CheckIfGameCanStart_ReturnsCorrectBoolean()
         {
-            _gameService = new GameService(_boardService.Object, _pieceService.Object);
+            Initialize();
             ILobby lobby = new Lobby() { LobbyId = 123 };
             bool expected = true;
 
@@ -80,7 +103,7 @@ namespace Ludo.Tests.ServicesTests
         [TestMethod]
         public void GetNextDiceRoller_ReturnsCorrectRollerForTwoPlayers()
         {
-            _gameService = new GameService(_boardService.Object, _pieceService.Object);
+            Initialize();
             ILobby lobby = new Lobby() { LobbyId = 123 };
 
             _gameService.CreateNewGame(lobby);
@@ -88,7 +111,7 @@ namespace Ludo.Tests.ServicesTests
             _gameService.AddNewPlayerIntoGame(game, "Radu", "100");
             _gameService.AddNewPlayerIntoGame(game, "Adrian", "101");
             _gameService.AssignRandomOrderForRollingDice(game);
-            
+
             var first = _gameService.GetNextDiceRoller(game);
             var second = _gameService.GetNextDiceRoller(game);
 

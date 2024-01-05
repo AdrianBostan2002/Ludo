@@ -16,14 +16,14 @@ namespace Ludo.Business.UseCases.Game.RollDiceUseCase
         {
             int randomNumber = _gameService.GetRandomDiceNumber();
 
-            if (randomNumber % 2 == 0)
-            {
-                randomNumber = 6;
-            }
-            else
-            {
-                randomNumber = 2;
-            }
+            //if (randomNumber % 2 == 0)
+            //{
+            //    randomNumber = 6;
+            //}
+            //else
+            //{
+            //    randomNumber = 2;
+            //}
 
             IGame game = _gameService.GetGameById(request.GameId);
 
