@@ -14,7 +14,7 @@ namespace Ludo.Business.UseCases.Game.RollDiceUseCase
 
         public Task<(List<IPlayer>, int, string, bool)> Handle(RollDiceRequest request)
         {
-            int randomNumber = Random.Shared.Next(1, 7);
+            int randomNumber = _gameService.GetRandomDiceNumber();
 
             if (randomNumber % 2 == 0)
             {

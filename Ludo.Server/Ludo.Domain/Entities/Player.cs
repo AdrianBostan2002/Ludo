@@ -11,10 +11,12 @@ namespace Ludo.Domain.Entities
 
         public override bool Equals(object? obj)
         {
-            return obj is Player player &&
+            if (obj is not Player player)
+                return false;
+
+            return IsReady == player.IsReady &&
                    Name == player.Name &&
-                   ConnectionId == player.ConnectionId &&
-                   IsReady == player.IsReady;
+                   ConnectionId == player.ConnectionId;
         }
     }
 }
