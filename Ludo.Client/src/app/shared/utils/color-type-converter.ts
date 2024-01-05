@@ -16,3 +16,8 @@ export function getColorString(color: ColorType): string {
         return ''; 
     }
 }
+
+
+export function stringToEnum<T>(enumObj: any, value: string): T {
+  return enumObj[value as keyof typeof enumObj] as T;
+}

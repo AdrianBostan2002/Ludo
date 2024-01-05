@@ -1,15 +1,21 @@
-﻿using Ludo.Domain.Entities;
+﻿using Ludo.Business.Options;
+using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 using System.Collections.Immutable;
 
 namespace Ludo.Business.Services
 {
     public class LobbyService : ILobbyService
     {
-        //Idea: Add new layer, named data layer containing an in memory repository where you hold this iimutable dictionary
-        //then get rid of lobby service and game service, and implement the logic in use case
         private IImmutableDictionary<int, ILobby> _lobbies = ImmutableDictionary<int, ILobby>.Empty;
+        private readonly LudoGameOptions _options;
+
+        public LobbyService(IOptions<LudoGameOptions> options)
+        {
+            _options = options.Value ?? throw new ArgumentNullException(nameof(_options));
+        }
 
         public bool CreateNewLobby(int lobbyId, ILobbyParticipant lobbyOwner)
         {
@@ -33,7 +39,7 @@ namespace Ludo.Business.Services
         {
             ILobby lobby = GetLobbyById(lobbyId);
 
-            if (lobby == null || lobby.Participants.Count>=4)
+            if (lobby == null || lobby.Participants.Count >= _options.MaxLobbyParticipants)
             {
                 return false;
             }
@@ -53,12 +59,18 @@ namespace Ludo.Business.Services
 
             ILobbyParticipant lobbyParticipant = lobby.Participants.Where(p => p.Name.Equals(username)).FirstOrDefault();
 
-            if(lobbyParticipant == null)
+            if (lobbyParticipant == null)
             {
                 return false;
             }
 
             lobby.Participants.Remove(lobbyParticipant);
+
+            if (lobby.Participants.Count == 0)
+            {
+                _lobbies = _lobbies.Remove(lobby.LobbyId);
+            }
+
             return true;
         }
 

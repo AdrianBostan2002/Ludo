@@ -16,22 +16,23 @@ namespace Ludo.Tests.UseCasesTests.Lobby.CreateLobbyUseCaseTests
             Assert.IsNotNull(() => new CreateLobbyHandler(_mockLobbyService.Object));
         }
 
+        [TestMethod]
         public void Constructor_LobbyServiceIsNull_ThrowsArgumentNullException()
         {
             Assert.ThrowsException<ArgumentNullException>(() => new CreateLobbyHandler(null));
         }
 
+        [TestMethod]
         public void Handle_HappyFlow_ReturnsRandomLobbyId()
         {
             var expected = true;
             _mockLobbyService.Setup(x => x.CreateNewLobbyParticipant(It.IsAny<string>(), It.IsAny<RoleType>(), It.IsAny<string>()));
-            _mockLobbyService.Setup(x=>x.CreateNewLobby(It.IsAny<int>(), It.IsAny<ILobbyParticipant>())).Returns(true);
+            _mockLobbyService.Setup(x => x.CreateNewLobby(It.IsAny<int>(), It.IsAny<ILobbyParticipant>())).Returns(true);
             var request = CreateRequest();
             var sut = new CreateLobbyHandler(_mockLobbyService.Object);
 
             var response = sut.Handle(request);
             var actual = CheckIfRandomLobbyIdIsValid(response.Result);
-
 
             Assert.AreEqual(expected, actual);
         }

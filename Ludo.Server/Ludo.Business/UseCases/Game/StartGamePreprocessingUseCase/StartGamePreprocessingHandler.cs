@@ -3,7 +3,7 @@ using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.Game.StartGamePreprocessing
 {
-    public class StartGamePreprocessingHandler: IRequestHandler<StartGamePreprocessingRequest, List<string>>
+    public class StartGamePreprocessingHandler : IRequestHandler<StartGamePreprocessingRequest, List<string>>
     {
         private readonly ILobbyService _lobbyService;
         private readonly IGameService _gameService;

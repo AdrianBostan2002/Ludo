@@ -17,7 +17,7 @@ namespace Ludo.MediatRPattern.Entities
         public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request)
         {
             _requestValidator.ValidateRequest(request);
-            
+
             Type requestType = request.GetType();
 
             Type response = typeof(IRequest<TResponse>);

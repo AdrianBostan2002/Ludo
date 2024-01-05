@@ -3,7 +3,7 @@ using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.Game.PlayerLeaveUseCase
 {
-    public class PlayerLeaveHandler: IRequestHandler<PlayerLeaveRequest, List<IPlayer>>
+    public class PlayerLeaveHandler : IRequestHandler<PlayerLeaveRequest, List<IPlayer>>
     {
         private readonly IGameService _gameService;
 
@@ -23,7 +23,12 @@ namespace Ludo.Business.UseCases.Game.PlayerLeaveUseCase
 
             IGame game = _gameService.GetGameById(request.LobbyId);
 
-            List<IPlayer> playersWithoutCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);
+            List<IPlayer> playersWithoutCaller = new List<IPlayer>();
+
+            if (game != null)
+            {
+                playersWithoutCaller = _gameService.GetPlayersWithoutCaller(game, request.ConnectionId);
+            }
 
             return Task.FromResult(playersWithoutCaller);
         }
