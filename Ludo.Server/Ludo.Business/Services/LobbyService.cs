@@ -1,6 +1,8 @@
-﻿using Ludo.Domain.Entities;
+﻿using Ludo.Business.Options;
+using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 using System.Collections.Immutable;
 
 namespace Ludo.Business.Services
@@ -8,6 +10,12 @@ namespace Ludo.Business.Services
     public class LobbyService : ILobbyService
     {
         private IImmutableDictionary<int, ILobby> _lobbies = ImmutableDictionary<int, ILobby>.Empty;
+        private readonly LudoGameOptions _options;
+
+        public LobbyService(IOptions<LudoGameOptions> options)
+        {
+            _options = options.Value ?? throw new ArgumentNullException(nameof(_options));
+        }
 
         public bool CreateNewLobby(int lobbyId, ILobbyParticipant lobbyOwner)
         {
@@ -31,7 +39,7 @@ namespace Ludo.Business.Services
         {
             ILobby lobby = GetLobbyById(lobbyId);
 
-            if (lobby == null || lobby.Participants.Count >= 4)
+            if (lobby == null || lobby.Participants.Count >= _options.MaxLobbyParticipants)
             {
                 return false;
             }

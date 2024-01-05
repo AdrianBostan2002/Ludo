@@ -1,16 +1,20 @@
-﻿using Ludo.Domain.Entities;
+﻿using Ludo.Business.Options;
+using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace Ludo.Business.Services
 {
     public class BoardService : IBoardService
     {
         private readonly ICellFactory _cellFactory;
+        private readonly LudoGameOptions _options;
 
-        public BoardService(ICellFactory cellFactory)
+        public BoardService(ICellFactory cellFactory, IOptions<LudoGameOptions> options)
         {
             _cellFactory = cellFactory ?? throw new ArgumentNullException(nameof(cellFactory));
+            _options = options.Value ?? throw new ArgumentNullException(nameof(_options));
         }
 
         public Board CreateBoard()
@@ -32,10 +36,10 @@ namespace Ludo.Business.Services
 
         private void CreateSideOfBoard(List<ICell> cells, ColorType homeColor, ColorType finalColor)
         {
-            List<ICell> homeCell = CreateSetOfCells(CellType.Home, homeColor, 1);
-            List<ICell> basicCells = CreateSetOfCells(CellType.Basic, ColorType.White, 10);
-            List<ICell> specialCell = CreateSetOfCells(CellType.Special, finalColor, 1);
-            List<ICell> basicCell = CreateSetOfCells(CellType.Basic, ColorType.White, 1);
+            List<ICell> homeCell = CreateSetOfCells(CellType.Home, homeColor, _options.HomeCellSideNumber);
+            List<ICell> basicCells = CreateSetOfCells(CellType.Basic, ColorType.White, _options.BasicCellsSideNumber);
+            List<ICell> specialCell = CreateSetOfCells(CellType.Special, finalColor, _options.SpecialCellsSideNumber);
+            List<ICell> basicCell = CreateSetOfCells(CellType.Basic, ColorType.White, _options.BasicCellSideNumber);
 
             List<ICell> finalCells = CreateSetOfCells(CellType.Final, ColorType.White, 5);
 

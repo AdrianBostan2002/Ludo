@@ -1,16 +1,20 @@
-﻿using Ludo.Domain.DTOs;
+﻿using Ludo.Business.Options;
+using Ludo.Domain.DTOs;
 using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace Ludo.Business.Services
 {
     public class PieceService : IPieceService
     {
-        public int GREEN_START_POSITION => 0;
-        public int YELLOW_START_POSITION => 13;
-        public int BLUE_START_POSITION => 26;
-        public int RED_START_POSITION => 39;
+        private readonly LudoGameOptions _options;
+
+        public PieceService(IOptions<LudoGameOptions> options)
+        {
+            _options = options.Value ?? throw new ArgumentNullException(nameof(_options));
+        }
 
         public Piece CreatePiece(ColorType color)
         {
@@ -52,16 +56,16 @@ namespace Ludo.Business.Services
             switch (color)
             {
                 case ColorType.Green:
-                    position = GREEN_START_POSITION;
+                    position = _options.GreenStartPosition;
                     break;
                 case ColorType.Red:
-                    position = RED_START_POSITION;
+                    position = _options.RedStartPosition;
                     break;
                 case ColorType.Yellow:
-                    position = YELLOW_START_POSITION;
+                    position = _options.YellowStartPosition;
                     break;
                 case ColorType.Blue:
-                    position = BLUE_START_POSITION;
+                    position = _options.BlueStartPosition;
                     break;
                 default:
                     break;

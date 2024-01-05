@@ -1,6 +1,8 @@
-﻿using Ludo.Domain.Entities;
+﻿using Ludo.Business.Options;
+using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 using System.Collections.Immutable;
 
 namespace Ludo.Business.Services
@@ -8,14 +10,16 @@ namespace Ludo.Business.Services
     public class GameService : IGameService
     {
         private IImmutableDictionary<int, IGame> _games = ImmutableDictionary<int, IGame>.Empty;
+        private readonly LudoGameOptions _options;
 
         private readonly IBoardService _boardService;
         private readonly IPieceService _pieceService;
 
-        public GameService(IBoardService boardService, IPieceService pieceService)
+        public GameService(IBoardService boardService, IPieceService pieceService, IOptions<LudoGameOptions> options)
         {
             _boardService = boardService ?? throw new ArgumentNullException(nameof(boardService));
             _pieceService = pieceService ?? throw new ArgumentNullException(nameof(pieceService));
+            _options = options.Value ?? throw new ArgumentNullException(nameof(_options));
         }
 
         public void CreateNewGame(ILobby lobby)
@@ -79,7 +83,7 @@ namespace Ludo.Business.Services
             {
                 var pieces = new List<Piece>();
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < _options.PieceMaxNumber; i++)
                 {
                     Piece piece = _pieceService.CreatePiece(shuffledColors.Last());
 
@@ -156,7 +160,7 @@ namespace Ludo.Business.Services
                 return false;
             }
 
-            if (!(game.Players.Count > 1 && game.Players.Count <= 4))
+            if (!(game.Players.Count > 1 && game.Players.Count <= _options.MaxLobbyParticipants))
             {
                 return false;
             }

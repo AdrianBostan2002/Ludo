@@ -1,9 +1,11 @@
 ﻿using FluentValidation;
+using Ludo.Business.Options;
 using Ludo.Domain.DTOs;
 using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 {
@@ -11,11 +13,13 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
     {
         private readonly IGameService _gameService;
         private readonly IPieceService _pieceService;
+        private readonly LudoGameOptions _options;
 
-        public PlayerMovePieceHandler(IGameService gameService, IPieceService pieceService)
+        public PlayerMovePieceHandler(IGameService gameService, IPieceService pieceService, IOptions<LudoGameOptions> options)
         {
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _pieceService = pieceService ?? throw new ArgumentNullException(nameof(pieceService));
+            _options = options.Value ?? throw new ArgumentNullException(nameof(_options));
         }
 
         public Task<(List<PieceDto>, List<IPlayer>, string, List<IPlayer>)> Handle(PlayerMovePieceRequest request)
@@ -66,7 +70,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
                     if (basePosition == 0)
                     {
-                        specialCellUpperBound = 52 - 2;
+                        specialCellUpperBound = _options.FullRoadCellsNumber - 2;
                     }
 
                     int specialCellLowerBound = specialCellUpperBound - 6;
@@ -115,7 +119,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         private void RemoveEnemyPiece(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int nextPosition)
         {
-            nextPosition %= 52;
+            nextPosition %= _options.FullRoadCellsNumber;
 
             if (!(game.Board.Cells[nextPosition] is HomeCell))
             {
@@ -145,7 +149,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         private void MovePiece(List<PieceDto> piecesMoved, List<ICell> boardCells, ICell currentCell, Piece currentPiece, int nextPosition, int previousPosition)
         {
-            nextPosition %= 52;
+            nextPosition %= _options.FullRoadCellsNumber;
 
             boardCells[nextPosition].Pieces.Add(currentPiece);
 
@@ -250,7 +254,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
         private bool CheckIfICanPutMyFirstPieceOnHomeCell(PlayerMovePieceRequest request)
         {
-            return request.Piece.PreviousPosition >= 610 && request.Piece.PreviousPosition <= 943 && request.DiceNumber == 6;
+            return request.Piece.PreviousPosition >= _options.SpawnPositionLowerBound && request.Piece.PreviousPosition <= _options.SpawnPositionUpperBound && request.DiceNumber == 6;
         }
 
         private void MovePieceFromFinalCell(PlayerMovePieceRequest request, IGame game, List<PieceDto> piecesMoved, int basePosition)
@@ -263,7 +267,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
             if (basePosition == 0)
             {
-                specialCellsPosition = 52 - 2;
+                specialCellsPosition = _options.FullRoadCellsNumber - 2;
             }
 
             SpecialCell specialCells = boardCells[specialCellsPosition] as SpecialCell;
@@ -299,9 +303,9 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
             }
         }
 
-        private static bool CheckIfPieceIsOnFinalCell(int previousPosition)
+        private bool CheckIfPieceIsOnFinalCell(int previousPosition)
         {
-            return previousPosition >= 110 && previousPosition <= 444;
+            return previousPosition >= _options.FinalCellPositionLowerBound && previousPosition <= _options.FinalCellPositionUpperBound;
         }
 
         private int CreateWinningCellPosition(ColorType pieceColor)
