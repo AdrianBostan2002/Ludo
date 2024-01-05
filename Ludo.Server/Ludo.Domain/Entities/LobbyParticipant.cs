@@ -3,7 +3,7 @@ using Ludo.Domain.Interfaces;
 
 namespace Ludo.Domain.Entities
 {
-    public class LobbyParticipant: ILobbyParticipant
+    public class LobbyParticipant : ILobbyParticipant
     {
         public string Name { get; set; }
         public RoleType Role { get; set; }

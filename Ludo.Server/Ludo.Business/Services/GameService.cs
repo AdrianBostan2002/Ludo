@@ -1,7 +1,8 @@
-﻿using Ludo.Business.Extensions;
+﻿using Ludo.Business.Options;
 using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 using System.Collections.Immutable;
 
 namespace Ludo.Business.Services
@@ -9,18 +10,18 @@ namespace Ludo.Business.Services
     public class GameService : IGameService
     {
         private IImmutableDictionary<int, IGame> _games = ImmutableDictionary<int, IGame>.Empty;
+        private readonly LudoGameOptions _options;
 
         private readonly IBoardService _boardService;
         private readonly IPieceService _pieceService;
 
-        public GameService(IBoardService boardService, IPieceService pieceService)
+        public GameService(IBoardService boardService, IPieceService pieceService, IOptions<LudoGameOptions> options)
         {
             _boardService = boardService ?? throw new ArgumentNullException(nameof(boardService));
             _pieceService = pieceService ?? throw new ArgumentNullException(nameof(pieceService));
+            _options = options.Value ?? throw new ArgumentNullException(nameof(_options));
         }
 
-        //TODO: Rezolva situatia in care un jucator duce piesa pe celula triunghi, si ramane fara piese
-        //sa nu blochezi jocul
         public void CreateNewGame(ILobby lobby)
         {
             Board board = _boardService.CreateBoard();
@@ -65,20 +66,13 @@ namespace Ludo.Business.Services
             }
 
             game.Players.Remove(player);
-            return true;
-        }
 
-        private List<IPlayer> TransformLobbyParticipantsIntoPlayers(List<ILobbyParticipant> lobbyParticipants)
-        {
-            List<IPlayer> players = new List<IPlayer>();
-
-            foreach (ILobbyParticipant participant in lobbyParticipants)
+            if (game.Players.Count == 0)
             {
-                IPlayer player = participant.ToPlayer();
-                players.Add(player);
+                _games = _games.Remove(game.Id);
             }
 
-            return players;
+            return true;
         }
 
         public void AssignPlayersPiecesRandomColors(List<IPlayer> players)
@@ -89,7 +83,7 @@ namespace Ludo.Business.Services
             {
                 var pieces = new List<Piece>();
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < _options.PieceMaxNumber; i++)
                 {
                     Piece piece = _pieceService.CreatePiece(shuffledColors.Last());
 
@@ -166,7 +160,7 @@ namespace Ludo.Business.Services
                 return false;
             }
 
-            if (!(game.Players.Count > 1 && game.Players.Count <= 4))
+            if (!(game.Players.Count > 1 && game.Players.Count <= _options.MaxLobbyParticipants))
             {
                 return false;
             }
@@ -223,7 +217,7 @@ namespace Ludo.Business.Services
 
         public bool CheckIfGameIsFinished(IGame game, IPlayer player)
         {
-            if(game.Ranking.Count == game.Players.Count - 1)
+            if (game.Ranking.Count == game.Players.Count - 1)
             {
                 game.Ranking.AddRange(game.Players.Except(game.Ranking));
                 return true;

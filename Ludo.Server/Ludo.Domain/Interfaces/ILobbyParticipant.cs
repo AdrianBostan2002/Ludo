@@ -6,6 +6,6 @@ namespace Ludo.Domain.Interfaces
     {
         string Name { get; set; }
         RoleType Role { get; set; }
-        string ConnectionId { get; set; }   
+        string ConnectionId { get; set; }
     }
 }

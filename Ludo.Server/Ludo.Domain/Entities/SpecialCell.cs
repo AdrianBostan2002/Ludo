@@ -10,13 +10,5 @@ namespace Ludo.Domain.Entities
         public ColorType Color { get; set; }
 
         public List<ICell> FinalCells { get; set; }
-
-        private CellType _type;
-        public CellType Type { get { return _type; } }
-
-        public SpecialCell()
-        {
-            _type = CellType.Special;
-        }
     }
 }

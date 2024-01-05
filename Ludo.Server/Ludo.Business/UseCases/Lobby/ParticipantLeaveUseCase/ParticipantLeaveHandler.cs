@@ -21,7 +21,14 @@ namespace Ludo.Business.UseCases.Lobby.ParticipantLeave
                 throw new Exception("Player is not in lobby");
             }
 
-            List<ILobbyParticipant> lobbyParticipants = _lobbyService.GetLobbyParticipants(request.LobbyId);
+            List<ILobbyParticipant> lobbyParticipants = new List<ILobbyParticipant>();
+
+            ILobby lobby = _lobbyService.GetLobbyById(request.LobbyId);
+
+            if (lobby != null)
+            {
+                lobbyParticipants = _lobbyService.GetLobbyParticipants(request.LobbyId);
+            }
 
             return Task.FromResult(lobbyParticipants);
         }

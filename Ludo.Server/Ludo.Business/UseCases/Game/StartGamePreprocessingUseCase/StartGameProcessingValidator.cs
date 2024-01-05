@@ -2,7 +2,7 @@
 
 namespace Ludo.Business.UseCases.Game.StartGamePreprocessing
 {
-    public class StartGameProcessingValidator: AbstractValidator<StartGamePreprocessingRequest>
+    public class StartGameProcessingValidator : AbstractValidator<StartGamePreprocessingRequest>
     {
         public StartGameProcessingValidator()
         {

@@ -18,10 +18,7 @@ namespace Ludo.Tests.UseCasesTests.Lobby.HubTests
         [TestMethod]
         public void Constructor_WhenMediatorIsEmpty_ThrowArgumentNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(()=> new LobbyHub(null))
+            Assert.ThrowsException<ArgumentNullException>(() => new LobbyHub(null));
         }
-
-        [TestMethod]
-        public void CreateLobby_HappyFlow_
     }
 }

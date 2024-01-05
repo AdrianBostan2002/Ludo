@@ -5,6 +5,7 @@ using Ludo.Business.UseCases.Game.PlayerReadyUseCase;
 using Ludo.Business.UseCases.Game.RollDiceUseCase;
 using Ludo.Business.UseCases.Game.StartGamePreprocessing;
 using Ludo.Domain.DTOs;
+using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
 using Microsoft.AspNetCore.SignalR;
@@ -50,8 +51,6 @@ namespace Ludo.Server.Hubs
 
         public Task ReadyToStartGame(int lobbyId, string username)
         {
-            //try
-            //{
             var request = new PlayerReadyRequest { Username = username, LobbyId = lobbyId, ConnectionId = Context.ConnectionId };
             var requestResult = _mediator.Send(request);
 
@@ -59,14 +58,9 @@ namespace Ludo.Server.Hubs
 
             NotifyPlayersThatSomeone(playersWithoutCaller, "NewPlayerReady", username);
             return Clients.Caller.SendAsync("ReadySuccessfully");
-            //}
-            //catch (Exception)
-            //{
-            //    //Show notification
-            //}
         }
 
-        public Task PlayerLeave(int lobbyId, string username)
+        public Task PlayerLeave(int lobbyId, string username, ColorType playerColor)
         {
             try
             {
@@ -75,7 +69,7 @@ namespace Ludo.Server.Hubs
                 var response = _mediator.Send(request);
                 var playersWithoutCaller = response.Result;
 
-                NotifyPlayersThatSomeone(playersWithoutCaller, "PlayerLeftGame", username);
+                NotifyPlayersThatSomeone(playersWithoutCaller, "PlayerLeftGame", $"{(int)playerColor}");
                 return Clients.Caller.SendAsync("LeavingSucceeded");
             }
             catch (Exception)
@@ -86,8 +80,6 @@ namespace Ludo.Server.Hubs
 
         public Task RollDice(int gameId)
         {
-            //try
-            //{
             var request = new RollDiceRequest { GameId = gameId, ConnectionId = Context.ConnectionId };
 
             var response = _mediator.Send(request);
@@ -99,17 +91,10 @@ namespace Ludo.Server.Hubs
                 NotifyPlayerThatShouldRollDice(nextDiceRoller);
             }
             return Clients.Caller.SendAsync("DiceRolled", new { diceNumber = randomNumber, canMovePieces });
-            //}
-            //catch (Exception)
-            //{
-
-            //}
         }
 
         public Task MovePiece(string username, int gameId, PieceDto piece, int lastDiceNumber)
         {
-            //try
-            //{
             var request = new PlayerMovePieceRequest
             {
                 Username = username,
@@ -120,7 +105,7 @@ namespace Ludo.Server.Hubs
             };
 
             var response = _mediator.Send(request);
-            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller, 
+            (List<PieceDto> piecesMoved, List<IPlayer> playersWithoutCaller,
                 string playerWhoShouldRollDicesConnectionId, List<IPlayer> ranking) = response.Result;
 
             NotifyPlayersThatPiecesMoved(piecesMoved, playersWithoutCaller);
@@ -132,11 +117,6 @@ namespace Ludo.Server.Hubs
             }
 
             return Clients.Caller.SendAsync("PiecesMoved", piecesMoved);
-            //}
-            //catch (Exception)
-            //{
-
-            //}
         }
 
         private void NotifyPlayersThatNewGameStarted(GameDto game, List<IPlayer> players)

@@ -4,7 +4,7 @@ using Ludo.MediatRPattern.Interfaces;
 
 namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 {
-    public class PlayerMovePieceRequest: IRequest<(List<PieceDto>, List<IPlayer>, string, List<IPlayer>)>
+    public class PlayerMovePieceRequest : IRequest<(List<PieceDto>, List<IPlayer>, string, List<IPlayer>)>
     {
         public string Username { get; set; }
 
