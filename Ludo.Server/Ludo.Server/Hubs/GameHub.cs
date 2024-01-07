@@ -5,6 +5,7 @@ using Ludo.Business.UseCases.Game.PlayerReadyUseCase;
 using Ludo.Business.UseCases.Game.RollDiceUseCase;
 using Ludo.Business.UseCases.Game.StartGamePreprocessing;
 using Ludo.Domain.DTOs;
+using Ludo.Domain.Entities;
 using Ludo.Domain.Enums;
 using Ludo.Domain.Interfaces;
 using Ludo.MediatRPattern.Interfaces;
@@ -69,7 +70,7 @@ namespace Ludo.Server.Hubs
                 var response = _mediator.Send(request);
                 var playersWithoutCaller = response.Result;
 
-                NotifyPlayersThatSomeone(playersWithoutCaller, "PlayerLeftGame", $"{(int)playerColor}");
+                NotifyPlayersThatUserLeft(playersWithoutCaller, playerColor);
                 return Clients.Caller.SendAsync("LeavingSucceeded");
             }
             catch (Exception)
@@ -161,6 +162,14 @@ namespace Ludo.Server.Hubs
             foreach (var player in ranking)
             {
                 Clients.Client(player.ConnectionId).SendAsync("GameFinished", ranking);
+            }
+        }
+
+        private void NotifyPlayersThatUserLeft(List<IPlayer> players, ColorType userColor)
+        {
+            foreach (var player in players)
+            {
+                Clients.Client(player.ConnectionId).SendAsync("PlayerLeftGame", userColor);
             }
         }
     }
