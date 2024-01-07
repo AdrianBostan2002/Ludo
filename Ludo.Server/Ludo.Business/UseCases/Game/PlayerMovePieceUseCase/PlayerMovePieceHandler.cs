@@ -93,7 +93,7 @@ namespace Ludo.Business.UseCases.Game.PlayerMovePieceUseCase
 
             if (playerShouldBeRemovedFromQueue)
             {
-                game.RollDiceOrder.RemoveFirst();
+                game.RollDiceOrder.RemoveLast();
             }
 
             string nextDiceRoller = _gameService.GetNextDiceRoller(game);
