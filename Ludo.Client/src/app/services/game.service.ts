@@ -172,8 +172,7 @@ export class GameService {
     });
 
     this.hubConnection.on('PlayerLeftGame', (data) => {
-      let colorEnum: ColorType = stringToEnum<ColorType>(ColorType, data);
-      this.playerLeft.next(colorEnum);
+      this.playerLeft.next(data);
     });
 
     this.hubConnection.on('DiceRolled', (data) => {
