@@ -56,9 +56,9 @@ To run the Ludo Game locally:
 
 ## Design Patterns Used
 
-•	Strategy
-•	Factory
-•	Mediator
+- Strategy
+- Factory
+- Mediator
 
 
 ## Technologies Used
@@ -66,6 +66,10 @@ To run the Ludo Game locally:
 - Angular
 - ASP.NET Web API
 - Websockets
+
+## Project Information
+
+This project was developed for the Software Engineering subject in the first semester of year three at the Faculty of Mathematics and Informatics from Brasov, specializing in informatics.
 
 RO DOCUMENTATION:
 [Documentatie_Ludo.docx](https://github.com/AdrianBostan2002/Ludo/files/15291790/Documentatie_Ludo.docx)
