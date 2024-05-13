@@ -51,7 +51,7 @@ To run the Ludo Game locally:
 
 ## Application Architecture
 
-[//]: ![image](https://github.com/AdrianBostan2002/Ludo/assets/87941004/8eed330b-217e-4874-843f-a1b0963c1c08)
+![image](https://github.com/AdrianBostan2002/Ludo/assets/87941004/53155d53-65ab-4f31-b4d7-589aecc4d5c0)
 
 
 ## Design Patterns Used
